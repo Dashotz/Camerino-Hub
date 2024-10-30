@@ -1,3 +1,30 @@
+<?php
+session_start();
+
+// Initialize login status
+$isLoggedIn = isset($_SESSION['id']);
+
+// Only redirect if trying to access protected pages
+if (isset($requireLogin) && $requireLogin && !$isLoggedIn) {
+    header("Location: ../Student/Teacher-Login.php");
+    exit();
+}
+
+// Get user data if logged in
+$userData = null;
+if ($isLoggedIn) {
+    require_once('../db/dbConnector.php');
+    $db = new DbConnector();
+    
+    $teacher_id = $_SESSION['id'];
+    $query = "SELECT * FROM teacher WHERE teacher_id = '$teacher_id'";
+    $result = $db->query($query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $userData = mysqli_fetch_array($result);
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +34,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="home.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <!-- Header and Navigation -->
@@ -25,7 +54,20 @@
                     <li class="nav-item"><a class="nav-link" href="class.php">Class</a></li>
                     <li class="nav-item"><a class="nav-link" href="subject.php">Subject</a></li>
                     <li class="nav-item"><a class="nav-link" href="student.php">Student</a></li>
-                    <li class="nav-item"><a class="nav-link btn-signup" href="#">Log Out</a></li>
+                    <?php if ($isLoggedIn): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="teacher_dashboard.php">Dashboard</a>
+                                <a class="dropdown-item" href="teacher_profile.php">Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="../Student/logout.php">Logout</a>
+                            </div>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -36,10 +78,17 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>Welcome to<br><span class="highlight">Gov D.M. Camerino</span></h1>
+                    <h1>Welcome<?php echo $isLoggedIn ? ', ' . htmlspecialchars($userData['firstname']) : ''; ?> to<br>
+                        <span class="highlight">Gov D.M. Camerino</span>
+                    </h1>
                     <p class="lead">Learn Anywhere, Anytime: Empower Your Education</p>
                     <div class="cta-buttons">
-                        <a href="profile.php" class="btn btn-primary">User Name</a>
+                        <?php if ($isLoggedIn): ?>
+                            <a href="teacher_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
+                            <a href="class.php" class="btn btn-outline-primary">My Classes</a>
+                        <?php else: ?>
+                            <a href="../Student/Teacher-Login.php" class="btn btn-primary">Login Now</a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="hero-image">
@@ -301,6 +350,93 @@
         // Optional: Auto-play
         setInterval(nextSlide, 5000);
     });
+
+    // Welcome Alert Function
+    function showWelcomeAlert() {
+        Swal.fire({
+            title: 'Welcome to Camerino Hub LMS!',
+            html: `
+                <div class="welcome-content">
+                    <p class="welcome-text">
+                        Hello Sir/Mam <?php echo htmlspecialchars($userData['firstname'] ?? ''); ?>!
+                        Welcome to Gov. D. M. Camerino Learning Management System.
+                        Your gateway to digital education excellence.
+                    </p>
+                    <p class="welcome-subtext">
+                        Manage your classes, connect with students, and enhance the learning experience.
+                    </p>
+                </div>
+            `,
+            icon: 'success',
+            confirmButtonText: 'Get Started',
+            confirmButtonColor: '#007bff',
+            allowOutsideClick: false,
+            customClass: {
+                popup: 'welcome-popup',
+                title: 'welcome-title',
+                content: 'welcome-content',
+                confirmButton: 'welcome-button'
+            }
+        });
+    }
+
+    // Show alert when page loads if user just logged in
+    <?php if ($isLoggedIn && isset($_SESSION['just_logged_in'])): ?>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        showWelcomeAlert();
+    });
+    <?php 
+        // Remove the flag so alert won't show again on refresh
+        unset($_SESSION['just_logged_in']);
+    endif; 
+    ?>
     </script>
+
+    <style>
+    .welcome-popup {
+        padding: 2rem;
+        border-radius: 15px;
+    }
+
+    .welcome-title {
+        color: #007bff;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .welcome-text {
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .welcome-subtext {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .welcome-button {
+        padding: 10px 30px;
+        font-size: 1.1rem;
+        border-radius: 25px;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .swal2-icon.swal2-success {
+        border-color: #007bff;
+        color: #007bff;
+    }
+
+    .swal2-icon.swal2-success [class^='swal2-success-line'] {
+        background-color: #007bff;
+    }
+
+    .swal2-icon.swal2-success .swal2-success-ring {
+        border-color: rgba(0, 123, 255, 0.3);
+    }
+    </style>
 </body>
 </html>

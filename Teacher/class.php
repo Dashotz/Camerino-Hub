@@ -1,3 +1,31 @@
+<?php
+session_start();
+
+// Initialize login status
+$isLoggedIn = isset($_SESSION['id']);
+
+// Redirect if not logged in
+if (!$isLoggedIn) {
+    header("Location: ../Student/Teacher-Login.php");
+    exit();
+}
+
+// Get teacher data
+$userData = null;
+if ($isLoggedIn) {
+    require_once('../db/dbConnector.php');
+    $db = new DbConnector();
+    
+    $teacher_id = $_SESSION['id'];
+    $query = "SELECT * FROM teacher WHERE teacher_id = '$teacher_id'";
+    $result = $db->query($query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $userData = mysqli_fetch_array($result);
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,10 +50,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="site-map.php">Class</a></li>
-                    <li class="nav-item"><a class="nav-link" href="News.php">Subject</a></li>
-                    <li class="nav-item"><a class="nav-link" href="aboutus.php">Student</a></li>
-                    <li class="nav-item"><a class="nav-link btn-signup" href="#">Log Out</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="class.php">Class</a></li>
+                    <li class="nav-item"><a class="nav-link" href="subject.php">Subject</a></li>
+                    <li class="nav-item"><a class="nav-link" href="student.php">Student</a></li>
+                    <?php if ($isLoggedIn): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="teacher_dashboard.php">Dashboard</a>
+                                <a class="dropdown-item" href="teacher_profile.php">Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="../Student/logout.php">Logout</a>
+                            </div>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -36,11 +77,16 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>Welcome to<br><span class="highlight">Gov D.M. Camerino</span></h1>
+                    <h1>Welcome<?php echo $isLoggedIn ? ', ' . htmlspecialchars($userData['firstname']) : ''; ?> to<br>
+                        <span class="highlight">Gov D.M. Camerino</span>
+                    </h1>
                     <p class="lead">Learn Anywhere, Anytime: Empower Your Education</p>
+                    <?php if ($isLoggedIn): ?>
                     <div class="cta-buttons">
-                        <a href="profile.php" class="btn btn-primary">User Name</a>
+                        <a href="teacher_dashboard.php" class="btn btn-primary">Dashboard</a>
+                        <a href="class.php" class="btn btn-outline-primary">Manage Classes</a>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="hero-image">
                     <img src="../images/student.png" alt="Students">

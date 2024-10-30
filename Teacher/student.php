@@ -1,3 +1,52 @@
+<?php
+session_start();
+
+// Initialize login status
+$isLoggedIn = isset($_SESSION['id']);
+
+// Redirect if not logged in
+if (!$isLoggedIn) {
+    header("Location: ../Student/Teacher-Login.php");
+    exit();
+}
+
+// Get teacher data
+require_once('../db/dbConnector.php');
+$db = new DbConnector();
+
+$teacher_id = $_SESSION['id'];
+$query = "SELECT * FROM teacher WHERE teacher_id = '$teacher_id'";
+$result = $db->query($query);
+$userData = mysqli_fetch_array($result);
+
+// Get students data
+$students_query = "SELECT s.*, c.class_name 
+                  FROM student s 
+                  LEFT JOIN class_students cs ON s.student_id = cs.student_id 
+                  LEFT JOIN classes c ON cs.class_id = c.class_id 
+                  WHERE cs.teacher_id = ?";
+$stmt = $db->prepare($students_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$students_result = $stmt->get_result();
+
+// Handle student deletion
+if (isset($_POST['delete_student'])) {
+    $student_id = $_POST['student_id'];
+    $delete_query = "DELETE FROM class_students WHERE student_id = ? AND teacher_id = ?";
+    $stmt = $db->prepare($delete_query);
+    $stmt->bind_param("ii", $student_id, $teacher_id);
+    
+    if ($stmt->execute()) {
+        $_SESSION['message'] = "Student removed successfully";
+    } else {
+        $_SESSION['error'] = "Error removing student";
+    }
+    header("Location: student.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,10 +71,22 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="site-map.php">Class</a></li>
-                    <li class="nav-item"><a class="nav-link" href="News.php">Subject</a></li>
-                    <li class="nav-item"><a class="nav-link" href="aboutus.php">Student</a></li>
-                    <li class="nav-item"><a class="nav-link btn-signup" href="#">Log Out</a></li>
+                    <li class="nav-item"><a class="nav-link" href="class.php">Class</a></li>
+                    <li class="nav-item"><a class="nav-link" href="subject.php">Subject</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="student.php">Student</a></li>
+                    <?php if ($isLoggedIn): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="teacher_profile.php">Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="../Student/logout.php">Logout</a>
+                            </div>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -105,30 +166,41 @@
             <table class="table table-bordered custom-table">
                 <thead class="thead-light">
                     <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
                         <th>Photo</th>
+                        <th>Student ID</th>
                         <th>Name</th>
-                        <th>Actions</th>
-                        <th>Name</th>
+                        <th>Class</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="3" class="no-data">No data available in table</td>
-                        <td>Chapter 2</td>
-                        <td>
-                            <button class="btn btn-danger">Delete</button>
-                            <button class="btn btn-light">Download File</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="no-data">No data available in table</td>
-                        <td>Chapter 1</td>
-                        <td>
-                            <button class="btn btn-danger">Delete</button>
-                            <button class="btn btn-light">Download File</button>
-                        </td>
-                    </tr>
+                    <?php if ($students_result->num_rows > 0): ?>
+                        <?php while ($student = $students_result->fetch_assoc()): ?>
+                            <tr>
+                                <td><input type="checkbox" class="student-select" value="<?php echo $student['student_id']; ?>"></td>
+                                <td>
+                                    <img src="<?php echo htmlspecialchars($student['photo_url'] ?? '../images/default-avatar.png'); ?>" 
+                                         alt="Student Photo" class="student-photo" style="width: 50px; height: 50px; border-radius: 50%;">
+                                </td>
+                                <td><?php echo htmlspecialchars($student['student_id']); ?></td>
+                                <td><?php echo htmlspecialchars($student['firstname'] . ' ' . $student['lastname']); ?></td>
+                                <td><?php echo htmlspecialchars($student['class_name'] ?? 'Not Assigned'); ?></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="viewStudent(<?php echo $student['student_id']; ?>)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteStudent(<?php echo $student['student_id']; ?>)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" class="text-center">No students found</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -183,5 +255,35 @@
             <p>&copy; 2024 All Rights Reserved</p>
         </div>
     </footer>
+
+    <!-- Add JavaScript for student management -->
+    <script>
+    function viewStudent(studentId) {
+        window.location.href = `view_student.php?id=${studentId}`;
+    }
+
+    function deleteStudent(studentId) {
+        if (confirm('Are you sure you want to remove this student?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'student.php';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'delete_student';
+            input.value = studentId;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    document.getElementById('selectAll').addEventListener('change', function() {
+        document.querySelectorAll('.student-select').forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+    </script>
 </body>
 </html>

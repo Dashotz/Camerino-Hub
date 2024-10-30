@@ -2,7 +2,7 @@
 session_start();
 // Redirect if already logged in
 if (isset($_SESSION['id'])) {
-    header("Location: teacher_home.php");
+    header("Location: ../teacher/home.php");
     exit();
 }
 ?>
@@ -14,12 +14,68 @@ if (isset($_SESSION['id'])) {
     <title>Teacher Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/teacher-login.css">
+    <!-- Add SweetAlert2 CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+    body {
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    .container {
+        position: relative;
+        min-height: 100vh;
+        z-index: 1;
+    }
+
+    /* SweetAlert Customization */
+    .swal2-popup {
+        z-index: 9999;
+    }
+
+    .swal2-container {
+        z-index: 10000;
+    }
+
+    .error-popup {
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+
+    .error-title {
+        color: #dc3545;
+        font-size: 1.5rem;
+    }
+
+    .error-button {
+        border-radius: 25px;
+        padding: 10px 30px;
+        font-weight: 500;
+    }
+
+    .swal2-toast {
+        background: #fff;
+        color: #333;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Prevent page shift when SweetAlert appears */
+    .swal2-shown {
+        padding-right: 0 !important;
+    }
+
+    .swal2-shown .container {
+        padding-right: 0 !important;
+    }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="left-section">
             <div class="logo">
-                <h2 class="logo-text">GDMC</h2>
+                <h2 class="logo-text">Camerino Hub</h2>
                 <span class="logo-subtext">Gov. D M Camerino</span>
             </div>
             <div class="content">
@@ -39,11 +95,37 @@ if (isset($_SESSION['id'])) {
             <div class="form-container">
                 <h1>Welcome to <span class="school-name">Gov. D M Camerino</span></h1>
                 <h2>Sign in</h2>
-                <!-- Updated error message display -->
+                
+                <!-- Error handling with SweetAlert -->
                 <?php
-                if (isset($_SESSION['error_message'])) {
-                    echo '<div class="message-box fade-in">' . htmlspecialchars($_SESSION['error_message']) . '</div>';
-                    unset($_SESSION['error_message']); // Clear the message after displaying
+                if (isset($_SESSION['error_type'])) {
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: '";
+                    
+                    switch($_SESSION['error_type']) {
+                        case 'wrong_username':
+                            echo "Username not found!";
+                            break;
+                        case 'wrong_password':
+                            echo "Incorrect password!";
+                            break;
+                        case 'max_attempts':
+                            echo "Account locked due to too many failed attempts!";
+                            break;
+                        default:
+                            echo "An unknown error occurred!";
+                    }
+                    
+                    echo "',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        });
+                    </script>";
+                    unset($_SESSION['error_type']);
                 }
                 ?>
                 
@@ -57,20 +139,112 @@ if (isset($_SESSION['id'])) {
                         <a href="#"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
-                <form action="student_login_action.php" method="POST">
+                <form action="teacher_login_action.php" method="POST">
                     <div class="input-group">
-                        <label for="username">Enter your Username or Email Address</label>
-                        <input type="text" id="username" name="username" placeholder="Username or Email Address" required>
+                        <label for="username">Usernames</label>
+                        <input type="text" id="username" name="username" placeholder="Username" required>
                     </div>
                     <div class="input-group">
-                        <label for="password">Enter your Password</label>
+                        <label for="password">Password</label>
                         <input type="password" id="password" name="password" placeholder="Password" required>
                         <a href="#" class="forgot-password">Forgot Password?</a>
                     </div>
-                    <button type="submit" class="signin-btn">Sign in</button>
+                    <button type="submit" name="login" class="signin-btn">Sign in</button>
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        // Function to show error messages using SweetAlert2
+        function showError(message, type = 'error') {
+            Swal.fire({
+                title: 'Login Error',
+                text: message,
+                icon: type,
+                confirmButtonText: 'Try Again',
+                confirmButtonColor: '#007bff',
+                customClass: {
+                    popup: 'error-popup',
+                    title: 'error-title',
+                    confirmButton: 'error-button'
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        }
+
+        // Show different error messages based on the error type
+        <?php if (isset($_SESSION['error_type'])): ?>
+            <?php
+            $errorType = $_SESSION['error_type'];
+            $errorMessage = '';
+            $icon = 'error';
+            
+            switch ($errorType) {
+                case 'wrong_password':
+                    $errorMessage = 'Incorrect password. Please try again.';
+                    break;
+                case 'wrong_username':
+                    $errorMessage = 'Username not found. Please check and try again.';
+                    break;
+                case 'not_registered':
+                    $errorMessage = 'Account not registered to school. Please contact administration.';
+                    $icon = 'warning';
+                    break;
+                case 'max_attempts':
+                    $errorMessage = 'Account has been locked due to too many failed attempts. Please contact administration to unlock your account.';
+                    $icon = 'warning';
+                    break;
+                default:
+                    $errorMessage = $_SESSION['error_message'] ?? 'An error occurred. Please try again.';
+            }
+            ?>
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Login Error',
+                    text: '<?php echo $errorMessage; ?>',
+                    icon: '<?php echo $icon; ?>',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#007bff',
+                    customClass: {
+                        popup: 'error-popup',
+                        title: 'error-title',
+                        confirmButton: 'error-button'
+                    },
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        document.body.style.overflow = 'hidden';
+                    },
+                    didClose: () => {
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            });
+            
+            <?php 
+            unset($_SESSION['error_type']);
+            unset($_SESSION['error_message']);
+            ?>
+        <?php endif; ?>
+        
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                e.preventDefault();
+                showError('Please fill in all fields');
+            }
+        });
+    </script>
 </body>
 </html>

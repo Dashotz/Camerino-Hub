@@ -105,27 +105,36 @@
                         <th>Photo</th>
                         <th>Name</th>
                         <th>Actions</th>
-                        <th>Name</th>
+                        <th>Chapter</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="3" class="no-data">No data available in table</td>
-                        <td>Chapter 2</td>
-                        <td>
-                            <button class="btn btn-danger">Delete</button>
-                            <button class="btn btn-light">Download File</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="no-data">No data available in table</td>
-                        <td>Chapter 1</td>
-                        <td>
-                            <button class="btn btn-danger">Delete</button>
-                            <button class="btn btn-light">Download File</button>
-                        </td>
-                    </tr>
+                    <?php
+                    // Get subject ID from URL
+                    $subject_id = isset($_GET['subject']) ? $_GET['subject'] : '';
+                    
+                    // Fetch students enrolled in this subject
+                    $query = "SELECT s.*, e.* FROM students s 
+                             JOIN enrollments e ON s.student_id = e.student_id 
+                             WHERE e.subject_id = '$subject_id'";
+                    $result = $db->query($query);
+                    
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                            echo "<td><img src='" . htmlspecialchars($row['photo_url']) . "' class='student-photo' alt='Student'></td>";
+                            echo "<td>" . htmlspecialchars($row['firstname'] . ' ' . $row['lastname']) . "</td>";
+                            echo "<td>
+                                    <button class='btn btn-danger btn-sm' onclick='deleteStudent(" . $row['student_id'] . ")'>Delete</button>
+                                  </td>";
+                            // Add chapters and their actions here
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5' class='text-center'>No students enrolled</td></tr>";
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>

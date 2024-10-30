@@ -1,22 +1,46 @@
 <?php
-// Initialize an array to hold subjects
-$subjects = [
-    "GDM - 200" => "Mathematics",
-    "GDM - 201" => "Filipino",
-    "GDM - 202" => "Aralin Panlipunan",
-    "GDM - 203" => "English",
-    "GDM - 204" => "Science",
-    "GDM - 205" => "Eduaksyon sa Pagpapakatao",
-    "GDM - 206" => "Technology and Livelihood Education (TLE)",
-    "GDM - 207" => "Music, Arts, PE, and Health (MAPEH)"
-];
+session_start();
 
-// Check if a subject has been added
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['subject'])) {
-    $new_subject_code = $_POST['subject'];
-    // Add the new subject to the array (you can implement a database insert here)
-    // For demonstration, we will just append it to the array
-    $subjects[$new_subject_code] = $new_subject_code; // Adjust as needed
+// Initialize login status
+$isLoggedIn = isset($_SESSION['id']);
+
+// Redirect if not logged in
+if (!$isLoggedIn) {
+    header("Location: ../Student/Teacher-Login.php");
+    exit();
+}
+
+// Get teacher data
+require_once('../db/dbConnector.php');
+$db = new DbConnector();
+
+$teacher_id = $_SESSION['id'];
+$query = "SELECT * FROM teacher WHERE teacher_id = '$teacher_id'";
+$result = $db->query($query);
+$userData = mysqli_fetch_array($result);
+
+// Fetch subjects from database
+$query = "SELECT * FROM subjects ORDER BY subject_code";
+$result = $db->query($query);
+$subjects = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $subjects[$row['subject_code']] = $row['subject_name'];
+}
+
+// Handle subject deletion
+if (isset($_POST['delete_subject'])) {
+    $subject_code = $_POST['subject_code'];
+    $delete_query = "DELETE FROM subjects WHERE subject_code = ?";
+    $stmt = $db->prepare($delete_query);
+    $stmt->bind_param("s", $subject_code);
+    
+    if ($stmt->execute()) {
+        $_SESSION['message'] = "Subject deleted successfully";
+    } else {
+        $_SESSION['error'] = "Error deleting subject";
+    }
+    header("Location: subject.php");
+    exit();
 }
 ?>
 
@@ -62,10 +86,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['subject'])) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="site-map.php">Class</a></li>
-                    <li class="nav-item"><a class="nav-link" href="News.php">Subject</a></li>
-                    <li class="nav-item"><a class="nav-link" href="aboutus.php">Student</a></li>
-                    <li class="nav-item"><a class="nav-link btn-signup" href="#">Log Out</a></li>
+                    <li class="nav-item"><a class="nav-link" href="class.php">Class</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="subject.php">Subject</a></li>
+                    <li class="nav-item"><a class="nav-link" href="student.php">Student</a></li>
+                    <?php if ($isLoggedIn): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="teacher_profile.php">Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="../Student/logout.php">Logout</a>
+                            </div>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -79,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['subject'])) {
                     <h1>Welcome to<br><span class="highlight">Gov D.M. Camerino</span></h1>
                     <p class="lead">Learn Anywhere, Anytime: Empower Your Education</p>
                     <div class="cta-buttons">
-                        <a href="profile.php" class="btn btn-primary">User Name</a>
+                        <a href="profile.php" class="btn btn-primary">Hello! Sir/Mam <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?></a>
                     </div>
                 </div>
                 <div class="hero-image">
@@ -203,3 +239,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['subject'])) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

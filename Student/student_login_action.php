@@ -5,11 +5,12 @@ require_once('../db/dbConnector.php');
 if (isset($_POST['login'])) {
     $db = new DbConnector();
     
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    // Escape input to prevent SQL injection
+    $username = $db->escapeString($_POST['username']);
+    $password = $db->escapeString($_POST['password']);
     
-    // Check if username exists
-    $query = "SELECT * FROM student WHERE username = '$username'";
+    // Check if username and password match directly
+    $query = "SELECT * FROM student WHERE LOWER(username) = LOWER('$username') AND password = '$password'";
     $result = $db->query($query);
     
     if ($result && mysqli_num_rows($result) > 0) {
@@ -22,30 +23,18 @@ if (isset($_POST['login'])) {
             exit();
         }
         
-        // Verify password
-        if (password_verify($password, $user['password'])) {
-            // Reset login attempts on successful login
-            $update_query = "UPDATE student SET login_attempts = 0 WHERE student_id = '{$user['student_id']}'";
-            $db->query($update_query);
-            
-            // Successful login
-            $_SESSION['id'] = $user['student_id'];
-            $_SESSION['just_logged_in'] = true;
-            header("Location: home.php");
-            exit();
-        } else {
-            // Increment login attempts
-            $new_attempts = $user['login_attempts'] + 1;
-            $update_query = "UPDATE student SET login_attempts = $new_attempts WHERE student_id = '{$user['student_id']}'";
-            $db->query($update_query);
-            
-            $_SESSION['error_type'] = 'wrong_password';
-            header("Location: Student-Login.php");
-            exit();
-        }
+        // Reset login attempts on successful login
+        $update_query = "UPDATE student SET login_attempts = 0 WHERE student_id = " . (int)$user['student_id'];
+        $db->query($update_query);
+        
+        // Successful login
+        $_SESSION['id'] = $user['student_id'];
+        $_SESSION['just_logged_in'] = true;
+        header("Location: home.php");
+        exit();
     } else {
-        // Username not found
-        $_SESSION['error_type'] = 'wrong_username';
+        // Wrong username or password
+        $_SESSION['error_type'] = 'wrong_credentials';
         header("Location: Student-Login.php");
         exit();
     }

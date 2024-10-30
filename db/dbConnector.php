@@ -45,6 +45,11 @@ function __construct(){  // Updated to use modern constructor
         }
 
     }
+
+    // Add new method for safe queries
+    function escapeString($string) {
+        return mysqli_real_escape_string($this->link, $string);
+    }
 	
 }
 

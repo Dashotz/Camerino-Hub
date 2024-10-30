@@ -104,25 +104,37 @@
         </div>
         <div class="form-container mt-3">
             <a href="class.php" class="btn btn-light mb-3">&lt; Back</a>
-            <div class="form-group">
-                <label for="classSelect">Class</label>
-                <select class="form-control" id="classSelect">
-                    <option>Select Class here</option>
-                    <option value="class1">Class 1</option>
-                    <option value="class2">Class 2</option>
-                    <option value="class3">Class 3</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="subjectSelect">Subject</label>
-                <select class="form-control" id="subjectSelect">
-                    <option>Select Subjects here</option>
-                    <option value="math">Mathematics</option>
-                    <option value="science">Science</option>
-                    <option value="english">English</option>
-                </select>
-            </div>
-            <button class="btn btn-primary">Add New Subject</button>
+            <form action="add_class_action.php" method="POST">
+                <div class="form-group">
+                    <label for="classSelect">Class</label>
+                    <select class="form-control" id="classSelect" name="class_id" required>
+                        <option value="">Select Class here</option>
+                        <?php
+                        // Fetch classes from database
+                        $query = "SELECT * FROM classes ORDER BY class_name";
+                        $result = $db->query($query);
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<option value='" . $row['class_id'] . "'>" . htmlspecialchars($row['class_name']) . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subjectSelect">Subject</label>
+                    <select class="form-control" id="subjectSelect" name="subject_id" required>
+                        <option value="">Select Subjects here</option>
+                        <?php
+                        // Fetch subjects from database
+                        $query = "SELECT * FROM subjects ORDER BY subject_name";
+                        $result = $db->query($query);
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<option value='" . $row['subject_id'] . "'>" . htmlspecialchars($row['subject_name']) . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" name="add_class_subject">Add New Subject</button>
+            </form>
         </div>
     </div>
 
