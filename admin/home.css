@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 0;
+    z-index: 1030;
+}
+
+.navbar-nav .nav-link {
+    color: #333;
+    font-weight: 500;
+    margin-left: 1.5rem;
+}
+
+.btn-signup {
+    background-color: #1B3C74;
+    color: white !important;
+    border-radius: 20px;
+    padding: 0.5rem 1.5rem !important;
+}
+
+/* Welcome Section */
+.welcome-section {
+    background-color: #f0f4f8;
+    padding: 60px 0;
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1B3C74;
+}
+
+.welcome-message {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Photos Section */
+.photos {
+    background-color: #fff;
+    padding: 40px 0;
+}
+
+.photo-gallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.photo-gallery img {
+    width: 100%;
+    max-width: 300px; /* Adjust as needed */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Footer */
+footer {
+    background-color: #1B3C74;
+    color: white;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 2rem; /* Adjust font size */
+    }
+
+    .welcome-message {
+        font-size: 1rem; /* Adjust font size */
+    }
+
+    .photo-gallery img {
+        max-width: 100%; /* Full width on smaller screens */
+    }
+}
+
+/* Logo */
+.navbar-logo {
+    width: 50px !important; /* Force the width to apply */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.logo-text {
+    font-size: 1.5rem; /* Adjust font size */
+    color: #1B3C74; /* Dark blue color */
+    font-weight: bold; /* Make the text bold */
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center; /* Center the logo vertically */
+}

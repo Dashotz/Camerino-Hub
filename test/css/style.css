@@ -1,0 +1,236 @@
+body, html {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .USER-LOGIN {
+    background-color: #ffffff;
+  }
+  
+  .login-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background-color: #fff;
+  }
+  
+  .left-panel {
+    width: 40%;
+    background-color: #000842;
+    color: #ffffff;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .left-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .left-panel h1 {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .left-panel p {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  
+  .character-image {
+    max-width: 80%;
+    height: auto;
+    margin: 30px 0;
+  }
+  
+  .login-as {
+    text-align: center;
+  }
+  
+  .login-as p {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  
+  .login-options {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .login-option {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    width: 45%;
+  }
+  
+  .login-option img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+  }
+  
+  .login-option span {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .right-panel {
+    width: 60%;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .right-panel h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  
+  .school-name {
+    color: #0089ec;
+    font-weight: 600;
+  }
+  
+  .right-panel h1 {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+  
+  .social-login {
+    margin-bottom: 30px;
+  }
+  
+  .google-btn {
+    width: 100%;
+    background-color: #e8f1ff;
+    color: #4285f4;
+    border: none;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .google-btn img {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .other-socials {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .facebook-btn, .apple-btn {
+    width: 48%;
+    background-color: #f6f6f6;
+    border: none;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .facebook-btn img, .apple-btn img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 25px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #adadad;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+  }
+  
+  .forgot-password {
+    color: #4285f4;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .sign-in-btn {
+    background-color: #0089ec;
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 25px;
+    font-size: 16px;
+  }
+  
+  .signup-prompt {
+    text-align: right;
+    margin-top: 25px;
+    font-size: 16px;
+  }
+  
+  .signup-prompt a {
+    color: #0089ec;
+    text-decoration: none;
+    font-weight: 600;
+  }

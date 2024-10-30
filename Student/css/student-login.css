@@ -1,0 +1,321 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+/* Responsive adjustments for layout */
+@media (min-width: 768px) {
+    body {
+        flex-direction: row; /* Row layout for larger screens */
+    }
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    animation: fadeIn 0.5s ease-in; /* Animation for the container */
+}
+
+.left-section {
+    flex: 1;
+    background-color: #1a237e;
+    color: white;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    animation: slideInLeft 0.5s ease-in; /* Animation for left section */
+}
+
+.right-section {
+    flex: 1;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: slideInRight 0.5s ease-in; /* Animation for right section */
+}
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.sign-in-as {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.illustration {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 2rem;
+}
+
+.illustration img {
+    width: 100%;
+    height: auto;
+}
+
+.student-label {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.back-button {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.back-button i {
+    margin-right: 0.5rem;
+}
+
+.form-container {
+    width: 80%;
+    max-width: 400px;
+}
+
+.form-container h1 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.school-name {
+    color: #1a73e8;
+}
+
+.form-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.social-login {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    background-color: #f1f3f4;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.google-btn img {
+    width: 20px;
+    margin-right: 0.5rem;
+}
+
+.social-icons a {
+    color: #1a73e8;
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    text-decoration: none;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    color: #1a73e8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.signin-btn {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.signup-prompt {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.9rem;
+}
+
+.signup-prompt a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.decoration {
+    position: absolute;
+    width: 280px; /* Even larger size */
+    height: auto;
+}
+
+.decoration-1 {
+    top: 2%;
+    right: 2%;
+}
+
+.decoration-2 {
+    bottom: 2%;
+    left: 2%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px); /* Start slightly above */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* End at original position */
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .left-section, .right-section {
+        padding: 1rem; /* Reduce padding for smaller screens */
+    }
+
+    .sign-in-as {
+        font-size: 2rem; /* Adjust font size for smaller screens */
+    }
+
+    .form-container {
+        width: 90%; /* Full width for the form on smaller screens */
+    }
+
+    .form-container h2 {
+        font-size: 1.5rem; /* Adjust heading size */
+    }
+
+    .google-btn {
+        width: 100%; /* Full width for the button */
+    }
+
+    .signin-btn {
+        width: 100%; /* Full width for the button */
+    }
+}
+
+/* Add this CSS for the message box */
+.message-box {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Add the fadeIn animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Logo Styling */
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    margin-left: 20px;
+}
+
+.logo-text {
+    font-size: 2.5rem;
+    color: #ffffff;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+.logo-subtext {
+    font-size: 1.2rem;
+    color: #ffffff;
+    opacity: 0.9;
+    margin-top: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    text-align: left;
+} 

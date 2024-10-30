@@ -1,0 +1,255 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #f8f8f8;
+    line-height: 1.6;
+}
+
+/* Header Styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #003366 0%, #1f78b4 100%);
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+}
+
+header .logo img {
+    height: 50px;
+    margin-right: 15px;
+}
+
+header .date p {
+    font-size: 14px;
+}
+
+header .date {
+    font-size: 16px;
+}
+
+/* Login Section */
+.login-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    padding: 50px;
+    background-color: #fff;
+    min-height: 80vh;
+}
+
+.admin-container {
+    text-align: center;
+}
+
+.admin-container img {
+    width: 250px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.admin-container p {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.login-container {
+    background-color: #f4f4f4;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.login-container h2, .login-container h3 {
+    color: #003366;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.social-login {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.social-login button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.google-btn {
+    background-color: #DB4437;
+    color: white;
+}
+
+.facebook-btn {
+    background-color: #4267B2;
+    color: white;
+}
+
+.social-login button:hover {
+    transform: scale(1.05);
+}
+
+.login-form input {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+.login-form input:focus {
+    border-color: #003366;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 15px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-form button:hover {
+    background-color: #1f78b4;
+}
+
+.login-form a {
+    display: block;
+    text-align: right;
+    margin-top: 10px;
+    color: #1f78b4;
+    font-size: 14px;
+}
+
+/* Mission and Vision Section */
+.mission-vision {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f8f8f8;
+}
+
+.mission-vision h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.mission-vision p {
+    max-width: 600px;
+    margin: 0 auto 40px;
+    font-size: 18px;
+}
+
+.mission-vision-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.mission-vision .card {
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    transition: transform 0.3s ease;
+}
+
+.mission-vision .card:hover {
+    transform: scale(1.05);
+}
+
+.mission-vision .card h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.mission-vision .card p {
+    font-size: 16px;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .login-container {
+        width: 90%;
+    }
+
+    .social-login {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .mission-vision-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-container img {
+        width: 180px;
+    }
+
+    .login-container {
+        padding: 30px;
+    }
+}

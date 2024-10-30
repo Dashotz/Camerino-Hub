@@ -1,0 +1,368 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 0;
+    z-index: 1030;
+}
+
+.navbar-brand img {
+    width: 120px;
+}
+
+.navbar-nav .nav-link {
+    color: #333;
+    font-weight: 500;
+    margin-left: 1.5rem;
+}
+
+.btn-signup {
+    background-color: #1B3C74;
+    color: white !important;
+    border-radius: 20px;
+    padding: 0.5rem 1.5rem !important;
+}
+
+/* Hero Section */
+.hero {
+    background-color: #2AA7FF;
+    padding: 80px 0;
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.hero-text {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.hero .highlight {
+    color: #007bff;
+}
+
+.hero p.lead {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.cta-buttons .btn {
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: 2px solid #007bff;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    color: #007bff;
+    border: 2px solid #007bff;
+}
+
+.hero-image {
+    flex: 1;
+    text-align: right;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.search-container {
+    background-color: white;
+    border-radius: 30px;
+    padding: 10px;
+    display: flex;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-container input {
+    flex-grow: 1;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-container .btn-search {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.quick-links {
+    background-color: #f0f4f8;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quick-links p {
+    color: #4a90e2;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.quick-links p::before {
+    content: '\f3c5';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 10px;
+    color: #4a90e2;
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.link-item {
+    flex-basis: calc(20% - 10px);
+    text-align: center;
+    padding: 15px 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #333;
+}
+
+.link-item:hover, .link-item.active {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.link-item i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: #4a90e2;
+}
+
+.link-item span {
+    display: block;
+    font-size: 14px;
+}
+
+.link-item.active {
+    border: 2px solid #4a90e2;
+}
+
+
+/* Contact Information Section */
+.contact-info {
+    background-color: #f8f9fa;
+    padding: 60px 0;
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.info-item {
+    text-align: center;
+    flex: 1;
+}
+
+.info-item i {
+    font-size: 2.5rem;
+    color: #1B3C74;
+    margin-bottom: 15px;
+}
+
+.info-item h3 {
+    font-size: 1.2rem;
+    color: #1B3C74;
+    margin-bottom: 10px;
+}
+
+.info-item p {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.offices-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+.offices-container h2 {
+    text-align: center;
+    color: #1B3C74;
+    margin-bottom: 30px;
+}
+
+.offices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.office-item {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 15px;
+}
+
+.office-item h4 {
+    font-size: 1rem;
+    color: #343a40;
+    margin-bottom: 5px;
+}
+
+.office-item p {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .info-header {
+        flex-direction: column;
+    }
+
+    .info-item {
+        margin-bottom: 30px;
+    }
+
+    .offices-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Footer */
+footer {
+    background-color: #1B3C74;
+    color: #fff;
+    padding: 40px 0 20px;
+}
+
+footer h5 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+footer ul {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+footer ul li {
+    margin-bottom: 10px;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+footer a:hover {
+    opacity: 0.8;
+    color: #fff;
+}
+
+.social-icons a {
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    footer {
+        text-align: center;
+    }
+    
+    .social-icons {
+        margin-top: 20px;
+    }
+}
+
+.full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+
+
+/* Logo */
+.navbar-logo {
+    width: 50px !important; /* Force the width to apply */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.logo-text {
+    font-size: 1.5rem; /* Adjust font size */
+    color: #1B3C74; /* Dark blue color */
+    font-weight: bold; /* Make the text bold */
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center; /* Center the logo vertically */
+}
