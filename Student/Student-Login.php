@@ -175,6 +175,33 @@ if (!isset($_SESSION['login_attempts'])) {
                 $errorMessage = 'Account has been locked due to too many failed attempts. Please try again in 2 minutes.';
                 $icon = 'warning';
                 break;
+            case 'teacher_account':
+                $errorMessage = 'This appears to be a teacher account.';
+                $icon = 'info';
+                ?>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: 'Wrong Login Page',
+                        text: 'This appears to be a teacher account. Would you like to go to the teacher login page?',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, take me there',
+                        cancelButtonText: 'No, stay here',
+                        customClass: {
+                            popup: 'error-popup',
+                            title: 'error-title',
+                            confirmButton: 'error-button'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'Teacher-Login.php';
+                        }
+                    });
+                });
+                <?php
+                break;
             default:
                 $errorMessage = $_SESSION['error_message'] ?? 'An error occurred. Please try again.';
         }

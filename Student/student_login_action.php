@@ -29,6 +29,20 @@ if (isset($_POST['login'])) {
     if ($result && mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_array($result);
         
+        // Check if the account is a teacher account
+        $check_teacher_query = "SELECT * FROM teacher WHERE username = ?";
+        $stmt = $db->prepare($check_teacher_query);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $teacher_result = $stmt->get_result();
+        
+        if($teacher_result->num_rows > 0) {
+            $_SESSION['error_type'] = 'teacher_account';
+            $_SESSION['error_message'] = 'This appears to be a teacher account. Please use the teacher login page.';
+            header("Location: Student-Login.php");
+            exit();
+        }
+        
         // Check if account is locked
         if (isAccountLocked($user['lockout_until'])) {
             $_SESSION['error_type'] = 'account_locked';
