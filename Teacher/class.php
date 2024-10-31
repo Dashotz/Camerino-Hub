@@ -35,6 +35,109 @@ if ($isLoggedIn) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="class.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        /* Enhanced Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.01);
+        }
+
+        .table td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .btn-class {
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-class:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .action-buttons .btn {
+            margin: 0 5px;
+            border-radius: 20px;
+            padding: 5px 15px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding-left: 35px;
+            border-radius: 20px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination .page-link {
+            border-radius: 20px;
+            margin: 0 5px;
+            color: #007bff;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .pagination .page-link:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <!-- Header and Navigation -->
@@ -63,7 +166,7 @@ if ($isLoggedIn) {
                                 <a class="dropdown-item" href="teacher_dashboard.php">Dashboard</a>
                                 <a class="dropdown-item" href="teacher_profile.php">Profile</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="../Student/logout.php">Logout</a>
+                                <a class="dropdown-item" href="logout.php">Logout</a>
                             </div>
                         </li>
                     <?php endif; ?>
@@ -125,93 +228,97 @@ if ($isLoggedIn) {
     
     <!-- Table Class Section -->
     <div class="container mt-5">
-        <h2>Class Table</h2>
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" id="recordsPerPage" data-bs-toggle="dropdown" aria-expanded="false">
-                    Records per page
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="recordsPerPage">
-                    <li><a class="dropdown-item" href="#">10</a></li>
-                    <li><a class="dropdown-item" href="#">25</a></li>
-                    <li><a class="dropdown-item" href="#">50</a></li>
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="mb-0"><i class="fas fa-chalkboard-teacher mr-2"></i>Class Management</h2>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown mr-3">
+                        <select class="form-control" id="recordsPerPage">
+                            <option value="10">10 records</option>
+                            <option value="25">25 records</option>
+                            <option value="50">50 records</option>
+                        </select>
+                    </div>
+                    <div class="search-box mr-3">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search classes...">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-danger" id="bulkDelete">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <button class="btn btn-light" id="filterBtn">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                        <button class="btn btn-light" id="exportBtn">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <a href="class_add_subject.php" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Class
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Class</th>
+                        <th>Subjects</th>
+                        <th>Students</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Fetch classes from database
+                    $query = "SELECT c.*, COUNT(DISTINCT c.student_id) as student_count 
+                             FROM class c 
+                             WHERE c.teacher_id = ? 
+                             GROUP BY c.class_id";
+                    $stmt = $db->prepare($query);
+                    $stmt->bind_param("i", $teacher_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    while ($row = $result->fetch_assoc()):
+                    ?>
+                    <tr>
+                        <td><input type="checkbox" class="class-select" value="<?php echo $row['class_id']; ?>"></td>
+                        <td>
+                            <button class="btn btn-class btn-primary">
+                                <?php echo htmlspecialchars($row['course_id']); ?>
+                            </button>
+                        </td>
+                        <td>
+                            <a href="class-subject.php?class_id=<?php echo $row['class_id']; ?>&subject_id=<?php echo $row['subject_id']; ?>" 
+                               class="text-primary">View Subjects</a>
+                        </td>
+                        <td><?php echo $row['student_count']; ?> students</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" onclick="editClass(<?php echo $row['class_id']; ?>)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteClass(<?php echo $row['class_id']; ?>)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a></li>
                 </ul>
-            </div>
-            <div>
-                <button class="btn btn-danger">Delete</button>
-                <button class="btn btn-light">Filters</button>
-                <button class="btn btn-light">Export</button>
-                <a href="class_add_subject.php" class="btn btn-primary">+ Add Class</a>
-            </div>
-            <div>
-                <input type="text" class="form-control" placeholder="Search">
-            </div>
+            </nav>
         </div>
-
-        <table class="table mt-3">
-            <thead class="table-light">
-                <tr>
-                    <th>Class</th>
-                    <th>Subjects</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><button class='btn btn-primary'>SST-4A</button></td>
-                    <td><a href='class-subject.php?subject=Mathematics' class='link-item'>Mathematics</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>MT-4A</button></td>
-                    <td><a href='class-subject.php?subject=Filipino' class='link-item'>Filipino</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>SCT-4A</button></td>
-                    <td><a href='class-subject.php?subject=Araling Panlipunan' class='link-item'>Araling Panlipunan</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>GCT-4A</button></td>
-                    <td><a href='class-subject.php?subject=English' class='link-item'>English</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>SCT-4A</button></td>
-                    <td><a href='class-subject.php?subject=Science' class='link-item'>Science</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>SHED-4A</button></td>
-                    <td><a href='class-subject.php?subject=Edukasyon sa Pagpapakatao' class='link-item'>Edukasyon sa Pagpapakatao</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>TLE-4A</button></td>
-                    <td><a href='class-subject.php?subject=TLE' class='link-item'>TLE</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>MAPEH-4A</button></td>
-                    <td><a href='class-subject.php?subject=MAPEH' class='link-item'>MAPEH</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-                <tr>
-                    <td><button class='btn btn-primary'>PHIL-4A</button></td>
-                    <td><a href='class-subject.php?subject=Philosophy' class='link-item'>Philosophy</a></td>
-                    <td><button class='btn btn-danger'>Delete</button></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <nav>
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
     </div>
 
 
