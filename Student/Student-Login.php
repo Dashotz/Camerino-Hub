@@ -74,6 +74,10 @@ if (!isset($_SESSION['login_attempts'])) {
     .swal2-shown .container {
         padding-right: 0 !important;
     }
+
+    .remember-me {
+        display: flex;
+    }
     </style>
 </head>
 <body>
@@ -120,6 +124,10 @@ if (!isset($_SESSION['login_attempts'])) {
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required>
                     </div>
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
                     <button type="submit" name="login" class="signin-btn">Sign in</button>
                 </form>
             </div>
@@ -141,13 +149,7 @@ if (!isset($_SESSION['login_attempts'])) {
                 confirmButton: 'error-button'
             },
             allowOutsideClick: false,
-            allowEscapeKey: false,
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
+            allowEscapeKey: false
         });
     }
 
@@ -170,7 +172,7 @@ if (!isset($_SESSION['login_attempts'])) {
                 $icon = 'warning';
                 break;
             case 'max_attempts':
-                $errorMessage = 'Account has been locked due to too many failed attempts. Please contact administration to unlock your account.';
+                $errorMessage = 'Account has been locked due to too many failed attempts. Please try again in 2 minutes.';
                 $icon = 'warning';
                 break;
             default:
@@ -189,14 +191,6 @@ if (!isset($_SESSION['login_attempts'])) {
                     popup: 'error-popup',
                     title: 'error-title',
                     confirmButton: 'error-button'
-                },
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => {
-                    document.body.style.overflow = 'hidden';
-                },
-                didClose: () => {
-                    document.body.style.overflow = 'auto';
                 }
             });
         });
@@ -206,7 +200,7 @@ if (!isset($_SESSION['login_attempts'])) {
         unset($_SESSION['error_message']);
         ?>
     <?php endif; ?>
-    
+
     // Form validation
     document.querySelector('form').addEventListener('submit', function(e) {
         const username = document.getElementById('username').value;
