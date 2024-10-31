@@ -50,6 +50,11 @@ function __construct(){  // Updated to use modern constructor
     function escapeString($string) {
         return mysqli_real_escape_string($this->link, $string);
     }
+
+    // Add this new method to your DbConnector class
+    function prepare($query) {
+        return mysqli_prepare($this->link, $query);
+    }
 	
 }
 
