@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 /* Navbar */
@@ -480,12 +481,10 @@ footer a:hover {
 }
 
 .full-width {
-    width: 100vw;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
 }
 
 /* Add this to create a gap between sections */
@@ -655,4 +654,61 @@ section.section-gap:last-of-type {
 .navbar-brand {
     display: flex;
     align-items: center; /* Center the logo vertically */
+}
+
+/* Remove the problematic full-width class */
+.full-width {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+/* Add/Update the root element styles */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Fix container overflow */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Fix section padding */
+section {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Fix map container */
+.map-container {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.map-container iframe {
+    width: 100%;
+    border: 0;
+}
+
+/* Fix carousel width */
+.carousel {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Fix footer width */
+footer {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }

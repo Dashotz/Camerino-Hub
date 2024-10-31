@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 /* Navbar */
@@ -485,12 +486,11 @@ footer a:hover {
 }
 
 .full-width {
-    width: 100vw;
+    width: 100%;
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    margin: 0;
+    left: 0;
+    right: 0;
 }
 
 /* Add this to create a gap between sections */
@@ -758,4 +758,10 @@ section.section-gap:last-of-type {
     100% {
         transform: scale(1);
     }
+}
+
+/* Ensure container stays within viewport */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
 }

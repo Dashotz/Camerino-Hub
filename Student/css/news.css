@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 /* Navbar */
@@ -255,20 +256,20 @@ footer a:hover {
     }
 }
 
-.full-width {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 /* News Update Section */
 .news-update {
-    padding: 60px 0 40px; /* Added 40px bottom padding */
+    width: 100%;
+    padding: 60px 0 40px;
     background-color: #f8f9fa;
-    margin-bottom: 40px; /* Added 40px bottom margin */
+    margin-bottom: 40px;
+    box-sizing: border-box;
 }
 
 .news-update h2 {

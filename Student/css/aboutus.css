@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 /* Navbar */
@@ -255,18 +256,19 @@ footer a:hover {
 }
 
 .full-width {
-    width: 100vw;
+    width: 100%;
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    margin: 0;
+    left: 0;
+    right: 0;
 }
 
 /* Vision and Mission Section */
 .vision-mission {
     background-color: #f8f9fa;
     padding: 80px 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .vision-mission h2 {
@@ -280,6 +282,8 @@ footer a:hover {
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .vision-card:hover, .mission-card:hover {
@@ -336,6 +340,8 @@ footer a:hover {
 .history-section {
     background-color: #ffffff;
     padding: 80px 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .history-section h2 {
@@ -435,6 +441,8 @@ footer a:hover {
 .timeline {
     position: relative;
     padding: 40px 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .timeline::before {
@@ -453,6 +461,9 @@ footer a:hover {
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 15px;
 }
 
 .timeline-item:nth-child(odd) {
@@ -514,6 +525,8 @@ footer a:hover {
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .faculty-card:hover {
@@ -542,4 +555,39 @@ footer a:hover {
     margin: 5px 15px 15px;
     color: #666;
     font-size: 14px;
+}
+
+/* Update container styles */
+.container {
+    max-width: 1200px;  /* or your desired max-width */
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Update section styles */
+.vision-mission,
+.history-section,
+.timeline {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Update timeline styles to prevent overflow */
+.timeline::before {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+}
+
+.timeline-item {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 15px;
+}
+
+/* Update faculty card container */
+.faculty-card {
+    width: 100%;
+    box-sizing: border-box;
 }
