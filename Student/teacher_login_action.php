@@ -5,60 +5,82 @@ require_once('../db/dbConnector.php');
 if (isset($_POST['login'])) {
     $db = new DbConnector();
     
-    // Escape input to prevent SQL injection
     $username = $db->escapeString($_POST['username']);
     $password = $db->escapeString($_POST['password']);
     
-    // Check if username and password match directly from teacher table
-    $query = "SELECT * FROM teacher WHERE LOWER(username) = LOWER('$username') AND password = '$password'";
+    // First check if username exists in student table
+    $student_check = "SELECT * FROM student WHERE LOWER(username) = LOWER('$username')";
+    $student_result = $db->query($student_check);
+    
+    if ($student_result && mysqli_num_rows($student_result) > 0) {
+        header("Location: Teacher-Login.php");
+        $_SESSION['error_type'] = 'student_account';
+        exit();
+    }
+    
+    // Continue with teacher login check
+    $query = "SELECT * FROM teacher WHERE LOWER(username) = LOWER('$username')";
     $result = $db->query($query);
     
     if ($result && mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_array($result);
         
-        // Check if account is locked (3 or more attempts)
-        if ($user['login_attempts'] >= 3) {
-            $_SESSION['error_type'] = 'max_attempts';
-            header("Location: Teacher-Login.php");
+        // Check if account is locked
+        if ($user['lockout_time'] !== null) {
+            $lockout_time = strtotime($user['lockout_time']);
+            $current_time = time();
+            
+            if ($current_time < $lockout_time) {
+                header("Location: Teacher-Login.php");
+                $_SESSION['error_type'] = 'max_attempts';
+                exit();
+            } else {
+                // Reset lockout if time has passed
+                $reset_query = "UPDATE teacher SET login_attempts = 0, lockout_time = NULL 
+                              WHERE teacher_id = '{$user['teacher_id']}'";
+                $db->query($reset_query);
+                $user['login_attempts'] = 0;
+            }
+        }
+        
+        // Verify credentials
+        if ($password === $user['password']) {
+            // Successful login - reset attempts
+            $reset_query = "UPDATE teacher SET login_attempts = 0, lockout_time = NULL 
+                          WHERE teacher_id = '{$user['teacher_id']}'";
+            $db->query($reset_query);
+            
+            $_SESSION['id'] = $user['teacher_id'];
+            $_SESSION['just_logged_in'] = true;
+            header("Location: ../teacher/home.php");
             exit();
         }
         
-        // Reset login attempts on successful login
-        $update_query = "UPDATE teacher SET login_attempts = 0 WHERE teacher_id = " . (int)$user['teacher_id'];
+        // Failed login - increment attempts
+        $attempts = $user['login_attempts'] + 1;
+        $lockout_time = ($attempts >= 3) ? date('Y-m-d H:i:s', strtotime('+2 minutes')) : null;
+        
+        $update_query = "UPDATE teacher SET login_attempts = $attempts, 
+                        lockout_time = " . ($lockout_time ? "'$lockout_time'" : "NULL") . " 
+                        WHERE teacher_id = '{$user['teacher_id']}'";
         $db->query($update_query);
         
-        // Successful login
-        $_SESSION['id'] = $user['teacher_id'];
-        $_SESSION['just_logged_in'] = true;
-        header("Location: ../teacher/home.php");
-        exit();
-    } else {
-        // Check if username exists to determine specific error message
-        $username_check = "SELECT * FROM teacher WHERE LOWER(username) = LOWER('$username')";
-        $username_result = $db->query($username_check);
-        
-        if (mysqli_num_rows($username_result) > 0) {
-            // Username exists but password is wrong
-            $user = mysqli_fetch_array($username_result);
-            
-            // Increment login attempts
-            $new_attempts = $user['login_attempts'] + 1;
-            $update_query = "UPDATE teacher SET login_attempts = $new_attempts WHERE teacher_id = " . (int)$user['teacher_id'];
-            $db->query($update_query);
-            
-            $_SESSION['error_type'] = 'wrong_password';
+        if ($attempts >= 3) {
+            header("Location: Teacher-Login.php");
+            $_SESSION['error_type'] = 'max_attempts';
         } else {
-            // Username doesn't exist
-            $_SESSION['error_type'] = 'wrong_username';
+            header("Location: Teacher-Login.php");
+            $_SESSION['error_type'] = 'wrong_password';
         }
-        
-        header("Location: Teacher-Login.php");
         exit();
     }
+    
+    header("Location: Teacher-Login.php");
+    $_SESSION['error_type'] = 'wrong_username';
+    exit();
 }
 
-// If reached here, redirect back with generic error
-$_SESSION['error_type'] = 'unknown';
 header("Location: Teacher-Login.php");
+$_SESSION['error_type'] = 'wrong_username';
 exit();
 ?>

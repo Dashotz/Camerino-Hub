@@ -107,6 +107,9 @@ if (isset($_SESSION['id'])) {
                                 text: '";
                     
                     switch($_SESSION['error_type']) {
+                        case 'student_account':
+                            echo "This is a student account. Please use the student login page.";
+                            break;
                         case 'wrong_username':
                             echo "Username not found!";
                             break;
@@ -141,7 +144,7 @@ if (isset($_SESSION['id'])) {
                 </div>
                 <form action="teacher_login_action.php" method="POST">
                     <div class="input-group">
-                        <label for="username">Usernames</label>
+                        <label for="username">Username</label>
                         <input type="text" id="username" name="username" placeholder="Username" required>
                     </div>
                     <div class="input-group">
@@ -154,97 +157,5 @@ if (isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
-    <script>
-        // Function to show error messages using SweetAlert2
-        function showError(message, type = 'error') {
-            Swal.fire({
-                title: 'Login Error',
-                text: message,
-                icon: type,
-                confirmButtonText: 'Try Again',
-                confirmButtonColor: '#007bff',
-                customClass: {
-                    popup: 'error-popup',
-                    title: 'error-title',
-                    confirmButton: 'error-button'
-                },
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                showClass: {
-                    popup: 'animate__animated animate__fadeInDown'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__fadeOutUp'
-                }
-            });
-        }
-
-        // Show different error messages based on the error type
-        <?php if (isset($_SESSION['error_type'])): ?>
-            <?php
-            $errorType = $_SESSION['error_type'];
-            $errorMessage = '';
-            $icon = 'error';
-            
-            switch ($errorType) {
-                case 'wrong_password':
-                    $errorMessage = 'Incorrect password. Please try again.';
-                    break;
-                case 'wrong_username':
-                    $errorMessage = 'Username not found. Please check and try again.';
-                    break;
-                case 'not_registered':
-                    $errorMessage = 'Account not registered to school. Please contact administration.';
-                    $icon = 'warning';
-                    break;
-                case 'max_attempts':
-                    $errorMessage = 'Account has been locked due to too many failed attempts. Please contact administration to unlock your account.';
-                    $icon = 'warning';
-                    break;
-                default:
-                    $errorMessage = $_SESSION['error_message'] ?? 'An error occurred. Please try again.';
-            }
-            ?>
-            
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Login Error',
-                    text: '<?php echo $errorMessage; ?>',
-                    icon: '<?php echo $icon; ?>',
-                    confirmButtonText: 'Try Again',
-                    confirmButtonColor: '#007bff',
-                    customClass: {
-                        popup: 'error-popup',
-                        title: 'error-title',
-                        confirmButton: 'error-button'
-                    },
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        document.body.style.overflow = 'hidden';
-                    },
-                    didClose: () => {
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-            });
-            
-            <?php 
-            unset($_SESSION['error_type']);
-            unset($_SESSION['error_message']);
-            ?>
-        <?php endif; ?>
-        
-        // Form validation
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                e.preventDefault();
-                showError('Please fill in all fields');
-            }
-        });
-    </script>
 </body>
 </html>
