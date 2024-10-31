@@ -64,7 +64,7 @@ if ($isLoggedIn) {
                                 <a class="dropdown-item" href="teacher_dashboard.php">Dashboard</a>
                                 <a class="dropdown-item" href="teacher_profile.php">Profile</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="../Student/logout.php">Logout</a>
+                                <a class="dropdown-item" href="logout.php">Logout</a>
                             </div>
                         </li>
                     <?php endif; ?>
@@ -84,8 +84,8 @@ if ($isLoggedIn) {
                     <p class="lead">Learn Anywhere, Anytime: Empower Your Education</p>
                     <div class="cta-buttons">
                         <?php if ($isLoggedIn): ?>
-                            <a href="teacher_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
-                            <a href="class.php" class="btn btn-outline-primary">My Classes</a>
+                            <a href="teacher_dashboard.php" class="btn btn-primary">Dashboard</a>
+                            <a href="class.php" class="btn btn-outline-primary">Manage Classes</a>
                         <?php else: ?>
                             <a href="../Student/Teacher-Login.php" class="btn btn-primary">Login Now</a>
                         <?php endif; ?>

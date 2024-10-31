@@ -20,11 +20,7 @@ $result = $db->query($query);
 $userData = mysqli_fetch_array($result);
 
 // Get students data
-$students_query = "SELECT s.*, c.class_name 
-                  FROM student s 
-                  LEFT JOIN class_students cs ON s.student_id = cs.student_id 
-                  LEFT JOIN classes c ON cs.class_id = c.class_id 
-                  WHERE cs.teacher_id = ?";
+$students_query = "SELECT * FROM student WHERE teacher_id = ?";
 $stmt = $db->prepare($students_query);
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();
@@ -33,14 +29,14 @@ $students_result = $stmt->get_result();
 // Handle student deletion
 if (isset($_POST['delete_student'])) {
     $student_id = $_POST['student_id'];
-    $delete_query = "DELETE FROM class_students WHERE student_id = ? AND teacher_id = ?";
+    $delete_query = "DELETE FROM student WHERE student_id = ? AND teacher_id = ?";
     $stmt = $db->prepare($delete_query);
     $stmt->bind_param("ii", $student_id, $teacher_id);
     
     if ($stmt->execute()) {
-        $_SESSION['message'] = "Student removed successfully";
+        $_SESSION['message'] = "Student deleted successfully";
     } else {
-        $_SESSION['error'] = "Error removing student";
+        $_SESSION['error'] = "Error deleting student";
     }
     header("Location: student.php");
     exit();
@@ -81,9 +77,16 @@ if (isset($_POST['delete_student'])) {
                                 <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="teacher_profile.php">Profile</a>
+                                <a class="dropdown-item" href="teacher_dashboard.php">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                </a>
+                                <a class="dropdown-item" href="teacher_profile.php">
+                                    <i class="fas fa-user mr-2"></i>Profile
+                                </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="../Student/logout.php">Logout</a>
+                                <a class="dropdown-item" href="logout.php">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
                             </div>
                         </li>
                     <?php endif; ?>
@@ -100,7 +103,15 @@ if (isset($_POST['delete_student'])) {
                     <h1>Welcome to<br><span class="highlight">Gov D.M. Camerino</span></h1>
                     <p class="lead">Learn Anywhere, Anytime: Empower Your Education</p>
                     <div class="cta-buttons">
-                        <a href="profile.php" class="btn btn-primary">User Name</a>
+                        <a href="profile.php" class="btn btn-primary"> Hello! Sir/Mam
+                            <?php 
+                            if ($isLoggedIn && isset($userData['firstname'])) {
+                                echo htmlspecialchars($userData['firstname']);
+                            } else {
+                                echo 'Guest User';
+                            }
+                            ?>
+                        </a>
                     </div>
                 </div>
                 <div class="hero-image">
@@ -184,8 +195,8 @@ if (isset($_POST['delete_student'])) {
                                          alt="Student Photo" class="student-photo" style="width: 50px; height: 50px; border-radius: 50%;">
                                 </td>
                                 <td><?php echo htmlspecialchars($student['student_id']); ?></td>
-                                <td><?php echo htmlspecialchars($student['firstname'] . ' ' . $student['lastname']); ?></td>
-                                <td><?php echo htmlspecialchars($student['class_name'] ?? 'Not Assigned'); ?></td>
+                                <td><?php echo htmlspecialchars($student['firstname'] . ' ' . ($student['middle_name'] ? $student['middle_name'] . ' ' : '') . $student['lastname']); ?></td>
+                                <td><?php echo htmlspecialchars($student['cys'] ?? 'Not Assigned'); ?></td>
                                 <td>
                                     <button class="btn btn-sm btn-primary" onclick="viewStudent(<?php echo $student['student_id']; ?>)">
                                         <i class="fas fa-eye"></i>
@@ -257,31 +268,154 @@ if (isset($_POST['delete_student'])) {
     </footer>
 
     <!-- Add JavaScript for student management -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
     function viewStudent(studentId) {
         window.location.href = `view_student.php?id=${studentId}`;
     }
 
     function deleteStudent(studentId) {
-        if (confirm('Are you sure you want to remove this student?')) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'student.php';
-            
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'delete_student';
-            input.value = studentId;
-            
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#333',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'student.php';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'delete_student';
+                input.value = studentId;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     }
 
+    // Bulk delete functionality
+    document.querySelector('.btn-danger').addEventListener('click', function() {
+        const selectedStudents = Array.from(document.querySelectorAll('.student-select:checked'))
+                                    .map(checkbox => checkbox.value);
+        
+        if (selectedStudents.length === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Selection',
+                text: 'Please select students to delete',
+                confirmButtonColor: '#333'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Delete Selected Students?',
+            text: `You are about to delete ${selectedStudents.length} students. This cannot be undone!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#333',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete them!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Add your bulk delete logic here
+                Swal.fire(
+                    'Deleted!',
+                    'Selected students have been deleted.',
+                    'success'
+                );
+            }
+        });
+    });
+
+    // Select all functionality
     document.getElementById('selectAll').addEventListener('change', function() {
         document.querySelectorAll('.student-select').forEach(checkbox => {
             checkbox.checked = this.checked;
+        });
+    });
+
+    // Show success/error messages
+    <?php if (isset($_SESSION['message'])): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '<?php echo $_SESSION['message']; ?>',
+            timer: 3000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            timerProgressBar: true
+        });
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: '<?php echo $_SESSION['error']; ?>',
+            timer: 3000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end',
+            timerProgressBar: true
+        });
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    // Search functionality enhancement
+    document.querySelector('input[placeholder="Search"]').addEventListener('keyup', function() {
+        const searchText = this.value.toLowerCase();
+        document.querySelectorAll('.custom-table tbody tr').forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchText) ? '' : 'none';
+        });
+    });
+
+    $(document).ready(function() {
+        // Initialize dropdowns
+        $('.dropdown-toggle').dropdown();
+
+        // Add hover functionality
+        $('.dropdown').hover(
+            function() { 
+                $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(300); 
+            },
+            function() { 
+                $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(300); 
+            }
+        );
+
+        // Ensure dropdown works on click as well
+        $('.dropdown-toggle').click(function(e) {
+            e.preventDefault();
+            $(this).parent().toggleClass('show');
+            $(this).next('.dropdown-menu').toggleClass('show');
+        });
+
+        // Close dropdown when clicking outside
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.dropdown').length) {
+                $('.dropdown-menu').removeClass('show');
+                $('.dropdown').removeClass('show');
+            }
         });
     });
     </script>

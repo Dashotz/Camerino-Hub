@@ -359,3 +359,84 @@ footer a:hover {
     display: flex;
     align-items: center; /* Center the logo vertically */
 }
+
+/* Enhanced Table Styles */
+.table-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin: 30px 0;
+}
+
+.table-header {
+    background: white;
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+}
+
+.table-actions {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.custom-table th {
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border: none;
+}
+
+.custom-table td {
+    padding: 15px;
+    vertical-align: middle;
+    border: 1px solid #dee2e6;
+}
+
+.custom-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+}
+
+/* Student Photo */
+.student-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #dee2e6;
+}
+
+/* Action Buttons */
+.btn-action {
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
