@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="student/css/style.css">
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -22,17 +22,17 @@
                 <p class="welcome-text">Empowering education through digital innovation at Gov. D M Camerino High School</p>
             </div>
             <div class="illustration">
-                <img src="../images/HUMAN.png" alt="Illustration" class="illustration-img">
+                <img src="images/HUMAN.png" alt="Illustration" class="illustration-img">
             </div>
             <div class="login-as">
                 <h3>Login as</h3>
                 <div class="login-options">
-                    <a href="Teacher-Login.php" class="login-option button">
-                        <img src="../images/teacher.png" alt="Teacher">
+                    <a href="teacher/Teacher-Login.php" class="login-option button">
+                        <img src="images/teacher.png" alt="Teacher">
                         <p>TEACHER</p>
                     </a>
-                    <a href="Student-Login.php" class="login-option button">
-                        <img src="../images/student1.png" alt="Student">
+                    <a href="student/Student-Login.php" class="login-option button">
+                        <img src="images/student1.png" alt="Student">
                         <p>STUDENTS</p>
                     </a>
                 </div>
@@ -43,7 +43,7 @@
         <div class="right-section">
             <div class="welcome-container">
                 <div class="nav-links">
-                    <a href="home.php" class="home-link">
+                    <a href="student/home.php" class="home-link">
                         <i class="fas fa-home"></i> Back to Home
                     </a>
                 </div>
@@ -51,7 +51,7 @@
                 <h2>Sign in</h2>
                 <div class="social-login">
                     <button class="google-btn">
-                        <img src="../images/google.png" alt="Google">
+                        <img src="images/google.png" alt="Google">
                         Sign in with Google
                     </button>
                     <div class="social-icons">
@@ -64,7 +64,7 @@
                     "Empowering minds, shaping futures at LMS Camerino."
                 </blockquote>
                 <div class="additional-links">
-                    <a href="home.php" class="btn-explore">
+                    <a href="student/home.php" class="btn-explore">
                         <i class="fas fa-globe"></i> Explore Our Website
                     </a>
                 </div>
