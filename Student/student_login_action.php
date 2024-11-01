@@ -29,6 +29,49 @@ if (isset($_POST['login'])) {
     if ($result && mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_array($result);
         
+        // Check if user is already logged in somewhere else
+        $check_active_session = "SELECT * FROM active_sessions 
+                               WHERE student_id = ? AND last_activity > DATE_SUB(NOW(), INTERVAL 30 MINUTE)";
+        $stmt = $db->prepare($check_active_session);
+        $stmt->bind_param("i", $user['student_id']);
+        $stmt->execute();
+        $active_session = $stmt->get_result();
+
+        if ($active_session->num_rows > 0) {
+            // User has an active session
+            ?>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Already Logged In</title>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            </head>
+            <body>
+                <script>
+                Swal.fire({
+                    title: 'Already Logged In',
+                    text: 'Your account is currently active on another device. Would you like to log out from other devices and continue?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, continue here',
+                    cancelButtonText: 'No, go back'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Force logout from other devices
+                        window.location.href = 'force_login.php?username=<?php echo urlencode($username); ?>&password=<?php echo urlencode($password); ?>&remember=<?php echo $remember ? '1' : '0'; ?>';
+                    } else {
+                        window.location.href = 'Student-Login.php';
+                    }
+                });
+                </script>
+            </body>
+            </html>
+            <?php
+            exit();
+        }
+        
         // Check if the account is a teacher account
         $check_teacher_query = "SELECT * FROM teacher WHERE username = ?";
         $stmt = $db->prepare($check_teacher_query);
@@ -80,6 +123,9 @@ if (isset($_POST['login'])) {
             $query = "INSERT INTO login_logs (student_id, ip_address, status) 
                      VALUES ({$user['student_id']}, '$ip', 'success')";
             $db->query($query);
+            
+            // Add this after successful login (around line 57)
+            $_SESSION['last_activity'] = time();
             
             header("Location: home.php");
             exit();

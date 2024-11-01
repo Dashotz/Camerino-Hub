@@ -449,5 +449,47 @@ if ($isLoggedIn) {
         border-color: rgba(0, 123, 255, 0.3);
     }
     </style>
+
+    <!-- Add this right after your existing scripts, before closing </body> tag -->
+    <script>
+    // Session timeout checking
+    function checkSession() {
+        fetch('check_session.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'timeout') {
+                    Swal.fire({
+                        title: 'Session Expired',
+                        text: 'Your session has expired due to inactivity. Please log in again.',
+                        icon: 'warning',
+                        confirmButtonText: 'Login Again',
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        window.location.href = 'Student-Login.php';
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Check session every minute
+    setInterval(checkSession, 60000);
+
+    // Check session on user activity
+    let activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+    activityEvents.forEach(function(eventName) {
+        document.addEventListener(eventName, function() {
+            checkSession();
+        }, true);
+    });
+
+    // Check session before leaving page
+    window.addEventListener('beforeunload', function() {
+        fetch('logout.php', {
+            method: 'POST',
+            keepalive: true
+        });
+    });
+    </script>
 </body>
 </html>

@@ -31,7 +31,7 @@ session_destroy();
             timerProgressBar: true,
             showConfirmButton: false
         }).then(() => {
-            window.location.href = '../Student/Teacher-Login.php';
+            window.location.href = 'Teacher-Login.php';
         });
     </script>
 </body>
