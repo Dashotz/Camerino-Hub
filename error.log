@@ -1,0 +1,108 @@
+[07-Nov-2024 10:06:17 Europe/Berlin] POST Data: Array
+(
+    [section_subject_id] => 1
+    [type] => activity
+    [title] => asdasd
+    [description] => asdasdasd
+    [due_date] => 2024-11-14T10:04
+    [points] => 100
+    [quiz_link] => 
+    [time_limit] => 
+)
+
+[07-Nov-2024 10:06:17 Europe/Berlin] FILES Data: Array
+(
+    [attachments] => Array
+        (
+            [name] => Array
+                (
+                    [0] => Christian PacificoLab#1.docx
+                )
+
+            [full_path] => Array
+                (
+                    [0] => Christian PacificoLab#1.docx
+                )
+
+            [type] => Array
+                (
+                    [0] => application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                )
+
+            [tmp_name] => Array
+                (
+                    [0] => C:\xampp\tmp\phpE39A.tmp
+                )
+
+            [error] => Array
+                (
+                    [0] => 0
+                )
+
+            [size] => Array
+                (
+                    [0] => 5140564
+                )
+
+        )
+
+)
+
+[07-Nov-2024 10:06:17 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:37
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37
+[07-Nov-2024 10:06:39 Europe/Berlin] POST Data: Array
+(
+    [section_subject_id] => 1
+    [type] => activity
+    [title] => d
+    [description] => d
+    [due_date] => 2024-11-14T10:06
+    [points] => 100
+    [quiz_link] => 
+    [time_limit] => 
+)
+
+[07-Nov-2024 10:06:39 Europe/Berlin] FILES Data: Array
+(
+    [attachments] => Array
+        (
+            [name] => Array
+                (
+                    [0] => Christian PacificoLab#1.docx
+                )
+
+            [full_path] => Array
+                (
+                    [0] => Christian PacificoLab#1.docx
+                )
+
+            [type] => Array
+                (
+                    [0] => application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                )
+
+            [tmp_name] => Array
+                (
+                    [0] => C:\xampp\tmp\php3CE7.tmp
+                )
+
+            [error] => Array
+                (
+                    [0] => 0
+                )
+
+            [size] => Array
+                (
+                    [0] => 5140564
+                )
+
+        )
+
+)
+
+[07-Nov-2024 10:06:39 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:37
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37

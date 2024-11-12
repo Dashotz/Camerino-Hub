@@ -1,0 +1,80 @@
+/* Header Styles */
+.navbar {
+    padding: 1rem 0;
+    z-index: 1030;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar-logo {
+    width: 120px;
+    height: auto;
+}
+
+.logo-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1B3C74;
+}
+
+.navbar-nav .nav-link {
+    color: #333;
+    font-weight: 500;
+    margin-left: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #1B3C74;
+}
+
+.navbar-nav .nav-link.active {
+    color: #1B3C74;
+    font-weight: 600;
+}
+
+.btn-signup {
+    background-color: #1B3C74;
+    color: white !important;
+    border-radius: 20px;
+    padding: 0.5rem 1.5rem !important;
+    transition: all 0.3s ease;
+}
+
+.btn-signup:hover {
+    background-color: #152f5a;
+    transform: translateY(-1px);
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Mobile Responsive */
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-link {
+        margin-left: 0;
+        padding: 0.5rem 0;
+    }
+    
+    .btn-signup {
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+}

@@ -42,11 +42,6 @@
         <!-- Right Section for Login Form -->
         <div class="right-section">
             <div class="welcome-container">
-                <div class="nav-links">
-                    <a href="student/home.php" class="home-link">
-                        <i class="fas fa-home"></i> Back to Home
-                    </a>
-                </div>
                 <h1>Welcome to <span class="school-name">Gov. D M Camerino</span></h1>
                 <h2>Sign in</h2>
                 <div class="social-login">

@@ -94,7 +94,7 @@ if (!isset($_SESSION['login_attempts'])) {
                 </div>
                 <div class="student-label">Student</div>
             </div>
-            <a href="login.php" class="back-button">
+            <a href="../login.php" class="back-button">
                 <i class="fas fa-arrow-left"></i> BACK
             </a>
         </div>

@@ -36,6 +36,9 @@ if ($isLoggedIn) {
     <link rel="stylesheet" href="css/home.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
     <!-- Header and Navigation -->
@@ -58,16 +61,15 @@ if ($isLoggedIn) {
                     
                     <?php if ($isLoggedIn): ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="student_dashboard.php">Dashboard</a>
-                                <a class="dropdown-item" href="student_profile.php">Profile</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="logout.php">Logout</a>
-                            </div>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="student_dashboard.php">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="student_profile.php">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                            </ul>
                         </li>
                     <?php else: ?>
                         <li class="nav-item"><a class="nav-link btn-signup" href="Student-Login.php">Log In</a></li>
@@ -81,32 +83,31 @@ if ($isLoggedIn) {
     <section class="hero section-gap">
         <div class="container">
             <div class="hero-content">
-                <div class="hero-text">
+                <div class="hero-text animate__animated animate__fadeInLeft">
                     <h1>Welcome<?php echo $isLoggedIn ? ', ' . htmlspecialchars($userData['firstname']) : ''; ?> to<br>
-                        <span class="highlight">Gov D.M. Camerino</span>
+                        <span class="highlight">Gov D.M. Camerino High School</span>
                     </h1>
-                    <p class="lead">Learn Anywhere, Anytime: Empower Your Education</p>
-                    <div class="cta-buttons">
+                    <p class="lead animate__animated animate__fadeInLeft animate__delay-1s">Nurturing Excellence, Building Character, Shaping Future Leaders</p>
+                    <div class="cta-buttons animate__animated animate__fadeInUp animate__delay-2s">
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
-                            <a href="student_courses.php" class="btn btn-outline-primary">My Courses</a>
+                            <a href="student_courses.php" class="btn btn-outline-primary">My Classes</a>
                         <?php else: ?>
-                            <a href="Login.php" class="btn btn-primary">Login Now</a>
-                            <!--<a href="student_registration.php" class="btn btn-outline-primary">Enroll Now!</a>-->
+                            <a href="../Login.php" class="btn btn-primary">Student Portal</a>
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <img src="../images/student.png" alt="Students">
+                <div class="hero-image animate__animated animate__fadeInRight">
+                    <img src="../images/student.png" alt="High School Students">
                 </div>
             </div>
             
-            <div class="search-container">
+            <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
                 <input type="text" placeholder="Search something...">
                 <button class="btn-search">Search</button>
             </div>
             
-            <div class="quick-links">
+            <div class="quick-links animate__animated animate__fadeInUp animate__delay-4s">
                 <p>You may be looking for</p>
                 <div class="links">
                     <a href="home.php" class="link-item active">
@@ -134,10 +135,166 @@ if ($isLoggedIn) {
         </div>
     </section>
 
+    <!-- School Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Gov D.M. Camerino</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h3>Quality Education</h3>
+                    <p>Comprehensive junior high school curriculum aligned with DepEd standards</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Student Development</h3>
+                    <p>Holistic approach to academic, social, and personal growth</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h3>Excellence in Sports</h3>
+                    <p>Comprehensive athletics program and modern sports facilities</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Arts & Culture</h3>
+                    <p>Rich programs in music, visual arts, and performing arts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section Update -->
+    <section class="statistics-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our School at a Glance</h2>
+                <p>Building tomorrow's leaders today</p>
+            </div>
+            
+            <div class="statistics-grid">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-count="2500">0</div>
+                        <h3>Students</h3>
+                        <p>Grades 7-10 learners</p>
+                    </div>
+                    <div class="stat-footer">
+                        <span class="trend positive">
+                            <i class="fas fa-arrow-up"></i> Growing community
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-count="120">0</div>
+                        <h3>Teachers</h3>
+                        <p>Dedicated educators</p>
+                    </div>
+                    <div class="stat-footer">
+                        <span class="trend positive">
+                            <i class="fas fa-star"></i> DepEd certified
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-count="50">0</div>
+                        <h3>Awards</h3>
+                        <p>Academic & sports achievements</p>
+                    </div>
+                    <div class="stat-footer">
+                        <span class="trend positive">
+                            <i class="fas fa-plus"></i> Regional & national recognition
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section class="programs-section">
+        <div class="container">
+            <h2 class="section-title">Academic Programs</h2>
+            <div class="programs-grid">
+                <div class="program-card">
+                    <div class="program-icon">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <h3>Science Program</h3>
+                    <ul>
+                        <li>Advanced Mathematics</li>
+                        <li>Laboratory Sciences</li>
+                        <li>Research Projects</li>
+                    </ul>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Technology Program</h3>
+                    <ul>
+                        <li>Computer Education</li>
+                        <li>Digital Literacy</li>
+                        <li>Basic Programming</li>
+                    </ul>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3>Arts Program</h3>
+                    <ul>
+                        <li>Visual Arts</li>
+                        <li>Performing Arts</li>
+                        <li>Music Education</li>
+                    </ul>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <h3>Sports Program</h3>
+                    <ul>
+                        <li>Physical Education</li>
+                        <li>Team Sports</li>
+                        <li>Athletics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Photo Section -->
     <section class="photos full-width section-gap">
         <div class="container">
-            <h2>Photos</h2>
+            <h2>Photo Gallery</h2>
             <div class="custom-carousel" id="photoCarousel">
                 <div class="carousel-container">
                     <div class="carousel-slide">
@@ -150,186 +307,71 @@ if ($isLoggedIn) {
                         <img src="../images/3.jpg" alt="School Photo 3">
                     </div>
                 </div>
-                <button class="carousel-button prev">&lt;</button>
-                <button class="carousel-button next">&gt;</button>
+                <button class="carousel-button prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-button next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- School Officials Section -->
-    <section class="officials full-width section-gap">
+    <!-- Our School Officials Section -->
+    <section class="officials-section">
         <div class="container">
-            <h2>Our School Officials</h2>
-            <div id="officialsCarousel" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="row">
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 1">
-                                    <h3>Tom Hiddleston</h3>
-                                    <p>Campus Registrar</p>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 2">
-                                    <h3>Jesus V. Bergado</h3>
-                                    <p>Principal</p>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 3">
-                                    <h3>Dr. Leona Uy</h3>
-                                    <p>Campus Administrator</p>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 4">
-                                    <h3>River Phoenix</h3>
-                                    <p>Campus Director</p>
-                                </div>
+            <h2 class="section-title">Our School Officials</h2>
+            <div class="officials-carousel owl-carousel owl-theme">
+                <!-- Principal -->
+                <div class="official-card">
+                    <div class="official-image">
+                        <img src="../images/teacherbg.png" alt="School Principal">
+                        <div class="official-overlay">
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-facebook"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin"></i></a>
                             </div>
                         </div>
                     </div>
-                    <!-- Add more carousel items if needed -->
+                    <div class="official-info">
+                        <h4>Dr. Jane Doe</h4>
+                        <p class="position">School Principal</p>
+                        <p class="credentials">Ph.D. in Educational Leadership</p>
+                    </div>
                 </div>
-                <ol class="carousel-indicators">
-                    <li data-target="#officialsCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#officialsCarousel" data-slide-to="1"></li>
-                    <li data-target="#officialsCarousel" data-slide-to="2"></li>
-                </ol>
-            </div>
-        </div>
-    </section>
 
-    <!-- School Statistics Section -->
-    <section class="school-statistics bg-light py-5 section-gap">
-        <div class="container">
-            <h2 class="text-center mb-5">Our School at a Glance</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-4 col-sm-6 mb-4">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
-                            <h3 class="card-title">1200+</h3>
-                            <p class="card-text">Enrolled Students</p>
+                <!-- Assistant Principal -->
+                <div class="official-card">
+                    <div class="official-image">
+                        <img src="../images/teacherbg.png" alt="Assistant Principal">
+                        <div class="official-overlay">
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-facebook"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin"></i></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4 col-sm-6 mb-4">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-book fa-3x text-danger mb-3"></i>
-                            <h3 class="card-title">200+</h3>
-                            <p class="card-text">Academic Programs</p>
-                        </div>
+                    <div class="official-info">
+                        <h4>Mr. John Smith</h4>
+                        <p class="position">Assistant Principal</p>
+                        <p class="credentials">M.A. in Education Administration</p>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-6 mb-4">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-chalkboard-teacher fa-3x text-success mb-3"></i>
-                            <h3 class="card-title">600+</h3>
-                            <p class="card-text">Faculty and Staff</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Leave a Comment and Suggestion Section -->
-    <section class="comment-suggestion section-gap">
-        <div class="container">
-            <div class="logo-bar">
-                <img src="../images/Logo.png" alt="DepEd Logo">
-                <img src="../images/Logo.png" alt="Bagong Pilipinas Logo">
-                <img src="../images/Logo.png" alt="Seal 1">
-                <img src="../images/Logo.png" alt="Seal 2">
-                <img src="../images/Logo.png" alt="Seal 3">
-            </div>
-            <h2>Leave a <span class="text-primary">Comment</span> and <span class="text-primary">Suggestion</span></h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="image-container">
-                        <img src="images/students.jpg" alt="Students" class="img-fluid">
-                        <div class="overlay">
-                            <span class="emoji">😊</span>
-                            <span class="text">84k+</span>
-                            <span class="subtext">We're happy to help!</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <form id="commentForm">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" id="email" placeholder="Email Address" required>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" id="comment" rows="4" placeholder="Comment" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
-                    </form>
-                </div>
+                <!-- Add more officials as needed -->
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-primary text-light py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5 class="mb-3">Gov D.M. Camerino</h5>
-                    <p>Medicion 2, A.Imus City, Cavite 4103</p>
-                    <p>+(64) 456 - 5874</p>
-                    <p>profcamerino@yahoo.com</p>
-                    <div class="social-icons">
-                        <a href="#" class="text-light"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">Quicklinks</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Home</a></li>
-                        <li><a href="#" class="text-light">About Us</a></li>
-                        <li><a href="#" class="text-light">Our Gallery</a></li>
-                        <li><a href="#" class="text-light">News and Updates</a></li>
-                        <li><a href="#" class="text-light">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">Government Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Learner Information System</a></li>
-                        <li><a href="#" class="text-light">DepEd CALABARZON</a></li>
-                        <li><a href="#" class="text-light">DepEd Imus City</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-4">
-            <p>&copy; 2024 All Rights Reserved</p>
-        </div>
-    </footer>
+    <?php require_once('includes/footer.php'); ?>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -339,25 +381,117 @@ if ($isLoggedIn) {
         const nextButton = document.querySelector('#photoCarousel .next');
         let currentIndex = 0;
 
-        function showSlide(index) {
+        // Create indicators
+        const indicatorsContainer = document.createElement('div');
+        indicatorsContainer.className = 'carousel-indicators';
+        slides.forEach((_, index) => {
+            const indicator = document.createElement('div');
+            indicator.className = `carousel-indicator ${index === 0 ? 'active' : ''}`;
+            indicator.addEventListener('click', () => goToSlide(index));
+            indicatorsContainer.appendChild(indicator);
+        });
+        document.querySelector('#photoCarousel').appendChild(indicatorsContainer);
+
+        function updateIndicators() {
+            document.querySelectorAll('.carousel-indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function showSlide(index, direction = 'next') {
+            // Remove existing animation classes
+            slides.forEach(slide => {
+                slide.classList.remove('slide-enter', 'slide-enter-active', 'slide-exit', 'slide-exit-active');
+            });
+
+            // Add new animation classes
+            const currentSlide = slides[currentIndex];
+            const nextSlide = slides[index];
+
+            if (direction === 'next') {
+                currentSlide.classList.add('slide-exit');
+                nextSlide.classList.add('slide-enter');
+            } else {
+                currentSlide.classList.add('slide-exit');
+                nextSlide.classList.add('slide-enter');
+            }
+
+            // Trigger animation
+            setTimeout(() => {
+                currentSlide.classList.add('slide-exit-active');
+                nextSlide.classList.add('slide-enter-active');
+            }, 50);
+
+            // Update transform
             carousel.style.transform = `translateX(-${index * 100}%)`;
+            currentIndex = index;
+            updateIndicators();
         }
 
         function nextSlide() {
-            currentIndex = (currentIndex + 1) % slides.length;
-            showSlide(currentIndex);
+            const nextIndex = (currentIndex + 1) % slides.length;
+            showSlide(nextIndex, 'next');
         }
 
         function prevSlide() {
-            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-            showSlide(currentIndex);
+            const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(prevIndex, 'prev');
         }
 
+        function goToSlide(index) {
+            const direction = index > currentIndex ? 'next' : 'prev';
+            showSlide(index, direction);
+        }
+
+        // Event Listeners
         nextButton.addEventListener('click', nextSlide);
         prevButton.addEventListener('click', prevSlide);
 
-        // Optional: Auto-play
-        setInterval(nextSlide, 5000);
+        // Touch/Swipe Support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        carousel.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        carousel.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'ArrowRight') {
+                nextSlide();
+            }
+        });
+
+        // Auto-play with pause on hover
+        let autoplayInterval = setInterval(nextSlide, 5000);
+
+        carousel.addEventListener('mouseenter', () => {
+            clearInterval(autoplayInterval);
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            autoplayInterval = setInterval(nextSlide, 5000);
+        });
     });
     </script>
 
@@ -477,18 +611,86 @@ if ($isLoggedIn) {
 
     // Check session on user activity
     let activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+    let lastActivity = Date.now();
+
     activityEvents.forEach(function(eventName) {
         document.addEventListener(eventName, function() {
+            lastActivity = Date.now();
             checkSession();
         }, true);
     });
 
-    // Check session before leaving page
-    window.addEventListener('beforeunload', function() {
-        fetch('logout.php', {
-            method: 'POST',
-            keepalive: true
+    // Optional: Add this if you want to track when users actually leave the site
+    let isLeaving = false;
+    window.addEventListener('unload', function() {
+        if (isLeaving) {
+            navigator.sendBeacon('logout.php');
+        }
+    });
+
+    // Add this for links that should trigger logout
+    document.querySelector('a[href="logout.php"]').addEventListener('click', function() {
+        isLeaving = true;
+    });
+    </script>
+
+    <script>
+    // Initialize Owl Carousel
+    $(document).ready(function(){
+        $('.officials-carousel').owlCarousel({
+            loop: true,
+            margin: 20,
+            nav: true,
+            dots: true,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            autoplayHoverPause: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                768: {
+                    items: 2
+                },
+                992: {
+                    items: 3
+                }
+            }
         });
+    });
+    </script>
+
+    <!-- Statistics Counter Animation -->
+    <script>
+    function animateCounter(element) {
+        const target = parseInt(element.getAttribute('data-count'));
+        let count = 0;
+        const duration = 2000; // 2 seconds
+        const increment = target / (duration / 16); // 60fps
+
+        const timer = setInterval(() => {
+            count += increment;
+            if (count >= target) {
+                element.textContent = target + '+';
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(count) + '+';
+            }
+        }, 16);
+    }
+
+    // Initialize counters when they come into view
+    const observers = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observers.unobserve(entry.target);
+            }
+        });
+    });
+
+    document.querySelectorAll('.stat-number').forEach(counter => {
+        observers.observe(counter);
     });
     </script>
 </body>

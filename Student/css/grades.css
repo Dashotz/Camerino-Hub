@@ -1,0 +1,158 @@
+/* Stats Overview */
+.stats-overview {
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--hover-bg);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon i {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.stat-info h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.stat-info p {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+/* Course Grades Table */
+.courses-grades .card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.courses-grades .card-header {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.courses-grades .card-header h5 {
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.table {
+    margin: 0;
+}
+
+.table th {
+    border-top: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    padding: 16px;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 16px;
+}
+
+/* Progress Bar */
+.progress {
+    height: 8px;
+    background-color: var(--hover-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    width: 150px;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 10px;
+    line-height: 8px;
+    text-align: center;
+    transition: width 0.3s ease;
+}
+
+/* Grade Badge */
+.grade-badge {
+    background: var(--hover-bg);
+    color: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 20px;
+}
+
+.modal-header .close {
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.modal-header .close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .stats-overview .row {
+        margin: -8px;
+    }
+    
+    .stats-overview .col-md-3 {
+        padding: 8px;
+    }
+    
+    .stat-card {
+        padding: 16px;
+    }
+    
+    .table-responsive {
+        margin: 0 -20px;
+        padding: 0 20px;
+    }
+}

@@ -1,0 +1,85 @@
+[07-Nov-2024 10:09:30 Europe/Berlin] Received POST data: Array
+(
+    [section_subject_id] => 1
+    [type] => activity
+    [title] => asd
+    [description] => asd
+    [due_date] => 2024-11-14T10:09
+    [points] => 100
+    [quiz_link] => 
+    [time_limit] => 
+)
+
+[07-Nov-2024 10:09:30 Europe/Berlin] Received FILES data: Array
+(
+    [attachments] => Array
+        (
+            [name] => Array
+                (
+                    [0] => Christian PacificoLab#1.docx
+                )
+
+            [full_path] => Array
+                (
+                    [0] => Christian PacificoLab#1.docx
+                )
+
+            [type] => Array
+                (
+                    [0] => application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                )
+
+            [tmp_name] => Array
+                (
+                    [0] => C:\xampp\tmp\phpD824.tmp
+                )
+
+            [error] => Array
+                (
+                    [0] => 0
+                )
+
+            [size] => Array
+                (
+                    [0] => 5140564
+                )
+
+        )
+
+)
+
+[07-Nov-2024 10:09:30 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:45
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 45
+[07-Nov-2024 10:12:49 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:37
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37
+[07-Nov-2024 10:13:01 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:37
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37
+[07-Nov-2024 10:13:27 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:37
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37
+[07-Nov-2024 10:14:13 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:37
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37
+[07-Nov-2024 10:14:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method DbConnector::begin_transaction() in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php:37
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37
+[07-Nov-2024 10:14:47 Europe/Berlin] PHP Fatal error:  Cannot redeclare DbConnector::close() in C:\xampp\htdocs\learning-design\Camerino-Hub\db\dbConnector.php on line 156
+[07-Nov-2024 20:16:19 Europe/Berlin] PHP Fatal error:  Uncaught Error: Undefined constant "UPLOAD_PATH" in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\includes\file_handler.php:3
+Stack trace:
+#0 C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php(97): handleActivityFiles(6, '1', Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\includes\file_handler.php on line 3
+[07-Nov-2024 20:16:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Undefined constant "UPLOAD_PATH" in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\includes\file_handler.php:3
+Stack trace:
+#0 C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php(97): handleActivityFiles(7, '1', Array)
+#1 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\includes\file_handler.php on line 3

@@ -366,3 +366,34 @@ footer a:hover {
     display: flex;
     align-items: center; /* Center the logo vertically */
 }
+
+/* Section Spacing */
+.section-gap {
+    padding: 60px 0;
+}
+
+/* Remove bottom margin from last section */
+section:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Map Section specific */
+.map-section {
+    background-color: #f8f9fa;
+    margin-bottom: 0;
+}
+
+.map-wrapper {
+    margin-bottom: 0;
+}
+
+/* Footer connection */
+footer {
+    margin-top: 0;
+}
+
+/* Ensure no white space between sections */
+section + section {
+    margin-top: 0;
+}

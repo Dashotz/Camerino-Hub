@@ -1,14 +1,12 @@
 <?php
 session_start();
+require_once('../db/dbConnector.php');
 
-// Check if admin is logged in
 if (!isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Get admin data
-require_once('../db/dbConnector.php');
 $db = new DbConnector();
 $admin_id = $_SESSION['admin_id'];
 
@@ -26,208 +24,70 @@ $admin = $result->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Students - Gov D.M. Camerino</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Manage Students - Admin Dashboard</title>
+    
+    <!-- External CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    <!-- Add DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>
-        /* Base Styles */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: #f4f6f9;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 250px;
-            background: #2c3e50;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .sidebar-header h3 {
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .menu-items {
-            list-style: none;
-        }
-
-        .menu-items li {
-            margin-bottom: 5px;
-        }
-
-        .menu-items a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            color: #ecf0f1;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .menu-items a:hover, .menu-items a.active {
-            background: rgba(255,255,255,0.1);
-            transform: translateX(5px);
-        }
-
-        /* Main Content Layout */
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        /* Top Bar Styles */
-        .top-bar {
+        .table-container {
             background: white;
-            padding: 15px 25px;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-info span {
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        /* Student Management Section */
-        .student-management {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
 
-        .management-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .management-header h3 {
-            color: #2c3e50;
-            font-size: 1.25rem;
-        }
-
-        /* Button Styles */
-        .add-student-btn {
+        .add-btn {
             background: #3498db;
             color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 10px 20px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
         }
 
-        .add-student-btn:hover {
+        .add-btn:hover {
             background: #2980b9;
-            transform: translateY(-2px);
         }
 
-        .add-student-btn i {
-            font-size: 0.9rem;
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
         }
 
-        /* Table Styles */
-        .student-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 10px;
+        .status-active {
+            background: #d4edda;
+            color: #155724;
         }
 
-        .student-table th,
-        .student-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
+        .status-archived {
+            background: #f8d7da;
+            color: #721c24;
         }
 
-        .student-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #2c3e50;
-            white-space: nowrap;
-        }
-
-        .student-table tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-buttons button {
-            padding: 8px 16px;
+        .action-btn {
+            padding: 5px 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
+            font-size: 0.9em;
+            margin: 0 2px;
         }
 
         .edit-btn {
@@ -235,355 +95,377 @@ $admin = $result->fetch_assoc();
             color: white;
         }
 
-        .delete-btn {
+        .archive-btn {
             background: #e74c3c;
             color: white;
         }
 
-        .edit-btn:hover {
-            background: #27ae60;
-            transform: translateY(-2px);
+        .modal-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
         }
 
-        .delete-btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-
-        /* DataTables Custom Styling */
-        .dataTables_wrapper .dataTables_length,
-        .dataTables_wrapper .dataTables_filter {
-            margin-bottom: 20px;
-        }
-
-        .dataTables_wrapper .dataTables_length select,
-        .dataTables_wrapper .dataTables_filter input {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            padding: 8px 14px;
-            margin: 0 4px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background: #3498db;
-            color: white !important;
-            border: 1px solid #3498db;
-        }
-
-        /* Sweet Alert Custom Styling */
-        .swal2-input {
-            margin: 10px 0;
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .main-content {
-                margin-left: 200px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 70px;
-            }
-
-            .management-header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .student-table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
+        .modal-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar (same as admin_dashboard.php) -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="../images/Logo.png" alt="Logo">
-            <h3>Admin Panel</h3>
-        </div>
-        <ul class="menu-items">
-            <li><a href="admin_dashboard.php"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-            <li><a href="manage_students.php" class="active"><i class="fas fa-users"></i> <span>Students</span></a></li>
-            <li><a href="manage_teachers.php"><i class="fas fa-chalkboard-teacher"></i> <span>Teachers</span></a></li>
-            <li><a href="manage_subjects.php"><i class="fas fa-book"></i> <span>Subjects</span></a></li>
-            <li><a href="settings.php"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
-            <li>
-                <a href="#" onclick="confirmLogout(event)">
-                    <i class="fas fa-sign-out-alt"></i> 
-                    <span>Logout</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="top-bar">
-            <h2>Manage Students</h2>
-            <div class="user-info">
-                <span>Welcome, <?php echo htmlspecialchars($admin['firstname']); ?></span>
-                <img src="../images/admin.png" alt="Admin">
-            </div>
-        </div>
-
-        <!-- Student Management Section -->
-        <div class="student-management">
-            <div class="management-header">
-                <h3>Student List</h3>
-                <button class="add-student-btn" onclick="showAddStudentModal()">
+    <?php include 'includes/navigation.php'; ?>
+    
+    <div class="dashboard-container">
+        <?php include 'includes/sidebar.php'; ?>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header-actions">
+                <h2>Manage Students</h2>
+                <button class="add-btn" onclick="showAddStudentModal()">
                     <i class="fas fa-plus"></i> Add New Student
                 </button>
             </div>
-            
-            <!-- Student Table -->
-            <table id="studentTable" class="student-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Class/Year/Section</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Table data will be populated dynamically -->
-                </tbody>
-            </table>
+
+            <div class="table-container">
+                <table id="studentsTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>CYS</th>
+                            <th>Section</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated by DataTables -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <!-- Add necessary scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script>
-    $(document).ready(function() {
-        // Initialize DataTable with AJAX
-        const studentTable = $('#studentTable').DataTable({
-            processing: true,
-            serverSide: false, // Set to true if you want server-side processing
-            ajax: {
-                url: 'handlers/student_handler.php?action=get_students',
-                type: 'GET',
-                dataSrc: 'data'
-            },
-            columns: [
-                { data: 'student_id' },
-                { data: 'name' },
-                { data: 'username' },
-                { data: 'cys' },
-                { data: 'location' },
-                { data: 'status' },
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        return `
-                            <div class="action-buttons">
-                                <button class="edit-btn" onclick="editStudent(${row.student_id})">
-                                    <i class="fas fa-edit"></i> Edit
+        $(document).ready(function() {
+            const studentsTable = $('#studentsTable').DataTable({
+                processing: true,
+                serverSide: false,
+                ajax: {
+                    url: 'handlers/student_handler.php',
+                    type: 'GET',
+                    data: { action: 'get_students' },
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: 'username' },
+                    { 
+                        data: null,
+                        render: function(data) {
+                            let name = `${data.lastname}, ${data.firstname}`;
+                            if (data.middlename) {
+                                name += ` ${data.middlename.charAt(0)}.`;
+                            }
+                            return name;
+                        }
+                    },
+                    { data: 'email' },
+                    { data: 'cys' },
+                    { 
+                        data: 'section_name',
+                        defaultContent: 'Not Assigned'
+                    },
+                    { 
+                        data: 'status',
+                        render: function(data) {
+                            const statusClass = {
+                                'active': 'success',
+                                'inactive': 'warning',
+                                'archived': 'danger'
+                            }[data.toLowerCase()] || 'secondary';
+                            
+                            return `<span class="badge badge-${statusClass}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data) {
+                            return `
+                                <button class="btn btn-sm btn-primary edit-btn" onclick="editStudent(${data.student_id})">
+                                    <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="delete-btn" onclick="deleteStudent(${row.student_id})">
-                                    <i class="fas fa-trash"></i> Delete
+                                <button class="btn btn-sm btn-warning archive-btn" onclick="archiveStudent(${data.student_id})">
+                                    <i class="fas fa-archive"></i>
                                 </button>
-                            </div>
-                        `;
+                            `;
+                        }
                     }
-                }
-            ],
-            responsive: true,
-            dom: 'Bfrtip',
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            pageLength: 10,
-            order: [[0, 'desc']], // Order by student_id descending
-            language: {
-                emptyTable: "No students found",
-                loadingRecords: "Loading...",
-                processing: "Processing...",
-                zeroRecords: "No matching students found"
-            }
+                ],
+                order: [[1, 'asc']]
+            });
+
+            // Refresh table every 30 seconds
+            setInterval(function() {
+                studentsTable.ajax.reload(null, false);
+            }, 30000);
         });
 
-        // Add Student Form Submission
-        window.showAddStudentModal = function() {
-            Swal.fire({
-                title: 'Add New Student',
-                html: `
-                    <form id="addStudentForm">
-                        <input type="text" id="firstName" class="swal2-input" placeholder="First Name" required>
-                        <input type="text" id="middleName" class="swal2-input" placeholder="Middle Name">
-                        <input type="text" id="lastName" class="swal2-input" placeholder="Last Name" required>
-                        <input type="text" id="username" class="swal2-input" placeholder="Username" required>
-                        <input type="password" id="password" class="swal2-input" placeholder="Password" required>
-                        <input type="text" id="cys" class="swal2-input" placeholder="Class, Year & Section" required>
-                        <input type="text" id="location" class="swal2-input" placeholder="Location">
-                    </form>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Add Student',
-                cancelButtonText: 'Cancel',
-                preConfirm: () => {
-                    const firstName = document.getElementById('firstName').value;
-                    const middleName = document.getElementById('middleName').value;
-                    const lastName = document.getElementById('lastName').value;
-                    const username = document.getElementById('username').value;
-                    const password = document.getElementById('password').value;
-                    const cys = document.getElementById('cys').value;
-                    const location = document.getElementById('location').value;
-
-                    if (!firstName || !lastName || !username || !password || !cys) {
-                        Swal.showValidationMessage('Please fill all required fields');
-                        return false;
-                    }
-
-                    return { firstName, middleName, lastName, username, password, cys, location };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: 'handlers/student_handler.php',
-                        method: 'POST',
-                        data: {
-                            action: 'add_student',
-                            ...result.value
-                        },
-                        success: function(response) {
-                            const data = JSON.parse(response);
-                            if (data.status === 'success') {
-                                Swal.fire('Success', data.message, 'success');
-                                studentTable.ajax.reload();
-                            } else {
-                                Swal.fire('Error', data.message, 'error');
-                            }
-                        },
-                        error: function() {
-                            Swal.fire('Error', 'Failed to add student', 'error');
-                        }
-                    });
-                }
-            });
-        };
-
-        // Edit Student
-        window.editStudent = function(studentId) {
-            // First fetch student data
-            $.get(`handlers/student_handler.php?action=get_student&id=${studentId}`, function(response) {
-                const student = JSON.parse(response).data;
-                
-                Swal.fire({
-                    title: 'Edit Student',
-                    html: `
-                        <form id="editStudentForm">
-                            <input type="text" id="firstName" class="swal2-input" value="${student.firstname}" required>
-                            <input type="text" id="lastName" class="swal2-input" value="${student.lastname}" required>
-                            <input type="email" id="email" class="swal2-input" value="${student.email}" required>
-                            <select id="course" class="swal2-input" required>
-                                <option value="BSIT" ${student.course === 'BSIT' ? 'selected' : ''}>BSIT</option>
-                                <option value="BSCS" ${student.course === 'BSCS' ? 'selected' : ''}>BSCS</option>
-                            </select>
-                            <select id="status" class="swal2-input" required>
-                                <option value="Active" ${student.status === 'Active' ? 'selected' : ''}>Active</option>
-                                <option value="Inactive" ${student.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
-                            </select>
+        function showAddStudentModal() {
+            const modal = `
+            <div class="modal fade" id="addStudentModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add New Student</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <form id="addStudentForm" onsubmit="handleAddStudent(event)">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>First Name*</label>
+                                    <input type="text" name="firstname" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name*</label>
+                                    <input type="text" name="lastname" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Middle Name</label>
+                                    <input type="text" name="middlename" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email*</label>
+                                    <input type="email" name="email" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Grade & Section*</label>
+                                    <input type="text" name="cys" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select name="status" class="form-control" required>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add Student</button>
+                            </div>
                         </form>
-                    `,
-                    showCancelButton: true,
-                    confirmButtonText: 'Update',
-                    cancelButtonText: 'Cancel',
-                    preConfirm: () => {
-                        // Similar validation as add student
-                        return {
-                            student_id: studentId,
-                            firstName: document.getElementById('firstName').value,
-                            lastName: document.getElementById('lastName').value,
-                            email: document.getElementById('email').value,
-                            course: document.getElementById('course').value,
-                            status: document.getElementById('status').value
-                        };
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: 'handlers/student_handler.php',
-                            method: 'POST',
-                            data: {
-                                action: 'update_student',
-                                ...result.value
-                            },
-                            success: function(response) {
-                                const data = JSON.parse(response);
-                                if (data.status === 'success') {
-                                    Swal.fire('Success', data.message, 'success');
-                                    studentTable.ajax.reload();
-                                } else {
-                                    Swal.fire('Error', data.message, 'error');
-                                }
-                            }
-                        });
-                    }
-                });
-            });
-        };
+                    </div>
+                </div>
+            </div>`;
 
-        // Delete Student
-        window.deleteStudent = function(studentId) {
+            document.body.insertAdjacentHTML('beforeend', modal);
+            $('#addStudentModal').modal('show');
+            $('#addStudentModal').on('hidden.bs.modal', function() {
+                this.remove();
+            });
+        }
+
+        function handleAddStudent(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            $.ajax({
+                url: 'handlers/student_handler.php',
+                method: 'POST',
+                data: {
+                    action: 'add_student',
+                    ...Object.fromEntries(formData)
+                },
+                success: function(response) {
+                    try {
+                        const result = JSON.parse(response);
+                        if (result.status === 'success') {
+                            Swal.fire({
+                                title: 'Success',
+                                html: result.message.replace(/\n/g, '<br>'),
+                                icon: 'success'
+                            });
+                            $('#studentsTable').DataTable().ajax.reload();
+                            $('#addStudentModal').modal('hide');
+                        } else {
+                            Swal.fire('Error', result.message, 'error');
+                        }
+                    } catch (e) {
+                        Swal.fire('Error', 'Invalid server response', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Failed to add student', 'error');
+                }
+            });
+        }
+
+        function editStudent(studentId) {
+            // Fetch student details first
+            $.ajax({
+                url: 'handlers/student_handler.php',
+                method: 'GET',
+                data: {
+                    action: 'get_student_details',
+                    student_id: studentId
+                },
+                success: function(response) {
+                    try {
+                        const result = JSON.parse(response);
+                        if (result.status === 'success') {
+                            showEditStudentModal(result.data);
+                        } else {
+                            Swal.fire('Error', result.message, 'error');
+                        }
+                    } catch (e) {
+                        Swal.fire('Error', 'Invalid server response', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Failed to fetch student details', 'error');
+                }
+            });
+        }
+
+        function showEditStudentModal(student) {
+            const modal = `
+            <div class="modal fade" id="editStudentModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Student</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <form id="editStudentForm" onsubmit="handleEditStudent(event, ${student.student_id})">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" name="firstname" class="form-control" 
+                                           value="${student.firstname}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" name="lastname" class="form-control" 
+                                           value="${student.lastname}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" class="form-control" 
+                                           value="${student.email}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>LRN</label>
+                                    <input type="text" name="lrn" class="form-control" 
+                                           value="${student.lrn}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Contact Number</label>
+                                    <input type="text" name="contact_number" class="form-control" 
+                                           value="${student.contact_number || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Gender</label>
+                                    <select name="gender" class="form-control" required>
+                                        <option value="Male" ${student.gender === 'Male' ? 'selected' : ''}>Male</option>
+                                        <option value="Female" ${student.gender === 'Female' ? 'selected' : ''}>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>`;
+
+            document.body.insertAdjacentHTML('beforeend', modal);
+            $('#editStudentModal').modal('show');
+            $('#editStudentModal').on('hidden.bs.modal', function() {
+                this.remove();
+            });
+        }
+
+        function handleEditStudent(event, studentId) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            $.ajax({
+                url: 'handlers/student_handler.php',
+                method: 'POST',
+                data: {
+                    action: 'edit_student',
+                    student_id: studentId,
+                    ...Object.fromEntries(formData)
+                },
+                success: function(response) {
+                    try {
+                        const result = JSON.parse(response);
+                        if (result.status === 'success') {
+                            Swal.fire('Success', result.message, 'success');
+                            $('#studentsTable').DataTable().ajax.reload();
+                            $('#editStudentModal').modal('hide');
+                        } else {
+                            Swal.fire('Error', result.message, 'error');
+                        }
+                    } catch (e) {
+                        Swal.fire('Error', 'Invalid server response', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Failed to update student', 'error');
+                }
+            });
+        }
+
+        function archiveStudent(studentId) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: 'Archive Student?',
+                text: "This student will be archived and can be restored later.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, archive it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
                         url: 'handlers/student_handler.php',
                         method: 'POST',
                         data: {
-                            action: 'delete_student',
+                            action: 'archive_student',
                             student_id: studentId
                         },
                         success: function(response) {
-                            const data = JSON.parse(response);
-                            if (data.status === 'success') {
-                                Swal.fire('Deleted!', data.message, 'success');
-                                studentTable.ajax.reload();
-                            } else {
-                                Swal.fire('Error', data.message, 'error');
+                            try {
+                                const result = JSON.parse(response);
+                                if (result.status === 'success') {
+                                    Swal.fire('Success', result.message, 'success');
+                                    $('#studentsTable').DataTable().ajax.reload();
+                                } else {
+                                    Swal.fire('Error', result.message, 'error');
+                                }
+                            } catch (e) {
+                                Swal.fire('Error', 'Invalid server response', 'error');
                             }
+                        },
+                        error: function() {
+                            Swal.fire('Error', 'Failed to archive student', 'error');
                         }
                     });
                 }
             });
-        };
-    });
-
-    // Keep the logout confirmation function from admin_dashboard.php
-    function confirmLogout(event) {
-        // ... (same as in admin_dashboard.php)
-    }
+        }
     </script>
 </body>
 </html>

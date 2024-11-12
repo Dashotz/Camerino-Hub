@@ -8,9 +8,9 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 $db = new DbConnector();
+$admin_id = $_SESSION['admin_id'];
 
 // Get admin info
-$admin_id = $_SESSION['admin_id'];
 $query = "SELECT * FROM admin WHERE admin_id = ?";
 $stmt = $db->prepare($query);
 $stmt->bind_param("i", $admin_id);
@@ -24,579 +24,474 @@ $admin = $result->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Teachers - Gov D.M. Camerino</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Manage Teachers - Admin Dashboard</title>
+    
+    <!-- External CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>
-        /* Base Styles */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: #f4f6f9;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 250px;
-            background: #2c3e50;
+        .welcome-section {
+            background: #fff;
             padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .sidebar-header h3 {
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .menu-items {
-            list-style: none;
-        }
-
-        .menu-items li {
-            margin-bottom: 5px;
-        }
-
-        .menu-items a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            color: #ecf0f1;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .menu-items a:hover, .menu-items a.active {
-            background: rgba(255,255,255,0.1);
-            transform: translateX(5px);
-        }
-
-        /* Main Content Layout */
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        /* Top Bar Styles */
-        .top-bar {
-            background: white;
-            padding: 15px 25px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-info span {
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        /* Teacher Management Section */
-        .teacher-management {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .management-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .management-header h3 {
-            color: #2c3e50;
-            font-size: 1.25rem;
-        }
-
-        /* Button Styles */
-        .add-teacher-btn {
-            background: #3498db;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
+        .stats-cards .card {
             border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
 
-        .add-teacher-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
+        .stats-cards .card:hover {
+            transform: translateY(-5px);
         }
 
-        .add-teacher-btn i {
+        .stats-cards .card-body {
+            padding: 1.5rem;
+        }
+
+        .stats-cards i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+
+        .stats-cards h5 {
+            color: #7f8c8d;
             font-size: 0.9rem;
+            margin-bottom: 0.5rem;
         }
 
-        /* Table Styles */
-        .teacher-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 10px;
+        .stats-cards h3 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 0;
         }
 
-        .teacher-table th,
-        .teacher-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
+        .stats-cards small {
+            font-size: 0.8rem;
+            opacity: 0.7;
         }
 
-        .teacher-table th {
-            background: #f8f9fa;
-            font-weight: 600;
+        /* Card-specific colors */
+        .stats-cards .card:nth-child(1) i { color: #3498db; }
+        .stats-cards .card:nth-child(2) i { color: #2ecc71; }
+        .stats-cards .card:nth-child(3) i { color: #f1c40f; }
+        .stats-cards .card:nth-child(4) i { color: #e74c3c; }
+
+        .teacher-assignments {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .teacher-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .teacher-name {
+            font-weight: bold;
             color: #2c3e50;
         }
 
-        .teacher-table tr:hover {
-            background-color: #f8f9fa;
+        .teacher-dept {
+            font-size: 0.9em;
+            color: #7f8c8d;
         }
 
-        /* Action Buttons */
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 5px;
         }
 
         .action-buttons button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .edit-btn {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .delete-btn {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .edit-btn:hover {
-            background: #27ae60;
-            transform: translateY(-2px);
-        }
-
-        .delete-btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .main-content {
-                margin-left: 200px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 70px;
-            }
-
-            .management-header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .teacher-table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-        }
-
-        /* Add to your existing CSS */
-        .action-buttons {
-            display: flex;
-            gap: 5px;
-        }
-
-        .view-btn {
-            background: #3498db;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .view-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .swal2-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .swal2-table th,
-        .swal2-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .swal2-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-
-        .swal2-table tr:hover {
-            background-color: #f5f5f5;
+            padding: 5px 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="../images/Logo.png" alt="Logo">
-            <h3>Admin Panel</h3>
-        </div>
-        <ul class="menu-items">
-            <li><a href="admin_dashboard.php"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-            <li><a href="manage_students.php"><i class="fas fa-users"></i> <span>Students</span></a></li>
-            <li><a href="manage_teachers.php" class="active"><i class="fas fa-chalkboard-teacher"></i> <span>Teachers</span></a></li>
-            <li><a href="manage_subjects.php"><i class="fas fa-book"></i> <span>Subjects</span></a></li>
-            <li><a href="settings.php"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
-            <li>
-                <a href="#" onclick="confirmLogout(event)">
-                    <i class="fas fa-sign-out-alt"></i> 
-                    <span>Logout</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="top-bar">
-            <h2>Manage Teachers</h2>
-            <div class="user-info">
-                <span>Welcome, <?php echo htmlspecialchars($admin['firstname']); ?></span>
-                <img src="../images/admin.png" alt="Admin">
-            </div>
-        </div>
-
-        <!-- Teacher Management Section -->
-        <div class="teacher-management">
-            <div class="management-header">
-                <h3>Teacher List</h3>
-                <button class="add-teacher-btn" onclick="showAddTeacherModal()">
-                    <i class="fas fa-plus"></i> Add New Teacher
-                </button>
-            </div>
-            
-            <!-- Teacher Table -->
-            <table id="teacherTable" class="teacher-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Department</th>
-                        <th>Location</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Table data will be populated dynamically -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Add necessary scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <?php include 'includes/navigation.php'; ?>
     
-    <script>
-    $(document).ready(function() {
-        // Initialize DataTable
-        const teacherTable = $('#teacherTable').DataTable({
-            processing: true,
-            serverSide: false,
-            ajax: {
-                url: 'handlers/teacher_handler.php?action=get_teachers',
-                type: 'GET'
-            },
-            columns: [
-                { data: 'teacher_id' },
-                { data: 'name' },
-                { data: 'username' },
-                { data: 'department' },
-                { data: 'location' },
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    render: function(data, type, row) {
-                        return `
-                            <div class="action-buttons">
-                                <button class="view-btn" onclick="viewTeacherStudents(${row.teacher_id})">
-                                    <i class="fas fa-users"></i> Students
-                                </button>
-                                <button class="view-btn" onclick="viewTeacherSubjects(${row.teacher_id})">
-                                    <i class="fas fa-book"></i> Subjects
-                                </button>
-                                <button class="edit-btn" onclick="editTeacher(${row.teacher_id})">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <button class="delete-btn" onclick="deleteTeacher(${row.teacher_id})">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                            </div>
-                        `;
-                    }
-                }
-            ]
-        });
-    });
+    <div class="dashboard-container">
+        <?php include 'includes/sidebar.php'; ?>
+        
+        <div class="main-content">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1>Manage Teachers</h1>
+                <p>Assign and manage teacher schedules and subjects</p>
+            </div>
 
-    function showAddTeacherModal() {
-        Swal.fire({
-            title: 'Add New Teacher',
-            html: `
-                <form id="addTeacherForm">
-                    <input type="text" id="firstName" class="swal2-input" placeholder="First Name" required>
-                    <input type="text" id="middleName" class="swal2-input" placeholder="Middle Name">
-                    <input type="text" id="lastName" class="swal2-input" placeholder="Last Name" required>
-                    <input type="text" id="username" class="swal2-input" placeholder="Username" required>
-                    <input type="password" id="password" class="swal2-input" placeholder="Password" required>
-                    <input type="text" id="department" class="swal2-input" placeholder="Department" required>
-                    <input type="text" id="location" class="swal2-input" placeholder="Location">
+            <!-- Stats Cards -->
+            <div class="row stats-cards">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <h5>Total Teachers</h5>
+                            <h3 id="totalTeachers">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-book"></i>
+                            <h5>Assigned Subjects</h5>
+                            <h3 id="assignedSubjects">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-users"></i>
+                            <h5>Active Sections</h5>
+                            <h3 id="activeSections">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="fas fa-building"></i>
+                            <h5>Departments</h5>
+                            <h3 id="totalDepartments">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher Assignments Table -->
+            <div class="teacher-assignments">
+                <div class="header-actions">
+                    <h2>Teacher Assignments</h2>
+                    <button class="btn btn-primary" onclick="showAssignModal()">
+                        <i class="fas fa-plus"></i> Assign Teacher
+                    </button>
+                </div>
+                
+                <div class="table-responsive mt-3">
+                    <table id="assignmentsTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Subject</th>
+                                <th>Section</th>
+                                <th>Schedule</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignmentsTableBody">
+                            <!-- Data will be loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Teacher Modal -->
+    <div class="modal fade" id="assignTeacherModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign Teacher</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="assignTeacherForm" onsubmit="handleAssignTeacher(event)">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Select Teacher*</label>
+                            <select name="teacher_id" class="form-control" required>
+                                <option value="">Select Teacher</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Subject*</label>
+                            <select name="subject_id" class="form-control" required>
+                                <option value="">Select Subject</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Section*</label>
+                            <select name="section_id" class="form-control" required>
+                                <option value="">Select Section</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Schedule Day*</label>
+                            <select name="schedule_day" class="form-control" required>
+                                <option value="">Select Day</option>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Schedule Time*</label>
+                            <input type="time" name="schedule_time" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Assign Teacher</button>
+                    </div>
                 </form>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Add Teacher',
-            cancelButtonText: 'Cancel',
-            preConfirm: () => {
-                const firstName = document.getElementById('firstName').value;
-                const middleName = document.getElementById('middleName').value;
-                const lastName = document.getElementById('lastName').value;
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const department = document.getElementById('department').value;
-                const location = document.getElementById('location').value;
+            </div>
+        </div>
+    </div>
 
-                if (!firstName || !lastName || !username || !password || !department) {
-                    Swal.showValidationMessage('Please fill all required fields');
-                    return false;
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Include your existing JavaScript code here -->
+    <script>
+        $(document).ready(function() {
+            loadDashboardStats();
+            loadTeacherAssignments();
+        });
+
+        function loadDashboardStats() {
+            $.ajax({
+                url: 'handlers/teacher_handler.php',
+                type: 'GET',
+                data: { action: 'get_dashboard_stats' },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const stats = response.data;
+                        
+                        // Update Total Teachers
+                        $('#totalTeachers').html(`
+                            ${stats.teachers.total}
+                            <small class="text-muted d-block">${stats.teachers.active} Active</small>
+                        `);
+
+                        // Update Assigned Subjects
+                        $('#assignedSubjects').html(`
+                            ${stats.subjects.assigned}
+                            <small class="text-muted d-block">Subjects</small>
+                        `);
+
+                        // Update Active Sections
+                        $('#activeSections').html(`
+                            ${stats.sections.active}
+                            <small class="text-muted d-block">Sections</small>
+                        `);
+
+                        // Update Departments
+                        $('#totalDepartments').html(`
+                            ${stats.departments.total}
+                            <small class="text-muted d-block">Active</small>
+                        `);
+                    } else {
+                        console.error('Failed to load stats:', response.message);
+                        // Show error state
+                        $('.stats-cards h3').text('Error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ajax error:', error);
+                    // Show error state
+                    $('.stats-cards h3').text('Error');
                 }
+            });
+        }
 
-                return { firstName, middleName, lastName, username, password, department, location };
+        function loadTeacherAssignments() {
+            if ($.fn.DataTable.isDataTable('#assignmentsTable')) {
+                $('#assignmentsTable').DataTable().destroy();
             }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
+
+            $('#assignmentsTable').DataTable({
+                ajax: {
                     url: 'handlers/teacher_handler.php',
-                    method: 'POST',
-                    data: {
-                        action: 'add_teacher',
-                        ...result.value
+                    type: 'GET',
+                    data: { action: 'get_teacher_assignments' },
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { 
+                        data: null,
+                        render: function(data) {
+                            return `<div class="teacher-info">
+                                <span class="teacher-name">${data.teacher_name}</span>
+                                <span class="teacher-dept">${data.department}</span>
+                            </div>`;
+                        }
                     },
-                    success: function(response) {
-                        const data = JSON.parse(response);
-                        if (data.status === 'success') {
-                            Swal.fire('Success', data.message, 'success');
-                            teacherTable.ajax.reload();
-                        } else {
-                            Swal.fire('Error', data.message, 'error');
+                    { 
+                        data: null,
+                        render: function(data) {
+                            return `<div class="subject-info">
+                                <span class="subject-code">${data.subject_code}</span>
+                                <span class="subject-name">${data.subject_title}</span>
+                            </div>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data) {
+                            return `${data.grade_level} - ${data.section_name}`;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data) {
+                            return `${data.schedule_day}<br>${data.schedule_time}`;
+                        }
+                    },
+                    {
+                        data: 'status',
+                        render: function(data) {
+                            return `<span class="badge badge-${data === 'active' ? 'success' : 'warning'}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data) {
+                            return `
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-primary" onclick="editAssignment(${data.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteAssignment(${data.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>`;
                         }
                     }
-                });
-            }
-        });
-    }
+                ],
+                order: [[0, 'asc']],
+                responsive: true
+            });
+        }
 
-    // Keep the logout confirmation function
-    function confirmLogout(event) {
-        event.preventDefault();
-        
-        Swal.fire({
-            title: 'Ready to Leave?',
-            text: "Are you sure you want to logout?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, logout',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = 'logout.php';
-            }
-        });
-    }
+        function showAssignModal() {
+            // Load teachers, subjects, and sections before showing modal
+            Promise.all([
+                loadTeachers(),
+                loadSubjects(),
+                loadSections()
+            ]).then(() => {
+                $('#assignTeacherModal').modal('show');
+            }).catch(error => {
+                Swal.fire('Error', 'Failed to load necessary data', 'error');
+            });
+        }
 
-    function viewTeacherStudents(teacherId) {
-        $.ajax({
-            url: 'handlers/teacher_handler.php',
-            method: 'GET',
-            data: {
-                action: 'get_teacher_students',
-                teacher_id: teacherId
-            },
-            success: function(response) {
-                const data = JSON.parse(response);
-                if (data.status === 'success') {
-                    let studentsHtml = `
-                        <table class="swal2-table">
-                            <thead>
-                                <tr>
-                                    <th>Student ID</th>
-                                    <th>Name</th>
-                                    <th>Course</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-                    
-                    data.students.forEach(student => {
-                        studentsHtml += `
-                            <tr>
-                                <td>${student.student_id}</td>
-                                <td>${student.name}</td>
-                                <td>${student.cys}</td>
-                            </tr>
-                        `;
-                    });
-                    
-                    studentsHtml += '</tbody></table>';
-                    
-                    Swal.fire({
-                        title: 'Teacher\'s Students',
-                        html: studentsHtml,
-                        width: '800px',
-                        confirmButtonText: 'Close'
-                    });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
+        function loadTeachers() {
+            return $.ajax({
+                url: 'handlers/teacher_handler.php',
+                type: 'GET',
+                data: { action: 'get_available_teachers' },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const select = $('select[name="teacher_id"]');
+                        select.find('option:not(:first)').remove();
+                        response.data.forEach(teacher => {
+                            select.append(`<option value="${teacher.teacher_id}">
+                                ${teacher.firstname} ${teacher.lastname} - ${teacher.department}
+                            </option>`);
+                        });
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    function viewTeacherSubjects(teacherId) {
-        $.ajax({
-            url: 'handlers/teacher_handler.php',
-            method: 'GET',
-            data: {
-                action: 'get_teacher_subjects',
-                teacher_id: teacherId
-            },
-            success: function(response) {
-                const data = JSON.parse(response);
-                if (data.status === 'success') {
-                    let subjectsHtml = `
-                        <table class="swal2-table">
-                            <thead>
-                                <tr>
-                                    <th>Subject ID</th>
-                                    <th>Subject Name</th>
-                                    <th>Department</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-                    
-                    data.subjects.forEach(subject => {
-                        subjectsHtml += `
-                            <tr>
-                                <td>${subject.subject_id}</td>
-                                <td>${subject.subject_name}</td>
-                                <td>${subject.department}</td>
-                            </tr>
-                        `;
-                    });
-                    
-                    subjectsHtml += '</tbody></table>';
-                    
-                    Swal.fire({
-                        title: 'Teacher\'s Subjects',
-                        html: subjectsHtml,
-                        width: '800px',
-                        confirmButtonText: 'Close'
-                    });
-                } else {
-                    Swal.fire('Error', data.message, 'error');
+        function loadSubjects() {
+            return $.ajax({
+                url: 'handlers/teacher_handler.php',
+                type: 'GET',
+                data: { action: 'get_subjects' },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const select = $('select[name="subject_id"]');
+                        select.find('option:not(:first)').remove();
+                        response.data.forEach(subject => {
+                            select.append(`<option value="${subject.id}">
+                                ${subject.subject_code} - ${subject.subject_title}
+                            </option>`);
+                        });
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
+
+        function loadSections() {
+            return $.ajax({
+                url: 'handlers/teacher_handler.php',
+                type: 'GET',
+                data: { action: 'get_sections' },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const select = $('select[name="section_id"]');
+                        select.find('option:not(:first)').remove();
+                        response.data.forEach(section => {
+                            select.append(`<option value="${section.section_id}">
+                                ${section.grade_level} - ${section.section_name}
+                            </option>`);
+                        });
+                    }
+                }
+            });
+        }
+
+        function handleAssignTeacher(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            $.ajax({
+                url: 'handlers/teacher_handler.php',
+                type: 'POST',
+                data: {
+                    action: 'assign_teacher',
+                    teacher_id: formData.get('teacher_id'),
+                    subject_id: formData.get('subject_id'),
+                    section_id: formData.get('section_id'),
+                    schedule_day: formData.get('schedule_day'),
+                    schedule_time: formData.get('schedule_time'),
+                    academic_year_id: getCurrentAcademicYear()
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire('Success', 'Teacher assigned successfully', 'success');
+                        $('#assignTeacherModal').modal('hide');
+                        $('#assignTeacherForm')[0].reset();
+                        loadTeacherAssignments();
+                    } else {
+                        Swal.fire('Error', response.message || 'Failed to assign teacher', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Failed to assign teacher', 'error');
+                }
+            });
+        }
+
+        function getCurrentAcademicYear() {
+            return $('#current_academic_year').val();
+        }
     </script>
 </body>
 </html>

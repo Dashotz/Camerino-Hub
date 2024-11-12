@@ -1,0 +1,3 @@
+Student: user: king password: king123
+Teacher: user: chaw password: pan
+Admin: user: admin password: admin123

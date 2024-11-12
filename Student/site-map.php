@@ -126,97 +126,180 @@ if ($isLoggedIn) {
     </section>
 
     <!-- Map Section -->
-    <section class="map-section section-gap">
+    <section class="campus-map-section">
         <div class="container">
-            <h2>Our Location</h2>
-            <div class="map-container">
-                <iframe width="100%" height="450" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
-                    src="https://www.google.com/maps/d/u/0/embed?mid=1IQQpwz2BUIbK_5gMU-n1trHY0ENGoY4&ehbc=2E312F&noprof=1">
-                </iframe>
+            <div class="section-header" data-aos="fade-up">
+                <h2>Campus Location & Facilities</h2>
+                <p>Explore our campus and discover our world-class facilities</p>
+            </div>
+
+            <div class="map-wrapper" data-aos="fade-up">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/d/u/0/embed?mid=1IQQpwz2BUIbK_5gMU-n1trHY0ENGoY4&ehbc=2E312F&noprof=1"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="map-info">
+                    <div class="info-card">
+                        <div class="icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Our Address</h3>
+                        <p>Medicion 2, A.Imus City, Cavite 4103</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h3>Contact Numbers</h3>
+                        <p>+(64) 456 - 5874</p>
+                        <p>+(64) 456 - 5875</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3>Email Address</h3>
+                        <p>profcamerino@yahoo.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="facilities-grid" data-aos="fade-up">
+                <div class="facility-card">
+                    <div class="facility-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4>Library</h4>
+                    <p>Modern learning resource center</p>
+                </div>
+
+                <div class="facility-card">
+                    <div class="facility-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h4>Science Labs</h4>
+                    <p>State-of-the-art laboratories</p>
+                </div>
+
+                <div class="facility-card">
+                    <div class="facility-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h4>Computer Labs</h4>
+                    <p>Advanced computing facilities</p>
+                </div>
+
+                <div class="facility-card">
+                    <div class="facility-icon">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <h4>Sports Complex</h4>
+                    <p>Multi-purpose athletic facilities</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- School Officials Section -->
-    <section class="officials full-width section-gap">
+    <!-- Campus Directory Section -->
+    <section class="campus-directory-section">
         <div class="container">
-            <h2>Our School Officials</h2>
-            <div id="officialsCarousel" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="row">
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 1">
-                                    <h3>Tom Hiddleston</h3>
-                                    <p>Campus Registrar</p>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 2">
-                                    <h3>Jesus V. Bergado</h3>
-                                    <p>Principal</p>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 3">
-                                    <h3>Dr. Leona Uy</h3>
-                                    <p>Campus Administrator</p>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="profile">
-                                    <img src="../images/wine.jpg" alt="Official 4">
-                                    <h3>River Phoenix</h3>
-                                    <p>Campus Director</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Add more carousel items if needed -->
-                </div>
-                <ol class="carousel-indicators">
-                    <li data-target="#officialsCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#officialsCarousel" data-slide-to="1"></li>
-                    <li data-target="#officialsCarousel" data-slide-to="2"></li>
-                </ol>
+            <div class="section-header" data-aos="fade-up">
+                <h2>Campus Directory</h2>
+                <p>Navigate our campus facilities and departments with ease</p>
             </div>
-        </div>
-    </section>
 
-    <!-- School Statistics Section -->
-    <section class="school-statistics bg-light py-5 section-gap">
-        <div class="container">
-            <h2 class="text-center mb-5">Our School at a Glance</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-4 col-sm-6 mb-4">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
-                            <h3 class="card-title">1200+</h3>
-                            <p class="card-text">Enrolled Students</p>
-                        </div>
+            <div class="directory-grid" data-aos="fade-up">
+                <!-- Academic Buildings -->
+                <div class="directory-card">
+                    <div class="directory-icon">
+                        <i class="fas fa-school"></i>
                     </div>
+                    <h3>Academic Buildings</h3>
+                    <ul class="directory-list">
+                        <li>
+                            <i class="fas fa-building"></i>
+                            <span>Main Building (A)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-building"></i>
+                            <span>Science Building (B)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-building"></i>
+                            <span>Technology Building (C)</span>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-md-4 col-sm-6 mb-4">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-book fa-3x text-danger mb-3"></i>
-                            <h3 class="card-title">200+</h3>
-                            <p class="card-text">Academic Programs</p>
-                        </div>
+
+                <!-- Student Services -->
+                <div class="directory-card">
+                    <div class="directory-icon">
+                        <i class="fas fa-user-graduate"></i>
                     </div>
+                    <h3>Student Services</h3>
+                    <ul class="directory-list">
+                        <li>
+                            <i class="fas fa-id-card"></i>
+                            <span>Registrar's Office</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <span>Cashier's Office</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-user-nurse"></i>
+                            <span>School Clinic</span>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-md-4 col-sm-6 mb-4">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <i class="fas fa-chalkboard-teacher fa-3x text-success mb-3"></i>
-                            <h3 class="card-title">600+</h3>
-                            <p class="card-text">Faculty and Staff</p>
-                        </div>
+
+                <!-- Facilities -->
+                <div class="directory-card">
+                    <div class="directory-icon">
+                        <i class="fas fa-volleyball-ball"></i>
                     </div>
+                    <h3>Sports & Recreation</h3>
+                    <ul class="directory-list">
+                        <li>
+                            <i class="fas fa-running"></i>
+                            <span>Gymnasium</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-futbol"></i>
+                            <span>Sports Field</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-basketball-ball"></i>
+                            <span>Basketball Court</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Support Services -->
+                <div class="directory-card">
+                    <div class="directory-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Support Services</h3>
+                    <ul class="directory-list">
+                        <li>
+                            <i class="fas fa-book"></i>
+                            <span>Library</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-utensils"></i>
+                            <span>Cafeteria</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-parking"></i>
+                            <span>Parking Area</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
