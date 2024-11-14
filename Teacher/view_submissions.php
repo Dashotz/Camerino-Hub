@@ -77,10 +77,12 @@ $submissions = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             border: 1px solid #dee2e6;
             border-radius: 8px;
             margin-bottom: 1rem;
+            padding: 1.5rem;
+            background: white;
             transition: all 0.3s ease;
         }
         .submission-card:hover {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .status-badge {
             position: absolute;
@@ -88,10 +90,81 @@ $submissions = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             right: 1rem;
         }
         .feedback-form {
-            display: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
         }
         .feedback-form.active {
             display: block;
+        }
+        .file-preview {
+            text-align: center;
+            padding: 1rem;
+        }
+        .submission-files {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .submission-files .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .grade-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.1rem;
+        }
+        .grade-input {
+            max-width: 100px;
+        }
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .download-all {
+            margin-bottom: 1.5rem;
+        }
+        .submission-files {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .submission-files .btn-group {
+            display: inline-flex;
+        }
+
+        .submission-files .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+        }
+
+        .submission-files .btn-outline-secondary {
+            border-left: none;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .file-preview {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .file-preview i {
+            color: #1967d2;
+        }
+
+        .file-preview p {
+            margin: 10px 0;
+            word-break: break-all;
         }
     </style>
 </head>
@@ -169,10 +242,31 @@ $submissions = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                                 <div class="col-md-4">
                                     <?php if ($submission['files']): ?>
                                         <div class="submission-files">
-                                            <?php foreach (explode(',', $submission['files']) as $file): ?>
-                                                <a href="<?php echo htmlspecialchars($file); ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-file"></i> View Submission
-                                                </a>
+                                            <?php 
+                                            $files = explode(',', $submission['files']);
+                                            foreach ($files as $file): 
+                                                $fileName = basename($file);
+                                                $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                                                $icon = match($fileExt) {
+                                                    'pdf' => 'fa-file-pdf',
+                                                    'doc', 'docx' => 'fa-file-word',
+                                                    'zip' => 'fa-file-archive',
+                                                    default => 'fa-file'
+                                                };
+                                            ?>
+                                                <div class="btn-group">
+                                                    <button type="button" 
+                                                            onclick="viewSubmission('<?php echo htmlspecialchars($file); ?>', '<?php echo $fileExt; ?>')" 
+                                                            class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas <?php echo $icon; ?> mr-1"></i> 
+                                                        View
+                                                    </button>
+                                                    <a href="handlers/view_submission.php?file=<?php echo urlencode($file); ?>" 
+                                                       class="btn btn-sm btn-outline-secondary" 
+                                                       download>
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                </div>
                                             <?php endforeach; ?>
                                         </div>
                                     <?php endif; ?>
@@ -220,26 +314,27 @@ $submissions = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
     <script>
         function toggleFeedback(submissionId) {
-            const feedbackForm = document.getElementById(`feedback-${submissionId}`);
-            feedbackForm.classList.toggle('active');
+            $('.feedback-form').removeClass('active'); // Hide all other forms
+            $(`#feedback-${submissionId}`).addClass('active');
         }
 
         async function submitGrade(event, submissionId) {
             event.preventDefault();
             const form = event.target;
-            const points = form.points.value;
-            const feedback = form.feedback.value;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
             try {
-                const response = await fetch('grade_submission.php', {
+                const response = await fetch('handlers/grade_submission.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         submission_id: submissionId,
-                        points: points,
-                        feedback: feedback
+                        points: parseFloat(form.points.value),
+                        feedback: form.feedback.value
                     })
                 });
 
@@ -262,6 +357,115 @@ $submissions = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     text: error.message || 'Failed to save grade',
                     icon: 'error'
                 });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Save Grade';
+            }
+        }
+
+        // Add download all submissions functionality
+        function downloadAllSubmissions(activityId) {
+            window.location.href = `handlers/download_submissions.php?activity_id=${activityId}`;
+        }
+
+        // Preview file before downloading
+        function previewFile(filePath) {
+            const fileExt = filePath.split('.').pop().toLowerCase();
+            const isPDF = fileExt === 'pdf';
+            
+            if (isPDF) {
+                window.open(filePath, '_blank');
+            } else {
+                Swal.fire({
+                    title: 'File Preview',
+                    html: `
+                        <div class="file-preview">
+                            <i class="fas fa-file fa-3x mb-3"></i>
+                            <p>${filePath.split('/').pop()}</p>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Download',
+                    cancelButtonText: 'Close'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = filePath;
+                    }
+                });
+            }
+        }
+
+        function viewSubmission(filePath, fileType) {
+            // Create the full path to the file
+            const viewerPath = 'handlers/view_submission.php?file=' + encodeURIComponent(filePath);
+            
+            if (fileType === 'pdf') {
+                // Open PDF in a new window
+                const newWindow = window.open(viewerPath, '_blank');
+                
+                // Check if the window was blocked
+                if (newWindow === null) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please allow pop-ups to view PDF files',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } else {
+                // Show preview modal for other file types
+                Swal.fire({
+                    title: 'File Preview',
+                    html: `
+                        <div class="file-preview">
+                            <i class="fas fa-file-${getFileIcon(fileType)} fa-3x mb-3"></i>
+                            <p class="mb-2">${filePath.split('/').pop()}</p>
+                            <small class="text-muted">Click Download to view this file type</small>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Download',
+                    cancelButtonText: 'Close'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Try to download the file
+                        fetch(viewerPath)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('File not found or access denied');
+                                }
+                                return response.blob();
+                            })
+                            .then(blob => {
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = filePath.split('/').pop();
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                                document.body.removeChild(a);
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: error.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            });
+                    }
+                });
+            }
+        }
+
+        function getFileIcon(fileType) {
+            switch(fileType) {
+                case 'pdf': return 'pdf';
+                case 'doc':
+                case 'docx': return 'word';
+                case 'zip': return 'archive';
+                default: return 'alt';
             }
         }
     </script>

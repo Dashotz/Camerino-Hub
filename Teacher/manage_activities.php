@@ -988,6 +988,71 @@ function getActivityFiles($activity_id) {
             });
         });
     });
+
+    // Update the createActivityForm submit handler
+    document.getElementById('createActivityForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        // Get activity details for announcement
+        const type = formData.get('type');
+        const title = formData.get('title');
+        const dueDate = new Date(formData.get('due_date')).toLocaleDateString();
+        const points = formData.get('points');
+        const sectionSubjectSelect = document.querySelector('select[name="section_subject_id"]');
+        const selectedOption = sectionSubjectSelect.options[sectionSubjectSelect.selectedIndex];
+        const sectionSubjectText = selectedOption.text;
+
+        // Create announcement content based on activity type
+        let announcementContent = '';
+        switch(type) {
+            case 'quiz':
+                announcementContent = `A new quiz has been posted: "${title}"\n\n` +
+                                    `Please complete this quiz by ${dueDate}.\n` +
+                                    `Total Points: ${points}\n` +
+                                    `Section: ${sectionSubjectText}`;
+                break;
+            case 'assignment':
+                announcementContent = `A new assignment has been posted: "${title}"\n\n` +
+                                    `Please submit your work by ${dueDate}.\n` +
+                                    `Total Points: ${points}\n` +
+                                    `Section: ${sectionSubjectText}`;
+                break;
+            case 'activity':
+                announcementContent = `A new activity has been posted: "${title}"\n\n` +
+                                    `Please complete this activity by ${dueDate}.\n` +
+                                    `Total Points: ${points}\n` +
+                                    `Section: ${sectionSubjectText}`;
+                break;
+        }
+
+        // Add announcement data to formData
+        formData.append('create_announcement', 'true');
+        formData.append('announcement_content', announcementContent);
+
+        // Submit the form with both activity and announcement data
+        fetch('create_activity.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Activity created and announcement posted successfully!',
+                    icon: 'success'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                throw new Error(data.message || 'Failed to create activity');
+            }
+        })
+        .catch(error => {
+            Swal.fire('Error!', error.message, 'error');
+        });
+    });
     </script>
 </body>
 </html>

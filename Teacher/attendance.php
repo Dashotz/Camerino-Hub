@@ -10,53 +10,26 @@ if (!isset($_SESSION['teacher_id'])) {
 $db = new DbConnector();
 $teacher_id = $_SESSION['teacher_id'];
 
-// Get all classes taught by this teacher
-$classes_query = "SELECT 
-    c.class_id,
-    c.section_name,
-    s.subject_code,
-    s.subject_name,
-    c.schedule_day,
-    c.schedule_time
-FROM classes c
-JOIN subjects s ON c.subject_id = s.id
-WHERE c.teacher_id = ?
-ORDER BY c.section_name";
+// Get teacher's sections and subjects
+$query = "
+    SELECT DISTINCT 
+        ss.id as section_subject_id,
+        s.section_name,
+        sub.subject_name,
+        sub.subject_code,
+        ss.schedule_day,
+        ss.schedule_time
+    FROM section_subjects ss
+    JOIN sections s ON ss.section_id = s.section_id
+    JOIN subjects sub ON ss.subject_id = sub.id
+    WHERE ss.teacher_id = ? 
+    AND ss.status = 'active'
+    ORDER BY s.section_name, sub.subject_name";
 
-$stmt = $db->prepare($classes_query);
+$stmt = $db->prepare($query);
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();
 $classes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-// Get today's date
-$today = date('Y-m-d');
-
-// If a specific date is selected
-$selected_date = isset($_GET['date']) ? $_GET['date'] : $today;
-$selected_class = isset($_GET['class_id']) ? $_GET['class_id'] : ($classes[0]['class_id'] ?? null);
-
-// Get students and their attendance for the selected class and date
-if ($selected_class) {
-    $students_query = "SELECT 
-        s.student_id,
-        s.firstname,
-        s.lastname,
-        s.middle_name,
-        a.status,
-        a.id as attendance_id
-    FROM student s
-    JOIN student_courses sc ON s.student_id = sc.student_id
-    LEFT JOIN attendance a ON s.student_id = a.student_id 
-        AND a.date = ? 
-        AND a.course_id = ?
-    WHERE sc.class_id = ?
-    ORDER BY s.lastname, s.firstname";
-
-    $stmt = $db->prepare($students_query);
-    $stmt->bind_param("sii", $selected_date, $selected_class, $selected_class);
-    $stmt->execute();
-    $students = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
 ?>
 
 <!DOCTYPE html>
@@ -64,192 +37,201 @@ if ($selected_class) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance - CamerinoHub</title>
+    <title>Attendance - Teacher Dashboard</title>
     
     <!-- External CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
-    <style>
-        .attendance-card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            margin-bottom: 1rem;
-        }
-        .attendance-header {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .attendance-controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .status-badge {
-            width: 100px;
-            text-align: center;
-        }
-        .student-name {
-            min-width: 200px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/attendance.css">
 </head>
 <body>
-    <?php include 'includes/navigation.php'; ?>
-    
     <div class="dashboard-container">
         <?php include 'includes/sidebar.php'; ?>
         
         <div class="main-content">
-            <div class="content-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1>Attendance</h1>
-                        <p>Manage student attendance records</p>
+            <?php include 'includes/navigation.php'; ?>
+            
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="page-title">Attendance Management</h2>
+                        
+                        <div class="card">
+                            <div class="card-body">
+                                <form id="attendanceForm" method="post">
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <select class="form-control" id="sectionSubject" name="section_subject_id" required>
+                                                <option value="">Select Class</option>
+                                                <?php foreach ($classes as $class): ?>
+                                                    <option value="<?php echo $class['section_subject_id']; ?>">
+                                                        <?php echo $class['section_name'] . ' - ' . $class['subject_name'] . 
+                                                              ' (' . $class['schedule_day'] . ' ' . 
+                                                              date('h:i A', strtotime($class['schedule_time'])) . ')'; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="date" class="form-control" id="attendanceDate" 
+                                                   name="date" value="<?php echo date('Y-m-d'); ?>" required>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-primary" id="loadStudents">
+                                                Load Students
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div id="studentList" class="student-list">
+                                        <!-- Students will be loaded here -->
+                                    </div>
+
+                                    <div class="mt-3" id="submitButtons" style="display: none;">
+                                        <button type="submit" class="btn btn-success">Save Attendance</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5>Export Attendance Records</h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="export_attendance.php" method="post" class="row align-items-end">
+                                    <div class="col-md-4">
+                                        <label>Export Today's Attendance</label>
+                                        <button type="submit" name="export_today" class="btn btn-primary btn-block">
+                                            <i class="fas fa-download"></i> Export Today's Report
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label>Export Monthly Attendance</label>
+                                        <div class="input-group">
+                                            <select name="month" class="form-control" required>
+                                                <?php
+                                                $months = [
+                                                    1 => 'January', 2 => 'February', 3 => 'March',
+                                                    4 => 'April', 5 => 'May', 6 => 'June',
+                                                    7 => 'July', 8 => 'August', 9 => 'September',
+                                                    10 => 'October', 11 => 'November', 12 => 'December'
+                                                ];
+                                                $currentMonth = date('n');
+                                                foreach ($months as $num => $name) {
+                                                    $selected = ($num == $currentMonth) ? 'selected' : '';
+                                                    echo "<option value='$num' $selected>$name</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <select name="year" class="form-control" required>
+                                                <?php
+                                                $currentYear = date('Y');
+                                                for ($year = $currentYear; $year >= $currentYear - 2; $year--) {
+                                                    echo "<option value='$year'>$year</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <div class="input-group-append">
+                                                <button type="submit" name="export_month" class="btn btn-success">
+                                                    <i class="fas fa-file-export"></i> Export
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Export Date Range</label>
+                                        <div class="input-group">
+                                            <input type="date" name="start_date" class="form-control" required>
+                                            <input type="date" name="end_date" class="form-control" required>
+                                            <div class="input-group-append">
+                                                <button type="submit" name="export_range" class="btn btn-info">
+                                                    <i class="fas fa-calendar"></i> Export Range
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="attendance-controls">
-                <select class="form-control" id="classSelect" style="width: 200px;">
-                    <?php foreach ($classes as $class): ?>
-                        <option value="<?php echo $class['class_id']; ?>" 
-                            <?php echo ($selected_class == $class['class_id']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($class['section_name'] . ' - ' . $class['subject_code']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-
-                <input type="text" id="datePicker" class="form-control" style="width: 150px;"
-                       value="<?php echo $selected_date; ?>" placeholder="Select date">
-
-                <button class="btn btn-primary" onclick="saveAllAttendance()">
-                    <i class="fas fa-save"></i> Save All
-                </button>
-            </div>
-
-            <?php if (isset($students) && !empty($students)): ?>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($students as $student): ?>
-                                <tr>
-                                    <td class="student-name">
-                                        <?php echo htmlspecialchars($student['lastname'] . ', ' . 
-                                                                   $student['firstname'] . ' ' . 
-                                                                   $student['middle_name']); ?>
-                                    </td>
-                                    <td>
-                                        <select class="form-control status-select" 
-                                                data-student-id="<?php echo $student['student_id']; ?>"
-                                                data-attendance-id="<?php echo $student['attendance_id']; ?>">
-                                            <option value="present" <?php echo ($student['status'] == 'present') ? 'selected' : ''; ?>>Present</option>
-                                            <option value="absent" <?php echo ($student['status'] == 'absent') ? 'selected' : ''; ?>>Absent</option>
-                                            <option value="late" <?php echo ($student['status'] == 'late') ? 'selected' : ''; ?>>Late</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success save-btn" 
-                                                onclick="saveAttendance(<?php echo $student['student_id']; ?>)">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php else: ?>
-                <div class="alert alert-info">
-                    No students found for the selected class.
-                </div>
-            <?php endif; ?>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <?php include 'includes/scripts.php'; ?>
     
     <script>
     $(document).ready(function() {
-        // Initialize date picker
-        flatpickr("#datePicker", {
-            dateFormat: "Y-m-d",
-            maxDate: "today",
-            defaultDate: "<?php echo $selected_date; ?>"
+        $('#loadStudents').click(function() {
+            const sectionSubjectId = $('#sectionSubject').val();
+            const date = $('#attendanceDate').val();
+            
+            if (!sectionSubjectId || !date) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please select both class and date',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            $.ajax({
+                url: 'handlers/get_students_attendance.php',
+                method: 'POST',
+                data: {
+                    section_subject_id: sectionSubjectId,
+                    date: date
+                },
+                success: function(response) {
+                    $('#studentList').html(response);
+                    $('#submitButtons').show();
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to load students',
+                        icon: 'error'
+                    });
+                }
+            });
         });
 
-        // Handle class selection change
-        $('#classSelect').change(function() {
-            updatePage();
-        });
-
-        // Handle date selection change
-        $('#datePicker').change(function() {
-            updatePage();
+        $('#attendanceForm').submit(function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                url: 'handlers/save_attendance.php',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    const result = JSON.parse(response);
+                    if (result.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Attendance has been saved',
+                            icon: 'success'
+                        }).then(() => {
+                            $('#loadStudents').click();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: result.message,
+                            icon: 'error'
+                        });
+                    }
+                }
+            });
         });
     });
-
-    function updatePage() {
-        const classId = $('#classSelect').val();
-        const date = $('#datePicker').val();
-        window.location.href = `attendance.php?class_id=${classId}&date=${date}`;
-    }
-
-    function saveAttendance(studentId) {
-        const status = $(`.status-select[data-student-id="${studentId}"]`).val();
-        const attendanceId = $(`.status-select[data-student-id="${studentId}"]`).data('attendance-id');
-        const classId = $('#classSelect').val();
-        const date = $('#datePicker').val();
-
-        $.post('save_attendance.php', {
-            student_id: studentId,
-            attendance_id: attendanceId,
-            class_id: classId,
-            date: date,
-            status: status
-        }, function(response) {
-            const result = JSON.parse(response);
-            if (result.success) {
-                showAlert('success', 'Attendance saved successfully!');
-            } else {
-                showAlert('danger', 'Error saving attendance: ' + result.message);
-            }
-        });
-    }
-
-    function saveAllAttendance() {
-        $('.save-btn').each(function() {
-            $(this).click();
-        });
-    }
-
-    function showAlert(type, message) {
-        const alert = $(`<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
-        </div>`);
-        
-        $('.content-header').after(alert);
-        setTimeout(() => alert.alert('close'), 3000);
-    }
     </script>
 </body>
 </html>

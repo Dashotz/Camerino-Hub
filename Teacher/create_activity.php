@@ -114,6 +114,35 @@ try {
             }
         }
 
+        // If activity creation successful and announcement requested
+        if (isset($_POST['create_announcement']) && $_POST['create_announcement'] === 'true') {
+            // Get section and subject IDs from section_subject_id
+            $query = "SELECT section_id, subject_id FROM section_subjects WHERE id = ?";
+            $stmt = $db->prepare($query);
+            $stmt->bind_param("i", $_POST['section_subject_id']);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+
+            // Create announcement
+            $announcement_query = "INSERT INTO announcements (
+                teacher_id, 
+                section_id, 
+                subject_id, 
+                content, 
+                status,
+                created_at
+            ) VALUES (?, ?, ?, ?, 'active', NOW())";
+
+            $stmt = $db->prepare($announcement_query);
+            $stmt->bind_param("iiis", 
+                $teacher_id,
+                $result['section_id'],
+                $result['subject_id'],
+                $_POST['announcement_content']
+            );
+            $stmt->execute();
+        }
+
         // Commit transaction
         $db->commit();
 

@@ -23,21 +23,93 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link" href="#" role="button" data-toggle="dropdown">
                         <i class="fas fa-bell"></i>
-                        <span class="badge badge-danger">3</span>
+                        <?php
+                        $teacher_id = $_SESSION['teacher_id'];
+                        
+                        // Get unread notifications count
+                        $count_query = "SELECT COUNT(*) as unread 
+                                       FROM notifications 
+                                       WHERE user_id = ? 
+                                       AND user_type = 'teacher' 
+                                       AND is_read = 0";
+                        $stmt = $db->prepare($count_query);
+                        $stmt->bind_param("i", $teacher_id);
+                        $stmt->execute();
+                        $unread_count = $stmt->get_result()->fetch_assoc()['unread'];
+                        
+                        if($unread_count > 0) {
+                            echo "<span class='badge badge-danger'>$unread_count</span>";
+                        }
+                        
+                        // Get recent notifications
+                        $notifications_query = "
+                            SELECT n.*, 
+                                   CASE 
+                                       WHEN n.type = 'quiz' THEN a.title
+                                       WHEN n.type = 'activity' THEN a.title
+                                       WHEN n.type = 'assignment' THEN a.title
+                                   END as reference_title
+                            FROM notifications n
+                            LEFT JOIN activities a ON n.reference_id = a.activity_id
+                            WHERE n.user_id = ? 
+                            AND n.user_type = 'teacher'
+                            ORDER BY n.created_at DESC 
+                            LIMIT 5";
+                        
+                        $stmt = $db->prepare($notifications_query);
+                        $stmt->bind_param("i", $teacher_id);
+                        $stmt->execute();
+                        $notifications = $stmt->get_result();
+                        ?>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right notifications-dropdown">
                         <h6 class="dropdown-header">Notifications</h6>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
-                            <div class="notification-item">
-                                <i class="fas fa-file-alt text-primary"></i>
-                                <div class="notification-content">
-                                    <p class="mb-1">New assignment posted</p>
-                                    <small class="text-muted">5 minutes ago</small>
+                        <?php
+                        if ($notifications->num_rows > 0) {
+                            while ($notif = $notifications->fetch_assoc()) {
+                                $icon_class = '';
+                                switch ($notif['type']) {
+                                    case 'quiz':
+                                        $icon_class = 'fas fa-question-circle text-primary';
+                                        break;
+                                    case 'activity':
+                                        $icon_class = 'fas fa-tasks text-success';
+                                        break;
+                                    case 'assignment':
+                                        $icon_class = 'fas fa-file-alt text-warning';
+                                        break;
+                                }
+                                ?>
+                                <a class="dropdown-item <?php echo $notif['is_read'] ? '' : 'unread'; ?>" 
+                                   href="view_notification.php?id=<?php echo $notif['id']; ?>">
+                                    <div class="notification-item">
+                                        <i class="<?php echo $icon_class; ?>"></i>
+                                        <div class="notification-content">
+                                            <p class="mb-1"><?php echo htmlspecialchars($notif['message']); ?></p>
+                                            <small class="text-muted">
+                                                <?php echo timeAgo($notif['created_at']); ?>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </a>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <div class="dropdown-item no-notifications">
+                                <div class="text-center py-3">
+                                    <i class="fas fa-bell-slash text-muted mb-2" style="font-size: 24px;"></i>
+                                    <p class="mb-0">No notifications</p>
                                 </div>
                             </div>
+                            <?php
+                        }
+                        ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-center" href="all_notifications.php">
+                            <small>View All Notifications</small>
                         </a>
-                        <!-- More notification items -->
                     </div>
                 </li>
 

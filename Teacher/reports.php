@@ -72,6 +72,42 @@ if ($selected_class) {
     $stmt->execute();
     $performance_data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
+
+function getDateRange($range_type) {
+    $today = new DateTime();
+    
+    switch($range_type) {
+        case 'This Month':
+            $start = new DateTime('first day of this month');
+            $end = new DateTime('last day of this month');
+            break;
+        case 'Last Month':
+            $start = new DateTime('first day of last month');
+            $end = new DateTime('last day of last month');
+            break;
+        case 'This Week':
+            $start = new DateTime('monday this week');
+            $end = new DateTime('sunday this week');
+            break;
+        case 'Last Week':
+            $start = new DateTime('monday last week');
+            $end = new DateTime('sunday last week');
+            break;
+        default:
+            $start = new DateTime('first day of this month');
+            $end = new DateTime('last day of this month');
+    }
+    
+    return [
+        'start' => $start->format('Y-m-d'),
+        'end' => $end->format('Y-m-d')
+    ];
+}
+
+// Usage in your queries
+$date_range = getDateRange($selected_range); // $selected_range would be 'This Month', 'Last Month', etc.
+$start_date = $date_range['start'];
+$end_date = $date_range['end'];
 ?>
 
 <!DOCTYPE html>
@@ -111,6 +147,154 @@ if ($selected_class) {
         .performance-table th {
             background-color: #f8f9fa;
         }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 60px; /* Match your navigation height */
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            margin-left: 250px; /* Match your sidebar width */
+        }
+
+        .content-header {
+            margin-bottom: 25px;
+        }
+
+        .content-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .content-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        /* Fix the navigation gap */
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+        }
+
+        /* Fix the sidebar */
+        .sidebar {
+            position: fixed;
+            top: 60px; /* Match navigation height */
+            left: 0;
+            bottom: 0;
+            width: 250px;
+            background: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1020;
+            overflow-y: auto;
+        }
+
+        /* Improve card styling */
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Improve table styling */
+        .performance-table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .performance-table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+        }
+
+        .performance-table .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+
+        .performance-table .badge {
+            padding: 6px 12px;
+            font-weight: 500;
+        }
+
+        /* Filter section styling */
+        .filter-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .filter-section select {
+            min-width: 200px;
+        }
+
+        .filter-section .btn-primary {
+            padding: 0.375rem 1rem;
+        }
+
+        /* DataTables customization */
+        .dataTables_wrapper .btn-group {
+            margin-bottom: 1rem;
+        }
+
+        .dataTables_wrapper .btn {
+            margin-right: 0.5rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -130,10 +314,10 @@ if ($selected_class) {
             </div>
 
             <!-- Report Filters -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <form method="GET" class="form-inline">
-                        <select name="class_id" class="form-control mr-2">
+            <div class="filter-section">
+                <form method="GET" class="form-inline">
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <select name="class_id" class="form-control mr-2 mb-2">
                             <option value="">Select Class</option>
                             <?php foreach ($classes as $class): ?>
                                 <option value="<?php echo $class['class_id']; ?>" 
@@ -143,18 +327,18 @@ if ($selected_class) {
                             <?php endforeach; ?>
                         </select>
 
-                        <select name="date_range" class="form-control mr-2">
-                            <option value="this_month" <?php echo ($date_range == 'this_month') ? 'selected' : ''; ?>>This Month</option>
-                            <option value="last_month" <?php echo ($date_range == 'last_month') ? 'selected' : ''; ?>>Last Month</option>
-                            <option value="this_week" <?php echo ($date_range == 'this_week') ? 'selected' : ''; ?>>This Week</option>
-                            <option value="last_week" <?php echo ($date_range == 'last_week') ? 'selected' : ''; ?>>Last Week</option>
+                        <select name="date_range" class="form-control mr-2 mb-2">
+                            <option value="this_month">This Month</option>
+                            <option value="last_month">Last Month</option>
+                            <option value="this_week">This Week</option>
+                            <option value="last_week">Last Week</option>
                         </select>
 
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary mb-2">
                             <i class="fas fa-filter"></i> Apply Filters
                         </button>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
 
             <?php if ($selected_class && !empty($performance_data)): ?>

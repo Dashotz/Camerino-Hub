@@ -101,3 +101,31 @@ body {
         margin-left: 70px;
     }
 }
+
+.notifications-dropdown {
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-content {
+    white-space: normal;
+}
+
+.notification-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.notification-text {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.unread {
+    background-color: #f8f9fa;
+}
+
+.unread .notification-title {
+    color: #007bff;
+}

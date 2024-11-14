@@ -59,6 +59,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <span>Quizzes</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo $current_page == 'student_announcements.php' ? 'active' : ''; ?>" 
+                   href="student_announcements.php">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+            </li>
         </ul>
 
         <div class="sidebar-footer">

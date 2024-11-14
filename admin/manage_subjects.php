@@ -31,6 +31,8 @@ $admin = $result->fetch_assoc();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
@@ -219,9 +221,39 @@ $admin = $result->fetch_assoc();
             color: #95a5a6;
             font-size: 0.8rem;
         }
+
+        /* DataTable Styling */
+        .dataTables_wrapper .dataTables_length select {
+            min-width: 60px;
+            padding: 4px 8px;
+        }
+        
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 8px;
+            padding: 4px 8px;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5em 1em;
+            margin: 0 2px;
+        }
+        
+        .dataTables_wrapper .dataTables_info {
+            padding-top: 1em;
+        }
+        
+        .dt-buttons {
+            margin-bottom: 1em;
+        }
+        
+        .dt-button {
+            padding: 0.3em 1em;
+            margin-right: 0.5em;
+        }
     </style>
 </head>
 <body>
+    
     <?php include 'includes/navigation.php'; ?>
     
     <div class="dashboard-container">
@@ -294,116 +326,122 @@ $admin = $result->fetch_assoc();
             <!-- Subjects Table Section -->
             <div class="card mt-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Subject List</h5>
-                    <button class="btn btn-primary" onclick="showAddSubjectModal()">
+                    <h4 class="mb-0">Manage Subjects</h4>
+                    <a href="add_subject.php" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Add New Subject
-                    </button>
+                    </a>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="subjectTable" class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Subject Code</th>
-                                    <th>Subject Title</th>
-                                    <th>Category</th>
-                                    <th>Assigned Teachers</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <!-- Add tabs -->
+                    <ul class="nav nav-tabs mb-3" id="subjectTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active" role="tab">
+                                Active Subjects
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="archived-tab" data-toggle="tab" href="#archived" role="tab">
+                                Archived Subjects
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Tab content -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="active" role="tabpanel">
+                            <div class="table-responsive">
+                                <table id="activeSubjectTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject Code</th>
+                                            <th>Subject Title</th>
+                                            <th>Category</th>
+                                            <th>Assigned Teachers</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="archived" role="tabpanel">
+                            <div class="table-responsive">
+                                <table id="archivedSubjectTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject Code</th>
+                                            <th>Subject Title</th>
+                                            <th>Category</th>
+                                            <th>Updated Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Subject Modal -->
-    <div class="modal fade" id="subjectModal" tabindex="-1">
+    <!-- Edit Subject Modal -->
+    <div class="modal fade" id="editSubjectModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Add New Subject</h5>
+                    <h5 class="modal-title">Edit Subject</h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <form id="subjectForm">
+                <form action="handlers/subject_handler.php" method="POST">
+                    <input type="hidden" name="action" value="edit_subject">
+                    <input type="hidden" name="subject_id" value="<?php echo isset($_GET['edit_id']) ? htmlspecialchars($_GET['edit_id']) : ''; ?>">
+                    
                     <div class="modal-body">
-                        <input type="hidden" name="subject_id" id="subject_id">
-                        
-                        <div class="form-group">
-                            <label>Subject Code*</label>
-                            <input type="text" class="form-control" name="subject_code" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Subject Title*</label>
-                            <input type="text" class="form-control" name="subject_title" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Category*</label>
-                            <select class="form-control" name="category" required>
-                                <option value="">Select Category</option>
-                                <option value="Core">Core Subject</option>
-                                <option value="Major">Major Subject</option>
-                                <option value="Minor">Minor Subject</option>
-                                <option value="Elective">Elective</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Grade Level*</label>
-                            <select class="form-control" name="grade_level" required>
-                                <option value="">Select Grade Level</option>
-                                <option value="7">Grade 7</option>
-                                <option value="8">Grade 8</option>
-                                <option value="9">Grade 9</option>
-                                <option value="10">Grade 10</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea class="form-control" name="description" rows="3"></textarea>
-                        </div>
+                        <?php
+                        if (isset($_GET['edit_id'])) {
+                            $edit_id = $_GET['edit_id'];
+                            $query = "SELECT * FROM subjects WHERE id = ?";
+                            $stmt = $db->prepare($query);
+                            $stmt->bind_param("i", $edit_id);
+                            $stmt->execute();
+                            $subject = $stmt->get_result()->fetch_assoc();
+                            if ($subject) {
+                        ?>
+                            <div class="form-group">
+                                <label>Subject Code*</label>
+                                <input type="text" class="form-control" name="subject_code" value="<?php echo htmlspecialchars($subject['subject_code']); ?>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Subject Title*</label>
+                                <input type="text" class="form-control" name="subject_title" value="<?php echo htmlspecialchars($subject['subject_title']); ?>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Category*</label>
+                                <select class="form-control" name="category" required>
+                                    <option value="Core" <?php echo $subject['category'] == 'Core' ? 'selected' : ''; ?>>Core Subject</option>
+                                    <option value="Major" <?php echo $subject['category'] == 'Major' ? 'selected' : ''; ?>>Major Subject</option>
+                                    <option value="Minor" <?php echo $subject['category'] == 'Minor' ? 'selected' : ''; ?>>Minor Subject</option>
+                                    <option value="Elective" <?php echo $subject['category'] == 'Elective' ? 'selected' : ''; ?>>Elective</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" name="description" rows="3"><?php echo htmlspecialchars($subject['description'] ?? ''); ?></textarea>
+                            </div>
+                        <?php 
+                            }
+                        }
+                        ?>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Subject</button>
+                        <button type="submit" class="btn btn-primary">Update Subject</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Subject Modal -->
-    <div class="modal fade" id="viewSubjectModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Subject Details</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="subject-info"></div>
-                    <div class="teacher-assignments mt-4">
-                        <h6>Teacher Assignments</h6>
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Teacher</th>
-                                        <th>Section</th>
-                                        <th>Schedule</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="teacherAssignmentsList"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -415,10 +453,289 @@ $admin = $result->fetch_assoc();
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <!-- Your existing scripts here -->
 
     <script>
+        $(document).ready(function() {
+            // Initialize active subjects table
+            const activeTable = $('#activeSubjectTable').DataTable({
+                ajax: {
+                    url: 'handlers/subject_handler.php',
+                    type: 'GET',
+                    data: { 
+                        action: 'get_subjects',
+                        status: 'active'
+                    }
+                },
+                processing: true,
+                serverSide: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                columns: [
+                    { data: 'subject_code' },
+                    { data: 'subject_title' },
+                    { 
+                        data: 'category',
+                        render: function(data) {
+                            const badges = {
+                                'Core': 'primary',
+                                'Major': 'success',
+                                'Minor': 'info',
+                                'Elective': 'warning'
+                            };
+                            return `<span class="badge badge-${badges[data] || 'secondary'}">${data}</span>`;
+                        }
+                    },
+                    { 
+                        data: 'assigned_teachers',
+                        render: function(data) {
+                            return `<span class="badge badge-info">${data} Teacher(s)</span>`;
+                        }
+                    },
+                    {
+                        data: 'status',
+                        render: function(data) {
+                            return `<span class="badge badge-success">Active</span>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                                <div class="btn-group">
+                                    <a href="view_subject.php?id=${row.id}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="edit_subject.php?id=${row.id}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button onclick="archiveSubject(${row.id})" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-archive"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                order: [[0, 'asc']],
+                dom: '<"top"<"d-flex justify-content-between"<"length-menu"l><"search-box"f>>>rt<"bottom"<"d-flex justify-content-between"<"showing-entries"i><"pagination-wrapper"p>>>',
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    search: "Search:",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    },
+                    emptyTable: "No subjects found",
+                    zeroRecords: "No matching records found"
+                },
+                drawCallback: function(settings) {
+                    // Refresh the table when length menu changes
+                    $('.dataTables_length select').on('change', function() {
+                        $(this).closest('.dataTables_wrapper').find('.dataTable').DataTable().ajax.reload();
+                    });
+                }
+            });
+
+            // Initialize archived subjects table
+            const archivedTable = $('#archivedSubjectTable').DataTable({
+                ajax: {
+                    url: 'handlers/subject_handler.php',
+                    type: 'GET',
+                    data: { 
+                        action: 'get_subjects',
+                        status: 'inactive'
+                    },
+                    dataSrc: function(json) {
+                        return json.data || [];
+                    }
+                },
+                processing: true,
+                serverSide: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                columns: [
+                    { data: 'subject_code' },
+                    { data: 'subject_title' },
+                    { 
+                        data: 'category',
+                        render: function(data) {
+                            const badges = {
+                                'Core': 'primary',
+                                'Major': 'success',
+                                'Minor': 'info',
+                                'Elective': 'warning'
+                            };
+                            return `<span class="badge badge-${badges[data] || 'secondary'}">${data}</span>`;
+                        }
+                    },
+                    { 
+                        data: 'updated_at',
+                        render: function(data) {
+                            return moment(data).format('MMM DD, YYYY');
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                                <div class="btn-group">
+                                    <a href="view_subject.php?id=${row.id}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button onclick="restoreSubject(${row.id})" class="btn btn-success btn-sm">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button onclick="deleteSubject(${row.id})" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                order: [[0, 'asc']],
+                dom: '<"top"<"d-flex justify-content-between"<"length-menu"l><"search-box"f>>>rt<"bottom"<"d-flex justify-content-between"<"showing-entries"i><"pagination-wrapper"p>>>',
+                language: {
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    search: "Search:",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    },
+                    emptyTable: "No archived subjects found",
+                    zeroRecords: "No matching records found"
+                }
+            });
+
+            // Add restore function
+            window.restoreSubject = function(id) {
+                Swal.fire({
+                    title: 'Restore Subject?',
+                    text: "This will make the subject active again",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, restore it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: 'Restoring...',
+                            text: 'Please wait',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        $.ajax({
+                            url: 'handlers/subject_handler.php',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { 
+                                action: 'restore_subject', 
+                                id: id 
+                            },
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: response.message,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    }).then(() => {
+                                        // Refresh both tables
+                                        $('#activeSubjectTable').DataTable().ajax.reload();
+                                        $('#archivedSubjectTable').DataTable().ajax.reload();
+                                        // Refresh stats
+                                        loadDashboardStats();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message || 'Failed to restore subject'
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Restore error:', error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Failed to connect to server. Please try again.'
+                                });
+                            }
+                        });
+                    }
+                });
+            };
+
+            // Add delete function
+            function deleteSubject(id) {
+                Swal.fire({
+                    title: 'Delete Subject?',
+                    text: "This action cannot be undone",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'handlers/subject_handler.php',
+                            type: 'POST',
+                            data: { 
+                                action: 'delete_subject', 
+                                id: id 
+                            },
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    Swal.fire('Deleted!', response.message, 'success');
+                                    archivedTable.ajax.reload();
+                                    loadDashboardStats();
+                                } else {
+                                    Swal.fire('Error', response.message, 'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Refresh tables when switching tabs
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+                if (e.target.id === 'archived-tab') {
+                    archivedTable.ajax.reload();
+                } else {
+                    activeTable.ajax.reload();
+                }
+            });
+
+            // Load initial stats
+            loadDashboardStats();
+        });
+
         function loadDashboardStats() {
             $.ajax({
                 url: 'handlers/subject_handler.php',
@@ -482,188 +799,10 @@ $admin = $result->fetch_assoc();
             `);
         }
 
-        // Initialize on page load
-        $(document).ready(function() {
-            // Set initial state of cards
-            $('.stats-card').css({
-                opacity: 0
-            });
-            
-            // Load stats
-            loadDashboardStats();
-            
-            // Refresh stats every 30 seconds
-            setInterval(loadDashboardStats, 30000);
-        });
-
-        // Initialize DataTable
-        $(document).ready(function() {
-            $('#subjectTable').DataTable({
-                ajax: {
-                    url: 'handlers/subject_handler.php',
-                    type: 'GET',
-                    data: { action: 'get_subjects' }
-                },
-                columns: [
-                    { data: 'subject_code' },
-                    { data: 'subject_title' },
-                    { 
-                        data: 'category',
-                        render: function(data, type, row) {
-                            const badges = {
-                                'Core': 'primary',
-                                'Major': 'success',
-                                'Minor': 'info',
-                                'Elective': 'warning'
-                            };
-                            return `<span class="badge badge-${badges[data] || 'secondary'}">${data}</span>`;
-                        }
-                    },
-                    { 
-                        data: 'teacher_count',
-                        render: function(data) {
-                            return `<span class="badge badge-info">${data} Teacher(s)</span>`;
-                        }
-                    },
-                    {
-                        data: 'status',
-                        render: function(data) {
-                            return `<span class="badge badge-${data === 'active' ? 'success' : 'danger'}">${data}</span>`;
-                        }
-                    },
-                    {
-                        data: null,
-                        render: function(data) {
-                            return `
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-info" onclick="viewSubject(${data.id})">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-primary" onclick="editSubject(${data.id})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-danger" onclick="archiveSubject(${data.id})">
-                                        <i class="fas fa-archive"></i>
-                                    </button>
-                                </div>`;
-                        }
-                    }
-                ],
-                order: [[0, 'asc']]
-            });
-        });
-
-        // Form handling
-        $('#subjectForm').on('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const subjectId = $('#subject_id').val();
-            
-            formData.append('action', subjectId ? 'edit_subject' : 'add_subject');
-            
-            $.ajax({
-                url: 'handlers/subject_handler.php',
-                type: 'POST',
-                data: Object.fromEntries(formData),
-                success: function(response) {
-                    if (response.status === 'success') {
-                        Swal.fire('Success', response.message, 'success');
-                        $('#subjectModal').modal('hide');
-                        $('#subjectTable').DataTable().ajax.reload();
-                        loadDashboardStats();
-                    } else {
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                }
-            });
-        });
-
-        function showAddSubjectModal() {
-            $('#modalTitle').text('Add New Subject');
-            $('#subjectForm')[0].reset();
-            $('#subject_id').val('');
-            $('#subjectModal').modal('show');
-        }
-
-        function editSubject(id) {
-            $.ajax({
-                url: 'handlers/subject_handler.php',
-                type: 'GET',
-                data: { action: 'get_subject_details', id: id },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const subject = response.data;
-                        $('#modalTitle').text('Edit Subject');
-                        $('#subject_id').val(subject.id);
-                        $('input[name="subject_code"]').val(subject.subject_code);
-                        $('input[name="subject_title"]').val(subject.subject_title);
-                        $('select[name="category"]').val(subject.category);
-                        $('select[name="grade_level"]').val(subject.grade_level);
-                        $('textarea[name="description"]').val(subject.description);
-                        $('#subjectModal').modal('show');
-                    }
-                }
-            });
-        }
-
-        function viewSubject(id) {
-            $.ajax({
-                url: 'handlers/subject_handler.php',
-                type: 'GET',
-                data: { action: 'get_subject_details', id: id },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const subject = response.data;
-                        $('.subject-info').html(`
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Subject Code:</strong> ${subject.subject_code}</p>
-                                    <p><strong>Subject Title:</strong> ${subject.subject_title}</p>
-                                    <p><strong>Category:</strong> ${subject.category}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Grade Level:</strong> ${subject.grade_level}</p>
-                                    <p><strong>Status:</strong> ${subject.status}</p>
-                                    <p><strong>Description:</strong> ${subject.description || 'N/A'}</p>
-                                </div>
-                            </div>
-                        `);
-                        loadTeacherAssignments(id);
-                        $('#viewSubjectModal').modal('show');
-                    }
-                }
-            });
-        }
-
-        function loadTeacherAssignments(subjectId) {
-            $.ajax({
-                url: 'handlers/subject_handler.php',
-                type: 'GET',
-                data: { action: 'get_subject_teachers', id: subjectId },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const assignments = response.data;
-                        let html = '';
-                        assignments.forEach(assignment => {
-                            html += `
-                                <tr>
-                                    <td>${assignment.teacher_name}</td>
-                                    <td>${assignment.section_name}</td>
-                                    <td>${assignment.schedule_day} ${assignment.schedule_time}</td>
-                                    <td><span class="badge badge-${assignment.status === 'active' ? 'success' : 'warning'}">${assignment.status}</span></td>
-                                </tr>
-                            `;
-                        });
-                        $('#teacherAssignmentsList').html(html || '<tr><td colspan="4" class="text-center">No assignments found</td></tr>');
-                    }
-                }
-            });
-        }
-
         function archiveSubject(id) {
             Swal.fire({
                 title: 'Archive Subject?',
-                text: "This will archive the subject and remove it from active assignments",
+                text: "This will archive the subject and all its assignments",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -678,7 +817,9 @@ $admin = $result->fetch_assoc();
                         success: function(response) {
                             if (response.status === 'success') {
                                 Swal.fire('Success', response.message, 'success');
-                                $('#subjectTable').DataTable().ajax.reload();
+                                // Update both active and archived tables
+                                $('#activeSubjectTable').DataTable().ajax.reload();
+                                $('#archivedSubjectTable').DataTable().ajax.reload();
                                 loadDashboardStats();
                             } else {
                                 Swal.fire('Error', response.message, 'error');

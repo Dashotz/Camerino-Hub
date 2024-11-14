@@ -106,24 +106,50 @@ $stmt->execute();
 $performance_result = $stmt->get_result();
 $average_performance = round($performance_result->fetch_assoc()['average_grade'] ?? 0);
 
-// Get recent activities/submissions
+// Get recent announcements
+$announcements_query = "
+    SELECT 
+        a.*,
+        s.section_name,
+        sub.subject_name
+    FROM announcements a
+    JOIN sections s ON a.section_id = s.section_id
+    JOIN subjects sub ON a.subject_id = sub.id
+    WHERE a.teacher_id = ? 
+    AND a.status = 'active'
+    ORDER BY a.created_at DESC 
+    LIMIT 5";
+
+$stmt = $db->prepare($announcements_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$recent_announcements = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Modify the activities query to include due_date and status
 $activities_query = "
     SELECT 
         a.activity_id,
         a.title,
         a.description,
         a.type,
+        a.due_date,
+        a.status,
         s.firstname as student_firstname,
         s.lastname as student_lastname,
         sas.submitted_at as activity_date,
         sec.section_name,
-        sub.subject_name
+        sub.subject_name,
+        (SELECT COUNT(*) FROM student_activity_submissions 
+         WHERE activity_id = a.activity_id) as submission_count,
+        (SELECT COUNT(*) FROM student_sections 
+         WHERE section_id = sec.section_id 
+         AND status = 'active') as total_students
     FROM activities a
-    JOIN section_subjects ss ON a.teacher_id = ss.teacher_id
+    JOIN section_subjects ss ON a.section_subject_id = ss.id
     JOIN sections sec ON ss.section_id = sec.section_id
     JOIN subjects sub ON ss.subject_id = sub.id
-    JOIN student_activity_submissions sas ON a.activity_id = sas.activity_id
-    JOIN student s ON sas.student_id = s.student_id
+    LEFT JOIN student_activity_submissions sas ON a.activity_id = sas.activity_id
+    LEFT JOIN student s ON sas.student_id = s.student_id
     WHERE a.teacher_id = ?
         AND ss.status = 'active'
         AND a.status = 'active'
@@ -132,7 +158,8 @@ $activities_query = "
             WHERE status = 'active' 
             LIMIT 1
         )
-    ORDER BY sas.submitted_at DESC
+    GROUP BY a.activity_id
+    ORDER BY a.created_at DESC
     LIMIT 5";
 
 $stmt = $db->prepare($activities_query);
@@ -159,6 +186,36 @@ function timeAgo($datetime) {
         return $days . " day" . ($days > 1 ? "s" : "") . " ago";
     }
 }
+
+function getActivityIcon($type) {
+    switch($type) {
+        case 'quiz': return 'fa-question-circle';
+        case 'assignment': return 'fa-file-alt';
+        default: return 'fa-tasks';
+    }
+}
+
+function getStatusBadge($status) {
+    switch($status) {
+        case 'active': return 'success';
+        case 'archived': return 'secondary';
+        default: return 'primary';
+    }
+}
+
+function truncateText($text, $length) {
+    return strlen($text) > $length ? substr($text, 0, $length) . '...' : $text;
+}
+
+function getAnnouncementBadge($type) {
+    $badges = [
+        'quiz' => '<span class="badge badge-primary">Quiz</span>',
+        'activity' => '<span class="badge badge-success">Activity</span>',
+        'assignment' => '<span class="badge badge-warning">Assignment</span>',
+        'normal' => '<span class="badge badge-info">Announcement</span>'
+    ];
+    return $badges[$type] ?? $badges['normal'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -175,8 +232,9 @@ function timeAgo($datetime) {
     <link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/dashboard-shared.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard-shared.css">
+   
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
@@ -234,51 +292,103 @@ function timeAgo($datetime) {
 
             <!-- Recent Activities and Quick Actions -->
             <div class="row mt-4">
+                <!-- Left Column -->
                 <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Recent Activities</h5>
-                        </div>
-                        <div class="card-body">
-                            <?php foreach ($recent_activities as $activity): ?>
-                                <div class="activity-item">
-                                    <i class="fas <?php echo $activity['type'] === 'assignment' ? 'fa-file-alt' : 'fa-check-circle'; ?>"></i>
-                                    <div class="activity-details">
-                                        <h6><?php echo htmlspecialchars($activity['title']); ?></h6>
-                                        <p><?php echo htmlspecialchars($activity['description']); ?></p>
-                                        <small><?php echo timeAgo($activity['activity_date']); ?></small>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                            <?php if (empty($recent_activities)): ?>
-                                <p class="text-muted text-center">No recent activities</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
+                    <!-- Quick Actions Card -->
+                    <div class="card mb-4">
                         <div class="card-header">
                             <h5>Quick Actions</h5>
                         </div>
                         <div class="card-body">
-                            <div class="quick-actions-list">
-                                <a href="create_assignment.php" class="quick-action-item">
-                                    <i class="fas fa-plus-circle"></i>
-                                    <span>Create Assignment</span>
+                            <div class="quick-actions-grid">
+                                <a href="manage_activities.php?new=activity" class="quick-action-item">
+                                    <i class="fas fa-tasks"></i>
+                                    <span>New Activity</span>
                                 </a>
-                                <a href="take_attendance.php" class="quick-action-item">
-                                    <i class="fas fa-clipboard-check"></i>
-                                    <span>Take Attendance</span>
+                                <a href="manage_activities.php?new=quiz" class="quick-action-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>New Quiz</span>
                                 </a>
-                                <a href="grade_submissions.php" class="quick-action-item">
-                                    <i class="fas fa-check-square"></i>
-                                    <span>Grade Submissions</span>
+                                <a href="manage_activities.php?new=assignment" class="quick-action-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>New Assignment</span>
                                 </a>
-                                <a href="class_reports.php" class="quick-action-item">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <span>View Reports</span>
+                                <a href="teacher_announcements.php" class="quick-action-item">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>Announcement</span>
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities Card -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Recent Activities</h5>
+                            <a href="manage_activities.php" class="btn btn-link">View All</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="activity-list">
+                                <?php if (!empty($recent_activities)): ?>
+                                    <?php foreach ($recent_activities as $activity): ?>
+                                        <div class="activity-item p-3 border-bottom">
+                                            <div class="d-flex align-items-center">
+                                                <div class="activity-icon mr-3">
+                                                    <i class="fas <?php echo getActivityIcon($activity['type'] ?? 'activity'); ?>"></i>
+                                                </div>
+                                                <div class="activity-details flex-grow-1">
+                                                    <h6 class="mb-1"><?php echo htmlspecialchars($activity['title']); ?></h6>
+                                                    <small class="text-muted">
+                                                        Due: <?php echo isset($activity['due_date']) ? date('M d, Y', strtotime($activity['due_date'])) : 'Not set'; ?>
+                                                    </small>
+                                                </div>
+                                                <div class="activity-status">
+                                                    <span class="badge badge-<?php echo getStatusBadge($activity['status'] ?? 'active'); ?>">
+                                                        <?php echo ucfirst($activity['status'] ?? 'active'); ?>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="p-3 text-center text-muted">
+                                        No recent activities
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-4">
+                    <!-- Recent Announcements Card -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Recent Announcements</h5>
+                            <a href="teacher_announcements.php" class="btn btn-link">View All</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="announcement-list">
+                                <?php if (!empty($recent_announcements)): ?>
+                                    <?php foreach ($recent_announcements as $announcement): ?>
+                                        <div class="announcement-item p-3 border-bottom">
+                                            <div class="announcement-type mb-2">
+                                                <?php echo getAnnouncementBadge($announcement['type'] ?? 'normal'); ?>
+                                            </div>
+                                            <div class="announcement-content">
+                                                <?php echo nl2br(htmlspecialchars(truncateText($announcement['content'], 100))); ?>
+                                            </div>
+                                            <small class="text-muted">
+                                                <?php echo date('M d, Y', strtotime($announcement['created_at'])); ?>
+                                            </small>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="p-3 text-center text-muted">
+                                        No recent announcements
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -291,5 +401,13 @@ function timeAgo($datetime) {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function createActivity(type) {
+            // Store activity type in session storage
+            sessionStorage.setItem('newActivityType', type);
+            // Redirect to manage activities page
+            window.location.href = 'manage_activities.php?new=' + type;
+        }
+    </script>
 </body>
 </html>

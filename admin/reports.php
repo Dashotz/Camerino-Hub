@@ -64,10 +64,6 @@ $current_year = $db->query($year_query)->fetch_assoc();
             font-weight: 600;
         }
 
-        .report-card .card-body {
-            padding: 1.5rem;
-        }
-
         .chart-container {
             position: relative;
             height: 300px;
@@ -97,33 +93,6 @@ $current_year = $db->query($year_query)->fetch_assoc();
             color: #7f8c8d;
             font-size: 0.9rem;
         }
-
-        .trend-indicator {
-            font-size: 0.9rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            margin-left: 0.5rem;
-        }
-
-        .trend-up {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .trend-down {
-            background-color: #ffebee;
-            color: #c62828;
-        }
-
-        .export-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-
-        .export-btn i {
-            margin-right: 0.5rem;
-        }
     </style>
 </head>
 <body>
@@ -132,9 +101,7 @@ $current_year = $db->query($year_query)->fetch_assoc();
     <div class="dashboard-container">
         <?php include 'includes/sidebar.php'; ?>
         
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Welcome Section -->
             <div class="welcome-section">
                 <h1>Reports Dashboard</h1>
                 <p>Comprehensive analytics and reporting tools</p>
@@ -142,18 +109,19 @@ $current_year = $db->query($year_query)->fetch_assoc();
 
             <!-- Filters Section -->
             <div class="filter-section">
-                <div class="row">
+                <div class="row mb-4">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Academic Year</label>
                             <select class="form-control" id="academicYear">
                                 <?php
-                                $years_query = "SELECT * FROM academic_years ORDER BY year_start DESC";
-                                $years_result = $db->query($years_query);
-                                while($year = $years_result->fetch_assoc()):
+                                $year_query = "SELECT * FROM academic_years ORDER BY school_year DESC";
+                                $years = $db->query($year_query);
+                                while ($year = $years->fetch_assoc()):
                                 ?>
-                                <option value="<?= $year['id'] ?>" <?= $year['status'] == 'active' ? 'selected' : '' ?>>
-                                    <?= $year['school_year'] ?>
+                                <option value="<?= htmlspecialchars($year['id']) ?>" 
+                                        <?= $year['status'] == 'active' ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($year['school_year']) ?>
                                 </option>
                                 <?php endwhile; ?>
                             </select>
@@ -164,7 +132,7 @@ $current_year = $db->query($year_query)->fetch_assoc();
                             <label>Grade Level</label>
                             <select class="form-control" id="gradeLevel">
                                 <option value="">All Grades</option>
-                                <?php for($i = 7; $i <= 12; $i++): ?>
+                                <?php for($i = 7; $i <= 10; $i++): ?>
                                 <option value="<?= $i ?>">Grade <?= $i ?></option>
                                 <?php endfor; ?>
                             </select>
@@ -181,7 +149,7 @@ $current_year = $db->query($year_query)->fetch_assoc();
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>&nbsp;</label>
-                            <button class="btn btn-primary btn-block" onclick="generateReport()">
+                            <button class="btn btn-primary btn-block" id="generateReport">
                                 Generate Report
                             </button>
                         </div>
@@ -194,11 +162,8 @@ $current_year = $db->query($year_query)->fetch_assoc();
                 <!-- Enrollment Trends -->
                 <div class="col-md-6">
                     <div class="report-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-header">
                             <h5>Enrollment Trends</h5>
-                            <button class="btn btn-sm btn-outline-secondary export-btn" onclick="exportChart('enrollment')">
-                                <i class="fas fa-download"></i> Export
-                            </button>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
@@ -211,11 +176,8 @@ $current_year = $db->query($year_query)->fetch_assoc();
                 <!-- Academic Performance -->
                 <div class="col-md-6">
                     <div class="report-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-header">
                             <h5>Academic Performance</h5>
-                            <button class="btn btn-sm btn-outline-secondary export-btn" onclick="exportChart('performance')">
-                                <i class="fas fa-download"></i> Export
-                            </button>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
@@ -226,33 +188,12 @@ $current_year = $db->query($year_query)->fetch_assoc();
                 </div>
             </div>
 
-            <!-- Second Row of Charts -->
+            <!-- Teacher Performance -->
             <div class="row">
-                <!-- Attendance Overview -->
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="report-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5>Attendance Overview</h5>
-                            <button class="btn btn-sm btn-outline-secondary export-btn" onclick="exportChart('attendance')">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="attendanceChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Teacher Performance -->
-                <div class="col-md-6">
-                    <div class="report-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-header">
                             <h5>Teacher Performance Metrics</h5>
-                            <button class="btn btn-sm btn-outline-secondary export-btn" onclick="exportChart('teacher')">
-                                <i class="fas fa-download"></i> Export
-                            </button>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
@@ -265,25 +206,23 @@ $current_year = $db->query($year_query)->fetch_assoc();
 
             <!-- Detailed Reports Table -->
             <div class="report-card mt-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header">
                     <h5>Detailed Reports</h5>
-                    <button class="btn btn-sm btn-outline-secondary export-btn" onclick="exportTable()">
-                        <i class="fas fa-download"></i> Export to Excel
-                    </button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="reportsTable" class="table table-striped">
+                        <table id="reportsTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>Student Name</th>
                                     <th>Grade Level</th>
                                     <th>Section</th>
-                                    <th>Attendance Rate</th>
                                     <th>Average Grade</th>
-                                    <th>Status</th>
+                                    <th>Academic Status</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -298,22 +237,40 @@ $current_year = $db->query($year_query)->fetch_assoc();
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
     <script>
-        // Initialize charts and data
-        let enrollmentChart, performanceChart, attendanceChart, teacherChart;
+        let enrollmentChart, performanceChart, teacherChart;
         let reportsTable;
 
         $(document).ready(function() {
+            console.log('Initial grade level:', $('#gradeLevel').val());
+            console.log('Initial academic year:', $('#academicYear').val());
+
             initializeCharts();
             initializeTable();
-            loadInitialData();
 
-            // Handle grade level change
             $('#gradeLevel').change(function() {
-                loadSections($(this).val());
+                var selectedGrade = $(this).val();
+                console.log('Grade level changed to:', selectedGrade);
+                loadSections(selectedGrade);
+            });
+
+            // Load sections on page load if grade level is selected
+            if ($('#gradeLevel').val()) {
+                loadSections($('#gradeLevel').val());
+            }
+
+            $('#academicYear, #gradeLevel, #section').change(function() {
+                // Optional: Clear current data
+                if (reportsTable) {
+                    reportsTable.clear().draw();
+                }
+            });
+
+            // Add click handler for generate button
+            $('#generateReport').click(function(e) {
+                e.preventDefault();
+                generateReport();
             });
         });
 
@@ -353,27 +310,11 @@ $current_year = $db->query($year_query)->fetch_assoc();
                 }
             });
 
-            // Attendance Chart
-            attendanceChart = new Chart(document.getElementById('attendanceChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Present', 'Absent', 'Late'],
-                    datasets: [{
-                        data: [],
-                        backgroundColor: ['#2ecc71', '#e74c3c', '#f1c40f']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-
             // Teacher Performance Chart
             teacherChart = new Chart(document.getElementById('teacherChart'), {
                 type: 'radar',
                 data: {
-                    labels: ['Attendance', 'Grades Submission', 'Student Feedback', 'Activity Creation', 'Communication'],
+                    labels: ['Grades Submission', 'Student Feedback', 'Activity Creation', 'Communication'],
                     datasets: [{
                         label: 'Performance Metrics',
                         data: [],
@@ -395,6 +336,10 @@ $current_year = $db->query($year_query)->fetch_assoc();
         }
 
         function initializeTable() {
+            if ($.fn.DataTable.isDataTable('#reportsTable')) {
+                $('#reportsTable').DataTable().destroy();
+            }
+            
             reportsTable = $('#reportsTable').DataTable({
                 processing: true,
                 serverSide: false,
@@ -402,30 +347,32 @@ $current_year = $db->query($year_query)->fetch_assoc();
                     url: 'handlers/reports_handler.php',
                     type: 'GET',
                     data: function(d) {
-                        d.action = 'get_detailed_reports';
-                        d.academic_year = $('#academicYear').val();
-                        d.grade_level = $('#gradeLevel').val();
-                        d.section = $('#section').val();
-                    }
+                        return {
+                            action: 'get_detailed_reports',
+                            academic_year: $('#academicYear').val(),
+                            grade_level: $('#gradeLevel').val(),
+                            section: $('#section').val()
+                        };
+                    },
+                    dataSrc: 'data'
                 },
                 columns: [
-                    { data: 'student_name' },
-                    { data: 'grade_level' },
-                    { data: 'section' },
                     { 
-                        data: 'attendance_rate',
+                        data: null,
                         render: function(data) {
-                            return (data || 0).toFixed(2) + '%';
+                            return data.firstname + ' ' + data.lastname;
                         }
                     },
+                    { data: 'grade_level' },
+                    { data: 'section_name' },
                     { 
                         data: 'average_grade',
                         render: function(data) {
-                            return (data || 0).toFixed(2);
+                            return parseFloat(data || 0).toFixed(2);
                         }
                     },
                     {
-                        data: 'status',
+                        data: 'academic_status',
                         render: function(data) {
                             const colors = {
                                 'Excellent': 'success',
@@ -437,13 +384,129 @@ $current_year = $db->query($year_query)->fetch_assoc();
                         }
                     }
                 ],
-                order: [[4, 'desc']],
-                responsive: true
+                order: [[3, 'desc']],
+                responsive: true,
+                pageLength: 10,
+                language: {
+                    emptyTable: 'No data available',
+                    processing: 'Loading...'
+                }
             });
         }
 
-        // Add the rest of your JavaScript functions here
-        // (loadInitialData, generateReport, exportChart, exportTable, etc.)
+        function loadSections(gradeLevel) {
+            const academicYear = $('#academicYear').val();
+            
+            if (!gradeLevel || !academicYear) {
+                $('#section').html('<option value="">All Sections</option>');
+                return;
+            }
+
+            $.ajax({
+                url: 'handlers/reports_handler.php',
+                type: 'GET',
+                data: {
+                    action: 'get_sections',
+                    grade_level: gradeLevel,
+                    academic_year: academicYear
+                },
+                beforeSend: function() {
+                    $('#section').html('<option value="">Loading sections...</option>');
+                },
+                success: function(response) {
+                    $('#section').html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading sections:', error);
+                    $('#section').html('<option value="">Error loading sections</option>');
+                }
+            });
+        }
+
+        function generateReport() {
+            const academicYear = $('#academicYear').val();
+            const gradeLevel = $('#gradeLevel').val();
+            const section = $('#section').val();
+
+            // Show loading state
+            $('#generateReport').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Loading...');
+
+            // Reload DataTable with new filters
+            if (reportsTable) {
+                reportsTable.ajax.reload(function() {
+                    // Re-enable button after data loads
+                    $('#generateReport').prop('disabled', false).html('Generate Report');
+                });
+            }
+
+            // Update charts
+            $.ajax({
+                url: 'handlers/reports_handler.php',
+                type: 'GET',
+                data: {
+                    action: 'get_detailed_reports',
+                    academic_year: academicYear,
+                    grade_level: gradeLevel,
+                    section: section
+                },
+                success: function(response) {
+                    if (response.data) {
+                        updateCharts(response.data);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error generating report:', error);
+                    alert('Error generating report. Please try again.');
+                    $('#generateReport').prop('disabled', false).html('Generate Report');
+                }
+            });
+        }
+
+        function updateCharts(data) {
+            // Update Enrollment Chart
+            const enrollmentData = processEnrollmentData(data);
+            enrollmentChart.data.labels = enrollmentData.labels;
+            enrollmentChart.data.datasets[0].data = enrollmentData.values;
+            enrollmentChart.update();
+
+            // Update Performance Chart
+            const performanceData = processPerformanceData(data);
+            performanceChart.data.labels = performanceData.labels;
+            performanceChart.data.datasets[0].data = performanceData.values;
+            performanceChart.update();
+
+            // Helper functions to process data
+            function processEnrollmentData(data) {
+                const sections = [...new Set(data.map(item => item.section_name))];
+                const counts = sections.map(section => 
+                    data.filter(item => item.section_name === section).length
+                );
+                return {
+                    labels: sections,
+                    values: counts
+                };
+            }
+
+            function processPerformanceData(data) {
+                const gradeRanges = ['90-100', '80-89', '75-79', 'Below 75'];
+                const counts = gradeRanges.map(range => {
+                    switch(range) {
+                        case '90-100':
+                            return data.filter(item => item.average_grade >= 90).length;
+                        case '80-89':
+                            return data.filter(item => item.average_grade >= 80 && item.average_grade < 90).length;
+                        case '75-79':
+                            return data.filter(item => item.average_grade >= 75 && item.average_grade < 80).length;
+                        case 'Below 75':
+                            return data.filter(item => item.average_grade < 75).length;
+                    }
+                });
+                return {
+                    labels: gradeRanges,
+                    values: counts
+                };
+            }
+        }
     </script>
 </body>
 </html>

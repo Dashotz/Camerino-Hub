@@ -58,10 +58,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php echo $current_page == 'teacher_messages.php' ? 'active' : ''; ?>" 
-                   href="teacher_messages.php">
-                    <i class="fas fa-envelope"></i>
-                    <span>Messages</span>
+                <a class="nav-link <?php echo $current_page == 'teacher_announcements.php' ? 'active' : ''; ?>" 
+                   href="teacher_announcements.php">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
                 </a>
             </li>
             <li class="nav-item">

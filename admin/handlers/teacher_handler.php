@@ -232,91 +232,141 @@ function updateTeacherAssignment($db) {
 }
 
 function deleteTeacherAssignment($db) {
+    header('Content-Type: application/json');
+    
     try {
+        if (!isset($_POST['assignment_id'])) {
+            throw new Exception('Assignment ID is required');
+        }
+
+        $assignment_id = intval($_POST['assignment_id']);
+        
+        $db->begin_transaction();
+
+        // First check if the assignment exists and is active
+        $check_query = "SELECT id FROM section_subjects WHERE id = ? AND status = 'active'";
+        $stmt = $db->prepare($check_query);
+        $stmt->bind_param("i", $assignment_id);
+        $stmt->execute();
+        
+        if ($stmt->get_result()->num_rows === 0) {
+            throw new Exception('Assignment not found or already inactive');
+        }
+
+        // Update the assignment status to inactive
         $query = "UPDATE section_subjects SET 
-            status = 'inactive',
-            updated_at = NOW()
-        WHERE id = ?";
+                    status = 'inactive'
+                 WHERE id = ?";
 
         $stmt = $db->prepare($query);
-        $stmt->bind_param("i", $_POST['assignment_id']);
+        $stmt->bind_param("i", $assignment_id);
 
         if (!$stmt->execute()) {
             throw new Exception($stmt->error);
         }
 
+        $db->commit();
         echo json_encode([
             'status' => 'success',
             'message' => 'Assignment deleted successfully'
         ]);
+
     } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        $db->rollback();
+        echo json_encode([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ]);
     }
 }
 
 function assignTeacher($db) {
+    header('Content-Type: application/json');
+    
     try {
+        if (!isset($_POST['teacher_id'], $_POST['subject_id'], $_POST['section_ids'], $_POST['schedule_day'], $_POST['schedule_time'])) {
+            throw new Exception('Missing required fields');
+        }
+
         $db->begin_transaction();
 
-        // Check for schedule conflicts
-        $conflict_check = "SELECT COUNT(*) as conflict_count 
-            FROM section_subjects 
-            WHERE teacher_id = ? 
-            AND schedule_day = ? 
-            AND schedule_time = ? 
-            AND academic_year_id = ?
-            AND status = 'active'";
-        
-        $stmt = $db->prepare($conflict_check);
-        $stmt->bind_param("issi", 
-            $_POST['teacher_id'],
-            $_POST['schedule_day'],
-            $_POST['schedule_time'],
-            $_POST['academic_year_id']
-        );
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
-        
-        if ($result['conflict_count'] > 0) {
-            throw new Exception('Schedule conflict detected for this teacher');
+        $teacher_id = $_POST['teacher_id'];
+        $subject_id = $_POST['subject_id'];
+        $section_ids = is_array($_POST['section_ids']) ? $_POST['section_ids'] : [$_POST['section_ids']];
+        $schedule_day = $_POST['schedule_day'];
+        $schedule_time = $_POST['schedule_time'];
+
+        // Validate inputs
+        if (empty($teacher_id) || empty($subject_id) || empty($section_ids) || empty($schedule_day) || empty($schedule_time)) {
+            throw new Exception('All fields are required');
         }
 
-        // Generate unique enrollment code
-        $enrollment_code = generateEnrollmentCode($db);
-        
-        // Insert new assignment
-        $query = "INSERT INTO section_subjects (
-            teacher_id,
-            subject_id,
-            section_id,
-            academic_year_id,
-            schedule_day,
-            schedule_time,
-            enrollment_code,
-            status,
-            created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', NOW())";
-        
-        $stmt = $db->prepare($query);
-        $stmt->bind_param("iiiisss",
-            $_POST['teacher_id'],
-            $_POST['subject_id'],
-            $_POST['section_id'],
-            $_POST['academic_year_id'],
-            $_POST['schedule_day'],
-            $_POST['schedule_time'],
-            $enrollment_code
-        );
-        
-        if (!$stmt->execute()) {
-            throw new Exception($stmt->error);
+        // Check if teacher already has a different subject assigned
+        $existing_subject_check = "SELECT DISTINCT subject_id 
+                                 FROM section_subjects 
+                                 WHERE teacher_id = ? 
+                                 AND subject_id != ? 
+                                 AND status = 'active'";
+        $stmt = $db->prepare($existing_subject_check);
+        $stmt->bind_param("ii", $teacher_id, $subject_id);
+        $stmt->execute();
+        if ($stmt->get_result()->num_rows > 0) {
+            throw new Exception('This teacher is already assigned to a different subject');
         }
-        
+
+        // Check schedule conflicts for each section
+        foreach ($section_ids as $section_id) {
+            $conflict_check = "SELECT COUNT(*) as conflict_count 
+                             FROM section_subjects 
+                             WHERE section_id = ? 
+                             AND schedule_day = ? 
+                             AND schedule_time = ? 
+                             AND status = 'active'";
+            
+            $stmt = $db->prepare($conflict_check);
+            $stmt->bind_param("iss", $section_id, $schedule_day, $schedule_time);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+            
+            if ($result['conflict_count'] > 0) {
+                throw new Exception('Schedule conflict detected for one or more sections');
+            }
+        }
+
+        // Get current academic year
+        $academic_year_query = "SELECT id FROM academic_years WHERE status = 'active' LIMIT 1";
+        $academic_year_result = $db->query($academic_year_query);
+        if ($academic_year_result->num_rows === 0) {
+            throw new Exception('No active academic year found');
+        }
+        $academic_year_id = $academic_year_result->fetch_assoc()['id'];
+
+        // Insert assignments for each section
+        $insert_query = "INSERT INTO section_subjects (
+            teacher_id, subject_id, section_id, academic_year_id,
+            schedule_day, schedule_time, enrollment_code, status, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', NOW())";
+
+        $stmt = $db->prepare($insert_query);
+
+        foreach ($section_ids as $section_id) {
+            $enrollment_code = generateEnrollmentCode($db);
+            $stmt->bind_param("iiiisss", 
+                $teacher_id, $subject_id, $section_id, $academic_year_id,
+                $schedule_day, $schedule_time, $enrollment_code
+            );
+            
+            if (!$stmt->execute()) {
+                throw new Exception($stmt->error);
+            }
+        }
+
         $db->commit();
         echo json_encode([
             'status' => 'success',
-            'message' => 'Teacher assigned successfully'
+            'message' => 'Teacher successfully assigned to sections'
         ]);
+
     } catch (Exception $e) {
         $db->rollback();
         echo json_encode([

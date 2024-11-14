@@ -119,6 +119,25 @@ $admin = $result->fetch_assoc();
             padding: 5px 10px;
             border-radius: 5px;
         }
+
+        .welcome-section .btn-primary {
+            padding: 8px 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .welcome-section .btn-primary i {
+            font-size: 14px;
+        }
+
+        /* Add a hover effect */
+        .welcome-section .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -130,8 +149,17 @@ $admin = $result->fetch_assoc();
         <div class="main-content">
             <!-- Welcome Section -->
             <div class="welcome-section">
-                <h1>Manage Teachers</h1>
-                <p>Assign and manage teacher schedules and subjects</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1>Manage Teachers</h1>
+                        <p>Assign and manage teacher schedules and subjects</p>
+                    </div>
+                    <div>
+                        <a href="add_teacher.php" class="btn btn-primary add-new-teacher">
+                            <i class="fas fa-plus"></i> Add New Teacher
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Stats Cards -->
@@ -178,7 +206,7 @@ $admin = $result->fetch_assoc();
             <div class="teacher-assignments">
                 <div class="header-actions">
                     <h2>Teacher Assignments</h2>
-                    <button class="btn btn-primary" onclick="showAssignModal()">
+                    <button type="button" class="btn btn-primary" id="assignTeacherBtn">
                         <i class="fas fa-plus"></i> Assign Teacher
                     </button>
                 </div>
@@ -205,33 +233,70 @@ $admin = $result->fetch_assoc();
     </div>
 
     <!-- Assign Teacher Modal -->
-    <div class="modal fade" id="assignTeacherModal" tabindex="-1">
+    <div class="modal fade" id="assignTeacherModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Assign Teacher</h5>
+                    <h5 class="modal-title">Assign Teacher to Subject and Sections</h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <form id="assignTeacherForm" onsubmit="handleAssignTeacher(event)">
+                <form action="handlers/teacher_handler.php" method="POST">
+                    <input type="hidden" name="action" value="assign_teacher">
                     <div class="modal-body">
+                        <!-- Teacher Selection -->
                         <div class="form-group">
                             <label>Select Teacher*</label>
                             <select name="teacher_id" class="form-control" required>
                                 <option value="">Select Teacher</option>
+                                <?php
+                                $teachers_query = "SELECT teacher_id, firstname, lastname, department 
+                                                FROM teacher 
+                                                WHERE status = 'active' 
+                                                ORDER BY lastname, firstname";
+                                $teachers = $db->query($teachers_query);
+                                while ($teacher = $teachers->fetch_assoc()) {
+                                    echo "<option value='{$teacher['teacher_id']}'>{$teacher['lastname']}, {$teacher['firstname']} - {$teacher['department']}</option>";
+                                }
+                                ?>
                             </select>
                         </div>
+
+                        <!-- Subject Selection -->
                         <div class="form-group">
                             <label>Select Subject*</label>
                             <select name="subject_id" class="form-control" required>
                                 <option value="">Select Subject</option>
+                                <?php
+                                $subjects_query = "SELECT id, subject_code, subject_title 
+                                                FROM subjects 
+                                                WHERE status = 'active' 
+                                                ORDER BY subject_code";
+                                $subjects = $db->query($subjects_query);
+                                while ($subject = $subjects->fetch_assoc()) {
+                                    echo "<option value='{$subject['id']}'>{$subject['subject_code']} - {$subject['subject_title']}</option>";
+                                }
+                                ?>
                             </select>
                         </div>
+
+                        <!-- Section Selection -->
                         <div class="form-group">
-                            <label>Select Section*</label>
-                            <select name="section_id" class="form-control" required>
-                                <option value="">Select Section</option>
+                            <label>Select Sections* (Hold Ctrl/Cmd to select multiple)</label>
+                            <select name="section_ids[]" class="form-control" multiple required>
+                                <?php
+                                $sections_query = "SELECT section_id, section_name, grade_level 
+                                                FROM sections 
+                                                WHERE status = 'active' 
+                                                ORDER BY grade_level, section_name";
+                                $sections = $db->query($sections_query);
+                                while ($section = $sections->fetch_assoc()) {
+                                    echo "<option value='{$section['section_id']}'>Grade {$section['grade_level']} - {$section['section_name']}</option>";
+                                }
+                                ?>
                             </select>
                         </div>
+
+                        <!-- Schedule -->
                         <div class="form-group">
                             <label>Schedule Day*</label>
                             <select name="schedule_day" class="form-control" required>
@@ -243,6 +308,7 @@ $admin = $result->fetch_assoc();
                                 <option value="Friday">Friday</option>
                             </select>
                         </div>
+
                         <div class="form-group">
                             <label>Schedule Time*</label>
                             <input type="time" name="schedule_time" class="form-control" required>
@@ -267,11 +333,90 @@ $admin = $result->fetch_assoc();
 
     <!-- Include your existing JavaScript code here -->
     <script>
+        // Define showAssignModal globally
+        function showAssignModal() {
+            // Show loading state
+            Swal.fire({
+                title: 'Loading...',
+                text: 'Please wait while we prepare the form',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Load data and show modal
+            $('#assignTeacherModal').modal('show');
+            Swal.close();
+        }
+
         $(document).ready(function() {
             loadDashboardStats();
             loadTeacherAssignments();
+
+            // Handle Add New Teacher button click
+            $('.add-new-teacher').on('click', function(e) {
+                window.location.href = 'add_teacher.php';
+            });
+
+            // Handle Assign Teacher form submission
+            $('form[action="handlers/teacher_handler.php"]').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Get selected sections
+                const selectedSections = $('select[name="section_ids[]"]').val();
+                if (!selectedSections || selectedSections.length === 0) {
+                    Swal.fire('Error', 'Please select at least one section', 'error');
+                    return;
+                }
+
+                const formData = new FormData(this);
+                
+                $.ajax({
+                    url: 'handlers/teacher_handler.php',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        try {
+                            // Parse response if it's a string
+                            const result = typeof response === 'string' ? JSON.parse(response) : response;
+                            
+                            if (result.status === 'success') {
+                                $('#assignTeacherModal').modal('hide');
+                                Swal.fire('Success', 'Teacher assigned successfully', 'success')
+                                    .then(() => {
+                                        location.reload();
+                                    });
+                            } else {
+                                Swal.fire('Error', result.message || 'Failed to assign teacher', 'error');
+                            }
+                        } catch (e) {
+                            console.error('Response parsing error:', e);
+                            Swal.fire('Error', 'Invalid server response', 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('AJAX error:', xhr);
+                        Swal.fire('Error', 'Failed to process request', 'error');
+                    }
+                });
+            });
+
+            // Initialize modal events
+            $('#assignTeacherModal').on('show.bs.modal', function() {
+                // Clear previous selections when modal opens
+                $(this).find('select').val('');
+                $(this).find('input[type="time"]').val('');
+            });
+
+            // Add click handler for Assign Teacher button
+            $('#assignTeacherBtn').on('click', function() {
+                showAssignModal();
+            });
         });
 
+        // Keep your existing functions
         function loadDashboardStats() {
             $.ajax({
                 url: 'handlers/teacher_handler.php',
@@ -375,7 +520,7 @@ $admin = $result->fetch_assoc();
                                     <button class="btn btn-sm btn-primary" onclick="editAssignment(${data.id})">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteAssignment(${data.id})">
+                                    <button class="btn btn-sm btn-danger delete-assignment" data-id="${data.id}">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>`;
@@ -387,111 +532,60 @@ $admin = $result->fetch_assoc();
             });
         }
 
-        function showAssignModal() {
-            // Load teachers, subjects, and sections before showing modal
-            Promise.all([
-                loadTeachers(),
-                loadSubjects(),
-                loadSections()
-            ]).then(() => {
-                $('#assignTeacherModal').modal('show');
-            }).catch(error => {
-                Swal.fire('Error', 'Failed to load necessary data', 'error');
-            });
-        }
-
-        function loadTeachers() {
-            return $.ajax({
-                url: 'handlers/teacher_handler.php',
-                type: 'GET',
-                data: { action: 'get_available_teachers' },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const select = $('select[name="teacher_id"]');
-                        select.find('option:not(:first)').remove();
-                        response.data.forEach(teacher => {
-                            select.append(`<option value="${teacher.teacher_id}">
-                                ${teacher.firstname} ${teacher.lastname} - ${teacher.department}
-                            </option>`);
-                        });
-                    }
+        // Add this after your loadTeacherAssignments function
+        function deleteAssignment(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will remove the teacher's assignment",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: 'handlers/teacher_handler.php',
+                        type: 'POST',
+                        data: {
+                            action: 'delete_teacher_assignment',
+                            assignment_id: id
+                        },
+                        success: function(response) {
+                            try {
+                                const result = typeof response === 'string' ? JSON.parse(response) : response;
+                                if (result.status === 'success') {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'Assignment has been deleted.',
+                                        'success'
+                                    ).then(() => {
+                                        // Reload the DataTable
+                                        $('#assignmentsTable').DataTable().ajax.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error', result.message || 'Failed to delete assignment', 'error');
+                                }
+                            } catch (e) {
+                                console.error('Response parsing error:', e);
+                                Swal.fire('Error', 'Invalid server response', 'error');
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error('AJAX error:', xhr);
+                            Swal.fire('Error', 'Failed to process request', 'error');
+                        }
+                    });
                 }
             });
         }
 
-        function loadSubjects() {
-            return $.ajax({
-                url: 'handlers/teacher_handler.php',
-                type: 'GET',
-                data: { action: 'get_subjects' },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const select = $('select[name="subject_id"]');
-                        select.find('option:not(:first)').remove();
-                        response.data.forEach(subject => {
-                            select.append(`<option value="${subject.id}">
-                                ${subject.subject_code} - ${subject.subject_title}
-                            </option>`);
-                        });
-                    }
-                }
-            });
-        }
-
-        function loadSections() {
-            return $.ajax({
-                url: 'handlers/teacher_handler.php',
-                type: 'GET',
-                data: { action: 'get_sections' },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const select = $('select[name="section_id"]');
-                        select.find('option:not(:first)').remove();
-                        response.data.forEach(section => {
-                            select.append(`<option value="${section.section_id}">
-                                ${section.grade_level} - ${section.section_name}
-                            </option>`);
-                        });
-                    }
-                }
-            });
-        }
-
-        function handleAssignTeacher(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            
-            $.ajax({
-                url: 'handlers/teacher_handler.php',
-                type: 'POST',
-                data: {
-                    action: 'assign_teacher',
-                    teacher_id: formData.get('teacher_id'),
-                    subject_id: formData.get('subject_id'),
-                    section_id: formData.get('section_id'),
-                    schedule_day: formData.get('schedule_day'),
-                    schedule_time: formData.get('schedule_time'),
-                    academic_year_id: getCurrentAcademicYear()
-                },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        Swal.fire('Success', 'Teacher assigned successfully', 'success');
-                        $('#assignTeacherModal').modal('hide');
-                        $('#assignTeacherForm')[0].reset();
-                        loadTeacherAssignments();
-                    } else {
-                        Swal.fire('Error', response.message || 'Failed to assign teacher', 'error');
-                    }
-                },
-                error: function() {
-                    Swal.fire('Error', 'Failed to assign teacher', 'error');
-                }
-            });
-        }
-
-        function getCurrentAcademicYear() {
-            return $('#current_academic_year').val();
-        }
+        // Add click handler for delete buttons
+        $(document).on('click', '.delete-assignment', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            deleteAssignment(id);
+        });
     </script>
 </body>
 </html>

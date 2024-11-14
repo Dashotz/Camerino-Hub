@@ -10,13 +10,35 @@ if (!isset($_SESSION['admin_id'])) {
 $db = new DbConnector();
 $admin_id = $_SESSION['admin_id'];
 
-// Get admin info
-$query = "SELECT * FROM admin WHERE admin_id = ?";
-$stmt = $db->prepare($query);
-$stmt->bind_param("i", $admin_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$admin = $result->fetch_assoc();
+// Fetch sections data with proper ordering
+$query = "SELECT 
+    s.section_id,
+    s.section_name,
+    s.grade_level,
+    s.status,
+    t.firstname AS adviser_firstname,
+    t.lastname AS adviser_lastname,
+    (SELECT COUNT(*) FROM student_sections 
+     WHERE section_id = s.section_id 
+     AND status = 'active') as student_count
+FROM sections s
+LEFT JOIN teacher t ON s.adviser_id = t.teacher_id
+ORDER BY s.grade_level ASC, s.section_name ASC";
+
+$result = $db->query($query);
+
+// Fetch statistics
+$stats_query = "SELECT 
+    (SELECT COUNT(*) FROM sections WHERE status = 'active') as total_sections,
+    (SELECT COUNT(*) FROM student_sections WHERE status = 'active') as total_students,
+    (SELECT COUNT(DISTINCT adviser_id) FROM sections WHERE adviser_id IS NOT NULL) as total_advisers,
+    (SELECT COUNT(*) FROM sections WHERE status = 'active') as active_sections";
+$stats_result = $db->query($stats_query);
+$stats = $stats_result->fetch_assoc();
+
+// Fetch available teachers for adviser selection
+$teachers_query = "SELECT teacher_id, firstname, lastname FROM teacher WHERE status = 'active' ORDER BY lastname, firstname";
+$teachers_result = $db->query($teachers_query);
 ?>
 
 <!DOCTYPE html>
@@ -121,100 +143,104 @@ $admin = $result->fetch_assoc();
             <div class="row stats-cards mb-4">
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="icon-container">
-                                <i class="fas fa-door-open"></i>
-                            </div>
-                            <div class="stats-info">
-                                <h5 class="card-title mb-0">Total Sections</h5>
-                                <h3 id="totalSections" class="mb-0">Loading...</h3>
-                            </div>
+                        <div class="card-body text-center">
+                            <h3 id="totalSections"><?php echo $stats['total_sections']; ?>
+                                <small class="text-muted d-block">Total</small>
+                            </h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="icon-container">
-                                <i class="fas fa-user-friends"></i>
-                            </div>
-                            <div class="stats-info">
-                                <h5 class="card-title mb-0">Total Students</h5>
-                                <h3 id="totalStudents" class="mb-0">Loading...</h3>
-                            </div>
+                        <div class="card-body text-center">
+                            <h3 id="totalStudents"><?php echo $stats['total_students']; ?>
+                                <small class="text-muted d-block">Students</small>
+                            </h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="icon-container">
-                                <i class="fas fa-chalkboard-teacher"></i>
-                            </div>
-                            <div class="stats-info">
-                                <h5 class="card-title mb-0">Assigned Advisers</h5>
-                                <h3 id="assignedAdvisers" class="mb-0">Loading...</h3>
-                            </div>
+                        <div class="card-body text-center">
+                            <h3 id="assignedAdvisers"><?php echo $stats['total_advisers']; ?>
+                                <small class="text-muted d-block">Advisers</small>
+                            </h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="card stats-card">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="icon-container">
-                                <i class="fas fa-book-reader"></i>
-                            </div>
-                            <div class="stats-info">
-                                <h5 class="card-title mb-0">Active Sections</h5>
-                                <h3 id="activeSections" class="mb-0">Loading...</h3>
-                            </div>
+                        <div class="card-body text-center">
+                            <h3 id="activeSections"><?php echo $stats['active_sections']; ?>
+                                <small class="text-muted d-block">Active</small>
+                            </h3>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Sections Table Section -->
+            <!-- Sections Table -->
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Section List</h5>
-                    <button class="btn btn-primary" onclick="showAddSectionModal()">
-                        <i class="fas fa-plus"></i> Add New Section
+                    <h5 class="mb-0">Manage Sections</h5>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#sectionModal">
+                        <i class="fas fa-plus"></i> Add Section
                     </button>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="sectionTable" class="table table-striped section-table">
-                            <thead>
-                                <tr>
-                                    <th>Section Name</th>
-                                    <th>Grade Level</th>
-                                    <th>Adviser</th>
-                                    <th>Students</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Table data will be loaded dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <table id="sectionTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Section Name</th>
+                                <th>Grade Level</th>
+                                <th>Adviser</th>
+                                <th>Students</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while($row = $result->fetch_assoc()): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row['section_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['grade_level']); ?></td>
+                                <td><?php echo $row['adviser_firstname'] ? htmlspecialchars($row['adviser_firstname'] . ' ' . $row['adviser_lastname']) : 'Not Assigned'; ?></td>
+                                <td><?php echo $row['student_count']; ?></td>
+                                <td>
+                                    <span class="badge badge-<?php echo $row['status'] === 'active' ? 'success' : 'secondary'; ?>">
+                                        <?php echo ucfirst($row['status']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group action-buttons">
+                                        <a href="edit_section.php?id=<?php echo $row['section_id']; ?>" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteSection(<?php echo $row['section_id']; ?>)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Section Modal -->
-    <div class="modal fade" id="sectionModal" tabindex="-1">
+    <!-- Section Modal -->
+    <div class="modal fade" id="sectionModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Add New Section</h5>
+                    <h5 class="modal-title">Add New Section</h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <form id="sectionForm">
                     <div class="modal-body">
-                        <input type="hidden" name="section_id" id="section_id">
+                        <input type="hidden" name="action" value="add_section">
                         
                         <div class="form-group">
                             <label>Section Name*</label>
@@ -229,14 +255,6 @@ $admin = $result->fetch_assoc();
                                 <option value="8">Grade 8</option>
                                 <option value="9">Grade 9</option>
                                 <option value="10">Grade 10</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Adviser</label>
-                            <select class="form-control" name="adviser_id">
-                                <option value="">Select Adviser</option>
-                                <!-- Advisers will be loaded dynamically -->
                             </select>
                         </div>
                         
@@ -269,84 +287,113 @@ $admin = $result->fetch_assoc();
         $(document).ready(function() {
             // Initialize DataTable
             $('#sectionTable').DataTable({
-                ajax: {
+                order: [[1, 'asc'], [0, 'asc']]
+            });
+
+            // Form submission handler
+            $('#sectionForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Get form data
+                var formData = $(this).serialize();
+
+                // Send AJAX request
+                $.ajax({
                     url: 'handlers/section_handler.php',
-                    type: 'GET',
-                    data: { action: 'get_sections' }
-                },
-                columns: [
-                    { data: 'section_name' },
-                    { data: 'grade_level' },
-                    { data: 'adviser_name' },
-                    { data: 'student_count' },
-                    { 
-                        data: 'status',
-                        render: function(data) {
-                            return `<span class="badge badge-${data === 'active' ? 'success' : 'secondary'}">${data}</span>`;
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        Swal.close();
+                        
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Section added successfully',
+                                showConfirmButton: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Failed to add section'
+                            });
                         }
                     },
-                    {
-                        data: 'section_id',
-                        render: function(data) {
-                            return `
-                                <div class="btn-group action-buttons">
-                                    <button class="btn btn-sm btn-info" onclick="viewSection(${data})">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" onclick="editSection(${data})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteSection(${data})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            `;
-                        }
+                    error: function(xhr, status, error) {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to process request. Please try again.'
+                        });
                     }
-                ]
+                });
             });
-
-            // Load dashboard stats
-            loadDashboardStats();
-            
-            // Form submission handler
-            $('#sectionForm').on('submit', handleSectionSubmit);
         });
-
-        function loadDashboardStats() {
-            $.ajax({
-                url: 'handlers/section_handler.php',
-                type: 'GET',
-                data: { action: 'get_section_stats' },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        updateStatWithAnimation('#totalSections', response.data.total_sections, 'Total');
-                        updateStatWithAnimation('#totalStudents', response.data.total_students, 'Students');
-                        updateStatWithAnimation('#assignedAdvisers', response.data.assigned_advisers, 'Advisers');
-                        updateStatWithAnimation('#activeSections', response.data.active_sections, 'Active');
+    </script>
+    <script>
+    function deleteSection(sectionId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'handlers/section_handler.php',
+                    type: 'POST',
+                    data: {
+                        action: 'delete_section',
+                        section_id: sectionId
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Deleted!',
+                                'Section has been deleted.',
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                response.message || 'Failed to delete section',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error!',
+                            'Failed to process request',
+                            'error'
+                        );
                     }
-                }
-            });
-        }
-
-        function updateStatWithAnimation(elementId, value, label) {
-            const element = $(elementId);
-            element.prop('Counter', 0).animate({
-                Counter: value
-            }, {
-                duration: 1000,
-                easing: 'swing',
-                step: function(now) {
-                    $(this).html(`
-                        ${Math.ceil(now)}
-                        <small class="text-muted d-block">${label}</small>
-                    `);
-                }
-            });
-        }
-
-        // Add the rest of your JavaScript functions here
-        // (showAddSectionModal, editSection, deleteSection, etc.)
+                });
+            }
+        });
+    }
     </script>
 </body>
 </html>

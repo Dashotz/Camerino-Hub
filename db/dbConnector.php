@@ -7,6 +7,7 @@ public $link;  // CamerinoHub database connection
 public $messageLink;  // Message database connection
 private $isConnClosed = false;
 private $isMsgConnClosed = false;
+private $conn;
 
 function __construct($useMessageDb = false) {
         // Database settings
@@ -17,21 +18,21 @@ function __construct($useMessageDb = false) {
         $pass = '';
 
         // Connect to main CamerinoHub database
-        $this->link = mysqli_connect($host, $user, $pass, $mainDb);
-        if (!$this->link) {
-            die("CamerinoHub DB Connection failed: " . mysqli_connect_error());
+        $this->conn = new mysqli($host, $user, $pass, $mainDb);
+        if ($this->conn->connect_error) {
+            throw new Exception('Connection failed: ' . $this->conn->connect_error);
         }
 
         // Set UTF-8 charset for proper encoding
-        mysqli_set_charset($this->link, "utf8mb4");
+        $this->conn->set_charset('utf8mb4');
 
         // If message database is needed, create that connection
         if ($useMessageDb) {
-            $this->messageLink = mysqli_connect($host, $user, $pass, $messageDb);
-            if (!$this->messageLink) {
-                die("CamerinoHub Messages DB Connection failed: " . mysqli_connect_error());
+            $this->messageLink = new mysqli($host, $user, $pass, $messageDb);
+            if ($this->messageLink->connect_error) {
+                throw new Exception('Connection failed: ' . $this->messageLink->connect_error);
             }
-            mysqli_set_charset($this->messageLink, "utf8mb4");
+            $this->messageLink->set_charset('utf8mb4');
         }
 
         register_shutdown_function(array(&$this, 'close'));
@@ -40,9 +41,9 @@ function __construct($useMessageDb = false) {
   //*** Function: query, Purpose: Execute a database query ***
     function query($query) {
         $this->theQuery = $query;
-        $result = mysqli_query($this->link, $query);
+        $result = mysqli_query($this->conn, $query);
         if (!$result) {
-            error_log("CamerinoHub Query Error: " . mysqli_error($this->link));
+            error_log("CamerinoHub Query Error: " . mysqli_error($this->conn));
             error_log("Query was: " . $query);
         }
         return $result;
@@ -81,14 +82,14 @@ function __construct($useMessageDb = false) {
     function lastInsertId($useMessageDb = false) {
         return $useMessageDb ? 
             mysqli_insert_id($this->messageLink) : 
-            mysqli_insert_id($this->link);
+            mysqli_insert_id($this->conn);
     }
 
     //*** Function: close, Purpose: Close the connection ***
     function close() {
 
-        if (!$this->isConnClosed && $this->link) {
-            mysqli_close($this->link);
+        if (!$this->isConnClosed && $this->conn) {
+            mysqli_close($this->conn);
             $this->isConnClosed = true;
         }
         if (!$this->isMsgConnClosed && $this->messageLink) {
@@ -100,13 +101,13 @@ function __construct($useMessageDb = false) {
 
     // Add new method for safe queries
     function escapeString($string, $useMessageDb = false) {
-        $conn = $useMessageDb ? $this->messageLink : $this->link;
+        $conn = $useMessageDb ? $this->messageLink : $this->conn;
         return mysqli_real_escape_string($conn, $string);
     }
 
     // Add this new method to your DbConnector class
     function prepare($query, $useMessageDb = false) {
-        $conn = $useMessageDb ? $this->messageLink : $this->link;
+        $conn = $useMessageDb ? $this->messageLink : $this->conn;
         if (!$conn) {
             throw new Exception(($useMessageDb ? "Message" : "Main") . " database connection not established");
         }
@@ -120,21 +121,21 @@ function __construct($useMessageDb = false) {
 
     // Transaction methods for message database
     function beginTransaction($useMessageDb = false) {
-        $conn = $useMessageDb ? $this->messageLink : $this->link;
+        $conn = $useMessageDb ? $this->messageLink : $this->conn;
         if ($conn) {
             mysqli_begin_transaction($conn);
         }
     }
 
     function commit($useMessageDb = false) {
-        $conn = $useMessageDb ? $this->messageLink : $this->link;
+        $conn = $useMessageDb ? $this->messageLink : $this->conn;
         if ($conn) {
             mysqli_commit($conn);
         }
     }
 
     function rollback($useMessageDb = false) {
-        $conn = $useMessageDb ? $this->messageLink : $this->link;
+        $conn = $useMessageDb ? $this->messageLink : $this->conn;
         if ($conn) {
             mysqli_rollback($conn);
         }
@@ -148,6 +149,20 @@ function __construct($useMessageDb = false) {
         return $this->query($query);
     }
 	
+    // Add this method to handle escaping strings
+    function real_escape_string($string) {
+        return $this->conn->real_escape_string($string);
+    }
+
+    // Add this method to get the connection object
+    function getConnection() {
+        return $this->conn;
+    }
+
+    public function begin_transaction() {
+        return $this->conn->begin_transaction();
+    }
+
 }
 
 ?>
