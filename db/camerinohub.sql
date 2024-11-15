@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2024 at 05:01 AM
+-- Generation Time: Nov 15, 2024 at 08:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.0
 
@@ -100,6 +100,13 @@ CREATE TABLE `activities` (
   `completion_rate` decimal(5,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `activities`
+--
+
+INSERT INTO `activities` (`activity_id`, `teacher_id`, `section_subject_id`, `title`, `description`, `file_path`, `type`, `points`, `quiz_link`, `quiz_duration`, `prevent_tab_switch`, `fullscreen_required`, `quiz_attempts`, `due_date`, `created_at`, `updated_at`, `status`, `completion_rate`) VALUES
+(43, 1, 1, 'Test', 'TEST TEST TEST TEST TEST ', NULL, 'activity', 100, NULL, NULL, 0, 0, 1, '2024-11-22 07:56:00', '2024-11-15 06:56:27', '2024-11-15 06:56:27', 'active', 0.00);
+
 -- --------------------------------------------------------
 
 --
@@ -115,6 +122,13 @@ CREATE TABLE `activity_files` (
   `file_size` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `activity_files`
+--
+
+INSERT INTO `activity_files` (`file_id`, `activity_id`, `file_name`, `file_path`, `file_type`, `file_size`, `created_at`) VALUES
+(10, 43, 'CAMERINOHUB.docx', 'uploads/activities/1731653787_6736f09bb3c36_95d28858d5e57da1.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 166217, '2024-11-15 06:56:27');
 
 -- --------------------------------------------------------
 
@@ -221,9 +235,9 @@ CREATE TABLE `announcements` (
 
 INSERT INTO `announcements` (`id`, `teacher_id`, `section_id`, `subject_id`, `content`, `attachment`, `status`, `created_at`, `type`, `priority`, `reference_id`) VALUES
 (1, 1, 1, 1, '📢 Announcement: Human Society Project\r\n\r\nDear Students,\r\n\r\nWe are excited to announce your upcoming Human Society Project! This project is an opportunity for you to explore, understand, and reflect on the diverse aspects of human society, including culture, community, relationships, and how individuals and groups interact within it.\r\n\r\nProject Details:\r\n\r\nObjective: Develop a project that highlights an element of human society. This could focus on cultural diversity, societal challenges, community contributions, or any topic that helps deepen our understanding of society.\r\nFormat: You may create a presentation, poster, video, report, or a creative piece (e.g., artwork, infographic).\r\nGuidelines: Ensure your project is informative, respectful, and engaging. Feel free to incorporate real-world examples, interviews, and statistics to support your ideas.\r\nImportant Dates:\r\n\r\nProject Topic Submission: [Insert Date]\r\nFinal Project Due Date: [Insert Date]\r\nPresentation Day: [Insert Date]\r\nLet\'s work together to create meaningful projects that contribute to our understanding of the world around us. If you have any questions or need guidance, please don\'t hesitate to reach out.\r\n\r\nGood luck, and I can\'t wait to see the amazing work you\'ll create!', 'uploads/announcements/6735a779233cb.docx', 'active', '2024-11-14 07:32:09', 'normal', 'medium', NULL),
-(3, 1, 1, 1, 'A new activity has been posted: \"Introduction to Programming Basics\"\r\n\r\nPlease complete this activity by 11/21/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, 'active', '2024-11-14 15:52:23', 'normal', 'medium', NULL),
-(4, 1, 1, 1, 'A new assignment has been posted: \"wads\"\r\n\r\nPlease submit your work by 11/22/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, 'active', '2024-11-15 01:41:37', 'normal', 'medium', NULL),
-(5, 1, 1, 1, 'A new activity has been posted: \"asdasdasdasd\"\r\n\r\nPlease complete this activity by 11/22/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, 'active', '2024-11-15 02:34:08', 'normal', 'medium', NULL);
+(3, 1, 1, 1, 'A new activity has been posted: \"Introduction to Programming Basics\"\r\n\r\nPlease complete this activity by 11/21/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, '', '2024-11-14 15:52:23', 'normal', 'medium', NULL),
+(4, 1, 1, 1, 'A new assignment has been posted: \"wads\"\r\n\r\nPlease submit your work by 11/22/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, '', '2024-11-15 01:41:37', 'normal', 'medium', NULL),
+(5, 1, 1, 1, 'A new activity has been posted: \"asdasdasdasd\"\r\n\r\nPlease complete this activity by 11/22/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, '', '2024-11-15 02:34:08', 'normal', 'medium', NULL);
 
 -- --------------------------------------------------------
 
@@ -292,7 +306,14 @@ INSERT INTO `attendance` (`id`, `student_id`, `section_subject_id`, `date`, `sta
 (4, 39, 1, '2024-11-14', 'present', NULL, '', '2024-11-14 15:35:29'),
 (5, 1, 1, '2024-11-14', 'present', NULL, '', '2024-11-14 15:35:29'),
 (6, 41, 1, '2024-11-14', 'present', NULL, '', '2024-11-14 15:35:29'),
-(7, 40, 1, '2024-11-14', 'present', NULL, '', '2024-11-14 15:35:29');
+(7, 40, 1, '2024-11-14', 'present', NULL, '', '2024-11-14 15:35:29'),
+(8, 42, 1, '2024-11-15', 'absent', NULL, '', '2024-11-15 04:23:22'),
+(9, 38, 1, '2024-11-15', 'present', NULL, '', '2024-11-15 04:23:22'),
+(10, 2, 1, '2024-11-15', 'present', NULL, '', '2024-11-15 04:23:22'),
+(11, 39, 1, '2024-11-15', 'present', NULL, '', '2024-11-15 04:23:22'),
+(12, 1, 1, '2024-11-15', 'present', NULL, '', '2024-11-15 04:23:22'),
+(13, 41, 1, '2024-11-15', 'present', NULL, '', '2024-11-15 04:23:22'),
+(14, 40, 1, '2024-11-15', 'present', NULL, '', '2024-11-15 04:23:22');
 
 -- --------------------------------------------------------
 
@@ -314,7 +335,8 @@ CREATE TABLE `attendance_logs` (
 --
 
 INSERT INTO `attendance_logs` (`id`, `attendance_id`, `teacher_id`, `action`, `details`, `created_at`) VALUES
-(1, 7, 1, 'save', 'Attendance saved for section_subject_id: 1, date: 2024-11-14', '2024-11-14 15:35:29');
+(1, 7, 1, 'save', 'Attendance saved for section_subject_id: 1, date: 2024-11-14', '2024-11-14 15:35:29'),
+(2, 14, 1, 'save', 'Attendance saved for section_subject_id: 1, date: 2024-11-15', '2024-11-15 04:23:22');
 
 -- --------------------------------------------------------
 
@@ -379,6 +401,37 @@ CREATE TABLE `date_ranges` (
   `end_date` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `departments`
+--
+
+CREATE TABLE `departments` (
+  `department_id` int(11) NOT NULL,
+  `department_name` varchar(100) NOT NULL,
+  `department_code` varchar(20) NOT NULL,
+  `description` text DEFAULT NULL,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `departments`
+--
+
+INSERT INTO `departments` (`department_id`, `department_name`, `department_code`, `description`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Computer Studies', 'CS', 'Department of Computer Studies', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(2, 'Mathematics', 'MATH', 'Department of Mathematics', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(3, 'English', 'ENG', 'Department of English', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(4, 'Science', 'SCI', 'Department of Science', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(5, 'MAPEH', 'MAPEH', 'Music, Arts, Physical Education, and Health Department', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(6, 'Filipino', 'FIL', 'Department of Filipino', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(7, 'Values Education', 'VALED', 'Department of Values Education', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(8, 'Araling Panlipunan', 'AP', 'Department of Social Studies', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14'),
+(9, 'TLE', 'TLE', 'Technology and Livelihood Education Department', 'active', '2024-11-15 04:30:14', '2024-11-15 04:30:14');
 
 -- --------------------------------------------------------
 
@@ -632,7 +685,7 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`student_id`, `username`, `password`, `email`, `firstname`, `lastname`, `middlename`, `profile_image`, `cys`, `status`, `login_attempts`, `lockout_until`, `user_online`, `created_at`, `updated_at`) VALUES
-(1, 'king', 'b38ce63f61c5be0f1a1906d4d37b8725', 'student1@camerinohub.edu.ph', 'christian', 'pacifico', NULL, '../images/student1.png', 'BSIT-2A', 'active', 0, NULL, 1, '2024-11-06 15:41:01', '2024-11-15 03:58:16'),
+(1, 'king', 'b38ce63f61c5be0f1a1906d4d37b8725', 'student1@camerinohub.edu.ph', 'christian', 'pacifico', NULL, '../images/student1.png', 'BSIT-2A', 'active', 0, NULL, 0, '2024-11-06 15:41:01', '2024-11-15 06:58:45'),
 (2, 'student2024', 'b38ce63f61c5be0f1a1906d4d37b8725', 'student2024@camerinohub.edu.ph', 'Juan', 'Dela Cruz', 'Santos', NULL, 'Grade 7', 'active', 0, NULL, 0, '2024-11-07 04:50:43', '2024-11-07 04:50:43'),
 (3, 'student_aster1', 'b38ce63f61c5be0f1a1906d4d37b8725', 'aster1@camerinohub.edu.ph', 'John', 'Smith', 'A', NULL, 'Grade 7', 'active', 0, NULL, 0, '2024-11-14 13:10:56', '2024-11-14 13:10:56'),
 (4, 'student_aster2', 'b38ce63f61c5be0f1a1906d4d37b8725', 'aster2@camerinohub.edu.ph', 'Mary', 'Johnson', 'B', NULL, 'Grade 7', 'active', 0, NULL, 0, '2024-11-14 13:10:56', '2024-11-14 13:10:56'),
@@ -759,7 +812,9 @@ INSERT INTO `student_login_logs` (`id`, `student_id`, `ip_address`, `status`, `c
 (31, 1, '::1', 'success', '2024-11-15 03:39:37'),
 (32, 1, '::1', 'failed', '2024-11-15 03:58:06'),
 (33, 1, '::1', 'failed', '2024-11-15 03:58:10'),
-(34, 1, '::1', 'success', '2024-11-15 03:58:16');
+(34, 1, '::1', 'success', '2024-11-15 03:58:16'),
+(35, 1, '::1', 'success', '2024-11-15 06:42:52'),
+(36, 1, '::1', 'success', '2024-11-15 06:57:17');
 
 -- --------------------------------------------------------
 
@@ -913,7 +968,7 @@ CREATE TABLE `teacher` (
   `firstname` varchar(100) NOT NULL,
   `lastname` varchar(100) NOT NULL,
   `middlename` varchar(100) DEFAULT NULL,
-  `department` varchar(100) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT 'active',
   `login_attempts` int(11) DEFAULT 0,
   `lockout_time` datetime DEFAULT NULL,
@@ -925,12 +980,12 @@ CREATE TABLE `teacher` (
 -- Dumping data for table `teacher`
 --
 
-INSERT INTO `teacher` (`teacher_id`, `username`, `password`, `email`, `firstname`, `lastname`, `middlename`, `department`, `status`, `login_attempts`, `lockout_time`, `created_at`, `updated_at`) VALUES
-(1, 'chaw', '96ac0342a3ccf9553e3d4c9da9b821b0', 'teacher1@camerinohub.edu.ph', 'John', 'Doe', NULL, 'Computer Studies', 'active', 0, NULL, '2024-11-06 15:41:01', '2024-11-07 11:24:12'),
-(2, 'king1', '$2y$10$5RQ4HH3GTB1vBHRyrvGVW.3737SNgWkOR/EOC8AN8XlnAfGgqYtXu', 'kingpacifico009@gmail.com', 'Christopher', 'pacifico', 'Ilagan', 'Computer', 'active', 0, NULL, '2024-11-14 12:48:50', '2024-11-14 13:29:40'),
-(3, 'mapeh_teacher', '96ac0342a3ccf9553e3d4c9da9b821b0', 'mapeh@camerinohub.edu.ph', 'Maria', 'Santos', NULL, 'MAPEH', 'active', 0, NULL, '2024-11-14 13:16:38', '2024-11-14 13:16:38'),
-(4, 'eng_teacher', '96ac0342a3ccf9553e3d4c9da9b821b0', 'english@camerinohub.edu.ph', 'John', 'Smith', NULL, 'English', 'active', 0, NULL, '2024-11-14 13:16:38', '2024-11-14 13:16:38'),
-(5, 'math_teacher', '96ac0342a3ccf9553e3d4c9da9b821b0', 'math@camerinohub.edu.ph', 'Robert', 'Johnson', NULL, 'Mathematics', 'active', 0, NULL, '2024-11-14 13:16:38', '2024-11-14 13:16:38');
+INSERT INTO `teacher` (`teacher_id`, `username`, `password`, `email`, `firstname`, `lastname`, `middlename`, `department_id`, `status`, `login_attempts`, `lockout_time`, `created_at`, `updated_at`) VALUES
+(1, 'chaw', '96ac0342a3ccf9553e3d4c9da9b821b0', 'teacher1@camerinohub.edu.ph', 'John', 'Doe', NULL, 1, 'active', 0, NULL, '2024-11-06 15:41:01', '2024-11-15 06:56:00'),
+(2, 'king1', '$2y$10$5RQ4HH3GTB1vBHRyrvGVW.3737SNgWkOR/EOC8AN8XlnAfGgqYtXu', 'kingpacifico009@gmail.com', 'Christopher', 'pacifico', 'Ilagan', 1, 'active', 0, NULL, '2024-11-14 12:48:50', '2024-11-15 04:30:14'),
+(3, 'mapeh_teacher', '96ac0342a3ccf9553e3d4c9da9b821b0', 'mapeh@camerinohub.edu.ph', 'Maria', 'Santos', NULL, 5, 'active', 0, NULL, '2024-11-14 13:16:38', '2024-11-15 04:30:14'),
+(4, 'eng_teacher', '96ac0342a3ccf9553e3d4c9da9b821b0', 'english@camerinohub.edu.ph', 'John', 'Smith', NULL, 3, 'active', 0, NULL, '2024-11-14 13:16:38', '2024-11-15 04:30:14'),
+(5, 'math_teacher', '96ac0342a3ccf9553e3d4c9da9b821b0', 'math@camerinohub.edu.ph', 'Robert', 'Johnson', NULL, 2, 'active', 0, NULL, '2024-11-14 13:16:38', '2024-11-15 04:30:14');
 
 -- --------------------------------------------------------
 
@@ -985,7 +1040,9 @@ INSERT INTO `teacher_login_logs` (`id`, `teacher_id`, `ip_address`, `status`, `c
 (32, 1, '::1', 'success', '2024-11-14 15:10:36'),
 (33, 1, '::1', 'success', '2024-11-14 15:14:29'),
 (34, 1, '::1', 'success', '2024-11-15 01:40:39'),
-(35, 1, '::1', 'success', '2024-11-15 03:54:52');
+(35, 1, '::1', 'success', '2024-11-15 03:54:52'),
+(36, 1, '::1', 'success', '2024-11-15 06:39:46'),
+(37, 1, '::1', 'success', '2024-11-15 06:56:00');
 
 --
 -- Indexes for dumped tables
@@ -1105,6 +1162,13 @@ ALTER TABLE `contact_information`
 --
 ALTER TABLE `date_ranges`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `departments`
+--
+ALTER TABLE `departments`
+  ADD PRIMARY KEY (`department_id`),
+  ADD UNIQUE KEY `department_code` (`department_code`);
 
 --
 -- Indexes for table `news`
@@ -1247,7 +1311,8 @@ ALTER TABLE `submission_files`
 ALTER TABLE `teacher`
   ADD PRIMARY KEY (`teacher_id`),
   ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `department_id` (`department_id`);
 
 --
 -- Indexes for table `teacher_login_logs`
@@ -1282,13 +1347,13 @@ ALTER TABLE `active_sessions`
 -- AUTO_INCREMENT for table `activities`
 --
 ALTER TABLE `activities`
-  MODIFY `activity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `activity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `activity_files`
 --
 ALTER TABLE `activity_files`
-  MODIFY `file_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `file_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `admin`
@@ -1324,13 +1389,13 @@ ALTER TABLE `assignments`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `attendance_logs`
 --
 ALTER TABLE `attendance_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `classes`
@@ -1349,6 +1414,12 @@ ALTER TABLE `contact_information`
 --
 ALTER TABLE `date_ranges`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `departments`
+--
+ALTER TABLE `departments`
+  MODIFY `department_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `news`
@@ -1426,7 +1497,7 @@ ALTER TABLE `student_grades`
 -- AUTO_INCREMENT for table `student_login_logs`
 --
 ALTER TABLE `student_login_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `student_sections`
@@ -1462,7 +1533,7 @@ ALTER TABLE `teacher`
 -- AUTO_INCREMENT for table `teacher_login_logs`
 --
 ALTER TABLE `teacher_login_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- Constraints for dumped tables
@@ -1478,7 +1549,6 @@ ALTER TABLE `active_sessions`
 -- Constraints for table `activities`
 --
 ALTER TABLE `activities`
-  ADD CONSTRAINT `activities_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `teacher` (`teacher_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `activities_ibfk_3` FOREIGN KEY (`section_subject_id`) REFERENCES `section_subjects` (`id`);
 
 --
@@ -1621,6 +1691,12 @@ ALTER TABLE `subject_grade_levels`
 --
 ALTER TABLE `submission_files`
   ADD CONSTRAINT `submission_files_ibfk_1` FOREIGN KEY (`submission_id`) REFERENCES `student_activity_submissions` (`submission_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `teacher`
+--
+ALTER TABLE `teacher`
+  ADD CONSTRAINT `teacher_ibfk_1` FOREIGN KEY (`department_id`) REFERENCES `departments` (`department_id`);
 
 --
 -- Constraints for table `teacher_login_logs`
