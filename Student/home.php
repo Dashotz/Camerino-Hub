@@ -91,7 +91,7 @@ if ($isLoggedIn) {
                     <div class="cta-buttons animate__animated animate__fadeInUp animate__delay-2s">
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
-                            <a href="student_courses.php" class="btn btn-outline-primary">My Classes</a>
+                            <a href="student_section.php" class="btn btn-outline-primary">My Classes</a>
                         <?php else: ?>
                             <a href="../Login.php" class="btn btn-primary">Student Portal</a>
                         <?php endif; ?>
@@ -102,10 +102,17 @@ if ($isLoggedIn) {
                 </div>
             </div>
             
-            <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
-                <input type="text" placeholder="Search something...">
-                <button class="btn-search">Search</button>
-            </div>
+            <?php if ($isLoggedIn): ?>
+                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
+                    <form action="search_results.php" method="GET" class="search-form">
+                        <input type="text" name="query" id="searchInput" placeholder="Search something..." required>
+                    </form>
+                </div>
+            <?php else: ?>
+                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
+                    <input type="text" id="searchInput" placeholder="Please login to access search features" disabled>
+                </div>
+            <?php endif; ?>
             
             <div class="quick-links animate__animated animate__fadeInUp animate__delay-4s">
                 <p>You may be looking for</p>
@@ -691,6 +698,54 @@ if ($isLoggedIn) {
 
     document.querySelectorAll('.stat-number').forEach(counter => {
         observers.observe(counter);
+    });
+    </script>
+
+    <script>
+    function performSearch() {
+        const searchTerm = document.getElementById('searchInput').value.trim();
+        if (searchTerm) {
+            // You can modify this to point to your actual search endpoint
+            window.location.href = `search_results.php?q=${encodeURIComponent(searchTerm)}`;
+        }
+    }
+
+    function redirectToLogin() {
+        window.location.href = 'Student-Login.php';
+    }
+
+    // Optional: Add enter key support for search
+    document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && <?php echo $isLoggedIn ? 'true' : 'false' ?>) {
+            performSearch();
+        }
+    });
+    </script>
+
+    <script>
+    $(document).ready(function() {
+        let searchTimeout;
+        const searchInput = $('#searchInput');
+        
+        // Live search suggestions
+        searchInput.on('keyup', function() {
+            clearTimeout(searchTimeout);
+            const query = $(this).val();
+            
+            if (query.length >= 2) {
+                searchTimeout = setTimeout(function() {
+                    $.ajax({
+                        url: 'search_suggestions.php',
+                        method: 'GET',
+                        data: { query: query },
+                        success: function(response) {
+                            // Handle search suggestions
+                            showSuggestions(response);
+                        }
+                    });
+                }, 300);
+            }
+        });
     });
     </script>
 </body>

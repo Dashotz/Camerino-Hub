@@ -78,10 +78,8 @@ if ($isLoggedIn) {
                     <div class="cta-buttons">
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
-                            <a href="student_courses.php" class="btn btn-outline-primary">My Courses</a>
                         <?php else: ?>
                             <a href="Student-Login.php" class="btn btn-primary">Login Now</a>
-                            <a href="student_registration.php" class="btn btn-outline-primary">Enroll Now!</a>
                         <?php endif; ?>
                     </div>
                 </div>

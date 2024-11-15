@@ -1,180 +1,207 @@
 <?php
-// Prevent any output before our JSON response
+// Prevent any output before JSON response
 ob_start();
 
-// Basic error handling
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/error.log');
+session_start();
+require_once('../db/dbConnector.php');
 
+// Set JSON content type header
 header('Content-Type: application/json');
 
+// Check authentication
+if (!isset($_SESSION['teacher_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    exit();
+}
+
+$db = new DbConnector();
+$teacher_id = $_SESSION['teacher_id'];
+
 try {
-    require_once('../db/dbConnector.php');
-    require_once('includes/file_handler.php');
-    session_start();
+    // Start transaction using the correct method name
+    $db->beginTransaction();
 
-    // Authentication check
-    if (!isset($_SESSION['teacher_id'])) {
-        throw new Exception('Not authenticated');
+    // Check for duplicate activity title for the same section within a time window
+    $check_duplicate_sql = "
+        SELECT COUNT(*) as count 
+        FROM activities a 
+        WHERE a.section_subject_id = ? 
+        AND a.title = ? 
+        AND a.created_at >= NOW() - INTERVAL 5 MINUTE";
+
+    $stmt = $db->prepare($check_duplicate_sql);
+    if (!$stmt) {
+        throw new Exception('Failed to prepare duplicate check statement');
     }
 
-    // Method check
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception('Invalid request method');
+    $stmt->bind_param("is", 
+        $_POST['section_subject_id'],
+        $_POST['title']
+    );
+
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    if ($result['count'] > 0) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'An activity with this title was recently created. Please wait a few minutes before trying again or use a different title.'
+        ]);
+        exit();
     }
 
-    // Create database connection
-    $db = new DbConnector();
+    // Create the activity with teacher_id
+    $activity_sql = "INSERT INTO activities (
+        section_subject_id,
+        teacher_id,
+        title,
+        description,
+        type,
+        due_date,
+        points,
+        status,
+        created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', NOW())";
+
+    $stmt = $db->prepare($activity_sql);
+    if (!$stmt) {
+        throw new Exception('Failed to prepare statement');
+    }
+
+    $stmt->bind_param("iissssi", 
+        $_POST['section_subject_id'],
+        $teacher_id,
+        $_POST['title'],
+        $_POST['description'],
+        $_POST['type'],
+        $_POST['due_date'],
+        $_POST['points']
+    );
+
+    if (!$stmt->execute()) {
+        throw new Exception('Failed to create activity: ' . $stmt->error);
+    }
     
-    // Basic validation
-    if (empty($_POST['section_subject_id']) || empty($_POST['title']) || 
-        empty($_POST['type']) || empty($_POST['due_date'])) {
-        throw new Exception('Missing required fields');
+    // Get the last inserted activity_id using the correct method
+    $activity_id = $db->lastInsertId();
+    
+    if (!$activity_id) {
+        throw new Exception('Failed to get activity ID');
     }
 
-    // Start transaction
-    $db->begin_transaction();
-
-    try {
-        // Insert activity
-        $stmt = $db->prepare("
-            INSERT INTO activities (
-                teacher_id, 
-                section_subject_id,
-                title,
-                description,
-                type,
-                points,
-                due_date,
-                status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'active')
-        ");
-
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $db->error());
+    // Handle file uploads
+    if (isset($_FILES['activity_files']) && !empty($_FILES['activity_files']['name'][0])) {
+        // Define upload directory
+        $base_dir = dirname(dirname(__FILE__));
+        $upload_dir = $base_dir . '/uploads/activities/';
+        
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
         }
 
-        $teacher_id = $_SESSION['teacher_id'];
-        $section_subject_id = intval($_POST['section_subject_id']);
-        $title = strip_tags($_POST['title']);
-        $description = strip_tags($_POST['description'] ?? '');
-        $type = $_POST['type'];
-        $points = intval($_POST['points'] ?? 100);
-        $due_date = date('Y-m-d H:i:s', strtotime($_POST['due_date']));
+        // Track processed files to prevent duplication
+        $processed_files = [];
 
-        $stmt->bind_param("iisssis", 
-            $teacher_id,
-            $section_subject_id,
-            $title,
-            $description,
-            $type,
-            $points,
-            $due_date
-        );
-
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to create activity: " . $stmt->error);
-        }
-
-        $activity_id = $stmt->insert_id;
-
-        // Handle file uploads if present
-        if (!empty($_FILES['activity_files']['name'][0])) {
-            $uploadedFiles = handleActivityFiles($activity_id, $teacher_id, $_FILES);
+        foreach ($_FILES['activity_files']['tmp_name'] as $key => $tmp_name) {
+            // Skip empty or already processed files
+            if (empty($tmp_name) || in_array($tmp_name, $processed_files)) {
+                continue;
+            }
             
-            // Store file information in database
-            foreach ($uploadedFiles as $file) {
-                $file_stmt = $db->prepare("
-                    INSERT INTO activity_files (
-                        activity_id, 
-                        file_name, 
-                        file_path, 
-                        file_type, 
-                        file_size
-                    ) VALUES (?, ?, ?, ?, ?)
-                ");
-                
-                if (!$file_stmt) {
-                    throw new Exception("Failed to prepare file statement");
+            $file_name = $_FILES['activity_files']['name'][$key];
+            $file_size = $_FILES['activity_files']['size'][$key];
+            $file_type = $_FILES['activity_files']['type'][$key];
+            
+            // Validate file type
+            $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                             'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                             'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+            
+            if (!in_array($file_type, $allowed_types)) {
+                throw new Exception('Invalid file type: ' . $file_name);
+            }
+            
+            // Generate unique filename with timestamp and random string
+            $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            $unique_file_name = uniqid(time() . '_') . '_' . bin2hex(random_bytes(8)) . '.' . $file_ext;
+            
+            // Create relative path for database
+            $db_file_path = 'uploads/activities/' . $unique_file_name;
+            
+            // Create full server path for move_uploaded_file
+            $full_upload_path = $upload_dir . $unique_file_name;
+            
+            // Move file
+            if (!move_uploaded_file($tmp_name, $full_upload_path)) {
+                throw new Exception('Failed to upload file: ' . $file_name);
+            }
+            
+            // Add to processed files
+            $processed_files[] = $tmp_name;
+            
+            // Save file information to database
+            $file_sql = "INSERT INTO activity_files (
+                activity_id,
+                file_name,
+                file_path,
+                file_type,
+                file_size,
+                created_at
+            ) VALUES (?, ?, ?, ?, ?, NOW())";
+            
+            $stmt = $db->prepare($file_sql);
+            if (!$stmt) {
+                // Clean up uploaded file if statement preparation fails
+                if (file_exists($full_upload_path)) {
+                    unlink($full_upload_path);
                 }
+                throw new Exception('Failed to prepare file statement');
+            }
 
-                $file_stmt->bind_param("isssi", 
-                    $activity_id, 
-                    $file['file_name'], 
-                    $file['file_path'], 
-                    $file['file_type'], 
-                    $file['file_size']
-                );
-                
-                if (!$file_stmt->execute()) {
-                    throw new Exception("Failed to save file information");
+            $stmt->bind_param("isssi", 
+                $activity_id,
+                $file_name,
+                $db_file_path,
+                $file_type,
+                $file_size
+            );
+
+            if (!$stmt->execute()) {
+                // Clean up uploaded file if database insert fails
+                if (file_exists($full_upload_path)) {
+                    unlink($full_upload_path);
                 }
+                throw new Exception('Failed to save file information: ' . $stmt->error);
             }
         }
-
-        // If activity creation successful and announcement requested
-        if (isset($_POST['create_announcement']) && $_POST['create_announcement'] === 'true') {
-            // Get section and subject IDs from section_subject_id
-            $query = "SELECT section_id, subject_id FROM section_subjects WHERE id = ?";
-            $stmt = $db->prepare($query);
-            $stmt->bind_param("i", $_POST['section_subject_id']);
-            $stmt->execute();
-            $result = $stmt->get_result()->fetch_assoc();
-
-            // Create announcement
-            $announcement_query = "INSERT INTO announcements (
-                teacher_id, 
-                section_id, 
-                subject_id, 
-                content, 
-                status,
-                created_at
-            ) VALUES (?, ?, ?, ?, 'active', NOW())";
-
-            $stmt = $db->prepare($announcement_query);
-            $stmt->bind_param("iiis", 
-                $teacher_id,
-                $result['section_id'],
-                $result['subject_id'],
-                $_POST['announcement_content']
-            );
-            $stmt->execute();
-        }
-
-        // Commit transaction
-        $db->commit();
-
-        // Clear any buffered output
-        ob_clean();
-
-        // Send success response
-        echo json_encode([
-            'success' => true,
-            'message' => 'Activity created successfully',
-            'activity_id' => $activity_id
-        ]);
-
-    } catch (Exception $e) {
-        // Rollback transaction
-        $db->rollback();
-        throw $e;
     }
 
-} catch (Exception $e) {
-    // Log the error
-    error_log("Create activity error: " . $e->getMessage());
+    $db->commit();
     
-    // Clear any buffered output
-    ob_clean();
-
-    // Send error response
+    // Clear any output buffers
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    
     echo json_encode([
-        'success' => false,
-        'message' => 'Error creating activity: ' . $e->getMessage()
+        'success' => true, 
+        'message' => 'Activity created successfully',
+        'activity_id' => $activity_id
+    ]);
+
+} catch (Exception $e) {
+    $db->rollback();
+    
+    // Clear any output buffers
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    
+    echo json_encode([
+        'success' => false, 
+        'message' => $e->getMessage()
     ]);
 }
 
-// End output buffering and flush
-ob_end_flush();
+exit();
+?>

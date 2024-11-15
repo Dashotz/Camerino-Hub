@@ -80,10 +80,8 @@ if ($isLoggedIn) {
                     <div class="cta-buttons">
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
-                            <a href="student_courses.php" class="btn btn-outline-primary">My Courses</a>
                         <?php else: ?>
                             <a href="Student-Login.php" class="btn btn-primary">Login Now</a>
-                            <a href="student_registration.php" class="btn btn-outline-primary">Enroll Now!</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -92,10 +90,17 @@ if ($isLoggedIn) {
                 </div>
             </div>
             
-            <div class="search-container">
-                <input type="text" placeholder="Search something...">
-                <button class="btn-search">Search</button>
-            </div>
+            <?php if ($isLoggedIn): ?>
+                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
+                    <form action="search_results.php" method="GET" class="search-form">
+                        <input type="text" name="query" id="searchInput" placeholder="Search something..." required>
+                    </form>
+                </div>
+            <?php else: ?>
+                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
+                    <input type="text" id="searchInput" placeholder="Please login to access search features" disabled>
+                </div>
+            <?php endif; ?>
             
             <div class="quick-links">
                 <p>You may be looking for</p>

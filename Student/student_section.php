@@ -53,39 +53,28 @@ if (!$section_info) {
 
 // Fetch student's subjects
 $subjects_query = "
-    SELECT DISTINCT
+    SELECT 
         s.id as subject_id,
         s.subject_code,
         s.subject_name,
-        ss.schedule_day,
-        ss.schedule_time,
-        t.firstname as teacher_firstname,
-        t.middlename as teacher_middlename,
-        t.lastname as teacher_lastname,
-        t.teacher_id,
-        (
-            SELECT COUNT(a.activity_id) 
-            FROM activities a 
-            WHERE a.teacher_id = ss.teacher_id
-            AND a.type = 'assignment'
-            AND EXISTS (
-                SELECT 1 
-                FROM section_subjects sss 
-                WHERE sss.id = ss.id
-                AND sss.subject_id = s.id
-            )
-        ) as assignment_count
-    FROM student_sections st
-    JOIN sections sec ON st.section_id = sec.section_id
-    JOIN section_subjects ss ON sec.section_id = ss.section_id
+        t.firstname as teacher_fname,
+        t.lastname as teacher_lname,
+        COUNT(DISTINCT CASE WHEN a.type = 'activity' THEN a.activity_id END) as activity_count,
+        COUNT(DISTINCT CASE WHEN a.type = 'quiz' THEN a.activity_id END) as quiz_count,
+        COUNT(DISTINCT CASE WHEN a.type = 'assignment' THEN a.activity_id END) as assignment_count
+    FROM section_subjects ss
     JOIN subjects s ON ss.subject_id = s.id
     JOIN teacher t ON ss.teacher_id = t.teacher_id
-    JOIN academic_years ay ON ay.status = 'active'
-    WHERE st.student_id = ?
-    AND st.status = 'active'
+    LEFT JOIN activities a ON ss.id = a.section_subject_id AND a.status = 'active'
+    WHERE ss.section_id = (
+        SELECT section_id 
+        FROM student_sections 
+        WHERE student_id = ? 
+        AND status = 'active' 
+        LIMIT 1
+    ) 
     AND ss.status = 'active'
-    ORDER BY FIELD(ss.schedule_day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'),
-    ss.schedule_time";
+    GROUP BY s.id, s.subject_code, s.subject_name, t.firstname, t.lastname";
 
 $stmt = $db->prepare($subjects_query);
 $stmt->bind_param("i", $student_id);
@@ -158,36 +147,46 @@ if (!$subjects) {
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Subject Code</th>
-                                            <th>Subject Name</th>
-                                            <th>Schedule</th>
+                                            <th>Subject</th>
                                             <th>Teacher</th>
+                                            <th>Activities</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($subjects as $subject): ?>
                                         <tr>
-                                            <td><?php echo htmlspecialchars($subject['subject_code']); ?></td>
-                                            <td><?php echo htmlspecialchars($subject['subject_name']); ?></td>
                                             <td>
-                                                <?php 
-                                                echo htmlspecialchars($subject['schedule_day']) . ' ' . 
-                                                     date('h:i A', strtotime($subject['schedule_time'])); 
-                                                ?>
+                                                <strong><?php echo htmlspecialchars($subject['subject_code']); ?></strong><br>
+                                                <small><?php echo htmlspecialchars($subject['subject_name']); ?></small>
+                                            </td>
+                                            <td><?php echo htmlspecialchars($subject['teacher_fname'] . ' ' . $subject['teacher_lname']); ?></td>
+                                            <td>
+                                                <div class="activity-counts">
+                                                    <span class="badge badge-primary" title="Activities">
+                                                        <i class="fas fa-tasks"></i> <?php echo $subject['activity_count']; ?>
+                                                    </span>
+                                                    <span class="badge badge-info" title="Quizzes">
+                                                        <i class="fas fa-question-circle"></i> <?php echo $subject['quiz_count']; ?>
+                                                    </span>
+                                                    <span class="badge badge-success" title="Assignments">
+                                                        <i class="fas fa-book"></i> <?php echo $subject['assignment_count']; ?>
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td>
-                                                <?php 
-                                                echo htmlspecialchars($subject['teacher_firstname']) . ' ' . 
-                                                     htmlspecialchars($subject['teacher_lastname']); 
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-info view-assignments" 
-                                                        data-subject-code="<?php echo htmlspecialchars($subject['subject_code']); ?>"
-                                                        data-subject-name="<?php echo htmlspecialchars($subject['subject_name']); ?>">
-                                                    <i class="fas fa-tasks"></i> Assignments
-                                                </button>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-sm btn-primary view-activities" 
+                                                            data-subject-id="<?php echo $subject['subject_id']; ?>"
+                                                            data-subject-name="<?php echo htmlspecialchars($subject['subject_name']); ?>">
+                                                        <i class="fas fa-list-ul"></i> Activities
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-info view-grades"
+                                                            data-subject-id="<?php echo $subject['subject_id']; ?>"
+                                                            data-subject-name="<?php echo htmlspecialchars($subject['subject_name']); ?>">
+                                                        <i class="fas fa-chart-line"></i> Grades
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
@@ -201,16 +200,31 @@ if (!$subjects) {
         </div>
     </div>
 
-    <!-- Assignments Modal -->
-    <div class="modal fade" id="assignmentsModal" tabindex="-1" role="dialog">
+    <!-- Add Modals -->
+    <div class="modal fade" id="activitiesModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Subject Assignments</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Subject Activities</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
                 </div>
-                <div class="modal-body" id="assignmentsModalContent">
-                    Loading...
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="activityTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#activities">Activities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#quizzes">Quizzes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#assignments">Assignments</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="activitiesContent">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -222,28 +236,60 @@ if (!$subjects) {
     
     <script>
     $(document).ready(function() {
-        $('.view-assignments').click(function() {
-            const subjectCode = $(this).data('subject-code');
+        // View Activities Button
+        $('.view-activities').click(function() {
+            const subjectId = $(this).data('subject-id');
             const subjectName = $(this).data('subject-name');
             
-            $('#assignmentsModal').modal('show');
-            $('.modal-title').text(subjectName + ' - Assignments');
+            $('#activitiesModal').modal('show');
+            $('.modal-title').text(subjectName + ' - Activities');
             
+            // Load activities content
+            loadActivitiesContent(subjectId);
+        });
+
+        // View Grades Button
+        $('.view-grades').click(function() {
+            const subjectId = $(this).data('subject-id');
+            window.location.href = 'student_grades.php?subject_id=' + subjectId;
+        });
+
+        function loadActivitiesContent(subjectId) {
             $.ajax({
-                url: 'get_subject_assignments.php',
+                url: 'get_subject_activities.php',
                 type: 'GET',
-                data: { subject_code: subjectCode },
+                data: { subject_id: subjectId },
                 success: function(response) {
-                    $('#assignmentsModalContent').html(response);
+                    $('#activitiesContent').html(response);
                 },
                 error: function() {
-                    $('#assignmentsModalContent').html(
-                        '<div class="alert alert-danger">Error loading assignments.</div>'
+                    $('#activitiesContent').html(
+                        '<div class="alert alert-danger">Error loading activities.</div>'
                     );
                 }
             });
-        });
+        }
     });
     </script>
+
+    <style>
+    .activity-counts .badge {
+        margin-right: 5px;
+        padding: 5px 10px;
+    }
+
+    .btn-group .btn {
+        margin-right: 5px;
+    }
+
+    .nav-tabs .nav-link {
+        color: #495057;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #007bff;
+        font-weight: bold;
+    }
+    </style>
 </body>
 </html>

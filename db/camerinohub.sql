@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2024 at 05:06 PM
+-- Generation Time: Nov 15, 2024 at 05:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.0
 
@@ -20,6 +20,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `camerinohub`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `about_us_content`
+--
+
+CREATE TABLE `about_us_content` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `type` varchar(50) DEFAULT 'general',
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -85,19 +100,6 @@ CREATE TABLE `activities` (
   `completion_rate` decimal(5,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `activities`
---
-
-INSERT INTO `activities` (`activity_id`, `teacher_id`, `section_subject_id`, `title`, `description`, `file_path`, `type`, `points`, `quiz_link`, `quiz_duration`, `prevent_tab_switch`, `fullscreen_required`, `quiz_attempts`, `due_date`, `created_at`, `updated_at`, `status`, `completion_rate`) VALUES
-(6, 1, 1, 'I want to ', 'waeawe', NULL, 'activity', 100, NULL, NULL, 0, 0, 1, '2024-11-14 20:16:00', '2024-11-07 19:16:19', '2024-11-14 07:53:07', 'archived', 0.00),
-(7, 1, 1, 'I want to ', 'waeawe', NULL, 'activity', 100, NULL, NULL, 0, 0, 1, '2024-11-14 20:16:00', '2024-11-07 19:16:32', '2024-11-07 19:50:54', 'archived', 0.00),
-(8, 1, 1, 'I want to ', 'waeawe', NULL, 'activity', 100, NULL, NULL, 0, 0, 1, '2024-11-14 20:16:00', '2024-11-07 19:18:07', '2024-11-14 13:52:56', 'active', 0.00),
-(9, 1, 1, 'Quiz For ALL subject', 'TEST for Description ', NULL, 'quiz', 100, 'https://docs.google.com/forms/d/e/1FAIpQLSfjtBgKCFr56Cw_g6nbMGAcvHFI016Nk4CnBA0l2U-KHMd0Jg/viewform?usp=sf_link', NULL, 0, 0, 1, '2024-11-21 14:52:00', '2024-11-14 14:26:49', '2024-11-14 14:39:17', 'active', 0.00),
-(10, 1, 1, 'Assignment #4', 'Create A House For my Family ', NULL, 'assignment', 100, NULL, NULL, 0, 0, 1, '2024-11-21 15:42:00', '2024-11-14 14:43:15', '2024-11-14 14:43:15', 'active', 0.00),
-(11, 1, 1, 'Introduction to Programming Basics', 'In this activity, students will learn the fundamental concepts of programming, including variables, data types, and control structures. Please complete the exercises provided and submit the code files.', NULL, 'activity', 100, NULL, NULL, 0, 0, 1, '2024-11-21 16:51:00', '2024-11-14 15:52:23', '2024-11-14 15:52:23', 'active', 0.00),
-(12, 1, 1, 'Introduction to Programming Basics', 'In this activity, students will learn the fundamental concepts of programming, including variables, data types, and control structures. Please complete the exercises provided and submit the code files.', NULL, 'activity', 100, NULL, NULL, 0, 0, 1, '2024-11-21 16:51:00', '2024-11-14 15:52:23', '2024-11-14 15:52:23', 'active', 0.00);
-
 -- --------------------------------------------------------
 
 --
@@ -113,15 +115,6 @@ CREATE TABLE `activity_files` (
   `file_size` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `activity_files`
---
-
-INSERT INTO `activity_files` (`file_id`, `activity_id`, `file_name`, `file_path`, `file_type`, `file_size`, `created_at`) VALUES
-(1, 8, 'CAMERINOHUB.docx', 'uploads/activities/teacher_1/activity_8/672d126f5557d_CAMERINOHUB.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 166217, '2024-11-07 19:18:07'),
-(2, 11, '6735a779233cb.docx', 'uploads/activities/teacher_1/activity_11/67361cb783799_6735a779233cb.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 165924, '2024-11-14 15:52:23'),
-(3, 12, '6735a779233cb.docx', 'uploads/activities/teacher_1/activity_12/67361cb784d7f_6735a779233cb.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 165924, '2024-11-14 15:52:23');
 
 -- --------------------------------------------------------
 
@@ -228,7 +221,9 @@ CREATE TABLE `announcements` (
 
 INSERT INTO `announcements` (`id`, `teacher_id`, `section_id`, `subject_id`, `content`, `attachment`, `status`, `created_at`, `type`, `priority`, `reference_id`) VALUES
 (1, 1, 1, 1, '📢 Announcement: Human Society Project\r\n\r\nDear Students,\r\n\r\nWe are excited to announce your upcoming Human Society Project! This project is an opportunity for you to explore, understand, and reflect on the diverse aspects of human society, including culture, community, relationships, and how individuals and groups interact within it.\r\n\r\nProject Details:\r\n\r\nObjective: Develop a project that highlights an element of human society. This could focus on cultural diversity, societal challenges, community contributions, or any topic that helps deepen our understanding of society.\r\nFormat: You may create a presentation, poster, video, report, or a creative piece (e.g., artwork, infographic).\r\nGuidelines: Ensure your project is informative, respectful, and engaging. Feel free to incorporate real-world examples, interviews, and statistics to support your ideas.\r\nImportant Dates:\r\n\r\nProject Topic Submission: [Insert Date]\r\nFinal Project Due Date: [Insert Date]\r\nPresentation Day: [Insert Date]\r\nLet\'s work together to create meaningful projects that contribute to our understanding of the world around us. If you have any questions or need guidance, please don\'t hesitate to reach out.\r\n\r\nGood luck, and I can\'t wait to see the amazing work you\'ll create!', 'uploads/announcements/6735a779233cb.docx', 'active', '2024-11-14 07:32:09', 'normal', 'medium', NULL),
-(3, 1, 1, 1, 'A new activity has been posted: \"Introduction to Programming Basics\"\r\n\r\nPlease complete this activity by 11/21/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, 'active', '2024-11-14 15:52:23', 'normal', 'medium', NULL);
+(3, 1, 1, 1, 'A new activity has been posted: \"Introduction to Programming Basics\"\r\n\r\nPlease complete this activity by 11/21/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, 'active', '2024-11-14 15:52:23', 'normal', 'medium', NULL),
+(4, 1, 1, 1, 'A new assignment has been posted: \"wads\"\r\n\r\nPlease submit your work by 11/22/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, 'active', '2024-11-15 01:41:37', 'normal', 'medium', NULL),
+(5, 1, 1, 1, 'A new activity has been posted: \"asdasdasdasd\"\r\n\r\nPlease complete this activity by 11/22/2024.\r\nTotal Points: 100\r\nSection: Pacifico - Code', NULL, 'active', '2024-11-15 02:34:08', 'normal', 'medium', NULL);
 
 -- --------------------------------------------------------
 
@@ -343,15 +338,93 @@ CREATE TABLE `classes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `contact_information`
+--
+
+CREATE TABLE `contact_information` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `type` varchar(50) DEFAULT 'general',
+  `status` enum('active','inactive') DEFAULT 'active',
+  `response_status` enum('pending','responded','archived') DEFAULT 'pending',
+  `response` text DEFAULT NULL,
+  `responded_at` timestamp NULL DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `contact_information`
+--
+
+INSERT INTO `contact_information` (`id`, `title`, `email`, `name`, `subject`, `content`, `type`, `status`, `response_status`, `response`, `responded_at`, `ip_address`, `created_at`) VALUES
+(12, '', 'student1@camerinohub.edu.ph', 'christian pacifico', 'asdasd', 'asdasdasdad', 'inquiry', '', 'pending', NULL, NULL, '::1', '2024-11-15 01:10:47'),
+(13, '', 'student1@camerinohub.edu.ph', 'christian pacifico', 'asdasd', 'asdasdasdad', 'inquiry', '', 'pending', NULL, NULL, '::1', '2024-11-15 01:11:24'),
+(14, '', 'student1@camerinohub.edu.ph', 'christian pacifico', 'asd', 'asd', 'inquiry', '', 'pending', NULL, NULL, '::1', '2024-11-15 01:11:53');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `date_ranges`
+--
+
+CREATE TABLE `date_ranges` (
+  `id` int(11) NOT NULL,
+  `range_type` varchar(20) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `news`
+--
+
+CREATE TABLE `news` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `excerpt` text NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `category` enum('academic','event','announcement') NOT NULL,
+  `date` date NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('active','inactive') DEFAULT 'active'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `news`
+--
+
+INSERT INTO `news` (`id`, `title`, `content`, `excerpt`, `image`, `category`, `date`, `created_at`, `status`) VALUES
+(1, 'School Year 2023-2024 Opening', 'We are thrilled to announce the opening of School Year 2023-2024! As we embark on this new academic journey, we welcome both returning and new students to our campus.\r\n\r\nKey Highlights for this School Year:\r\n• Enhanced curriculum focusing on 21st-century skills\r\n• New extracurricular activities and clubs\r\n• Upgraded classroom facilities and learning resources\r\n• Implementation of blended learning approaches\r\n• Strengthened student support services\r\n\r\nImportant Dates:\r\n- First Day of Classes: June 5, 2024\r\n- Orientation Week: May 29-31, 2024\r\n- Parent-Teacher Meeting: June 15, 2024\r\n\r\nWe look forward to another year of academic excellence, personal growth, and memorable experiences. Let\'s make this school year extraordinary together!', 'Welcome back students! The new school year begins with excitement and new opportunities.', '../images/1.jpg', 'academic', '2024-01-15', '2024-11-15 00:32:02', 'active'),
+(2, 'Annual Science Fair 2024', 'The Annual Science Fair 2024 is approaching! This year\'s theme is \"Innovation for Sustainable Future.\"\r\n\r\nEvent Details:\r\n• Date: February 20, 2024\r\n• Time: 8:00 AM - 4:00 PM\r\n• Venue: School Gymnasium\r\n• Categories: Environmental Science, Technology, Health Sciences, Physical Sciences\r\n\r\nCompetition Guidelines:\r\n1. Projects must be original and student-led\r\n2. Teams of 2-3 students allowed\r\n3. Display boards and presentations required\r\n4. Research documentation mandatory\r\n\r\nPrizes:\r\n- 1st Place: ₱5,000 and medals\r\n- 2nd Place: ₱3,000 and medals\r\n- 3rd Place: ₱2,000 and medals\r\n- Special Awards for Innovation\r\n\r\nRegistration deadline: February 10, 2024\r\nContact your science teacher for registration and more information.', 'Join us for an exciting showcase of student science projects and innovations.', '../images/2.jpg', 'event', '2024-02-20', '2024-11-15 00:32:02', 'active'),
+(3, 'Important: Class Schedule Updates', 'Important Notice: Class Schedule Updates for the Current Semester\r\n\r\nThe following changes have been implemented to optimize learning experiences:\r\n\r\nMorning Sessions:\r\n• Grade 7: 7:00 AM - 12:00 PM\r\n• Grade 8: 7:30 AM - 12:30 PM\r\n• Grade 9: 8:00 AM - 1:00 PM\r\n\r\nAfternoon Sessions:\r\n• Grade 10: 12:30 PM - 5:30 PM\r\n• Grade 11: 1:00 PM - 6:00 PM\r\n• Grade 12: 1:30 PM - 6:30 PM\r\n\r\nAdditional Changes:\r\n1. Computer Laboratory sessions moved to mornings\r\n2. Physical Education classes scheduled for cooler hours\r\n3. Science Laboratory work in mid-morning slots\r\n4. Reading periods added to early morning schedules\r\n\r\nThese changes take effect from February 20, 2024. Please adjust your daily routines accordingly.', 'Please check the revised class schedules for the upcoming semester.', '../images/3.jpg', 'announcement', '2024-02-15', '2024-11-15 00:32:02', 'active'),
+(4, 'New Learning Management System', 'We are excited to introduce our new Learning Management System (LMS) designed to enhance your educational experience!\r\n\r\nKey Features:\r\n• Interactive virtual classrooms\r\n• Real-time progress tracking\r\n• Digital assignment submission\r\n• Integrated video conferencing\r\n• Mobile-friendly interface\r\n• Automated attendance system\r\n• Parent portal access\r\n\r\nBenefits:\r\n1. 24/7 access to learning materials\r\n2. Improved student-teacher communication\r\n3. Paperless submission system\r\n4. Instant feedback on assignments\r\n5. Collaborative learning tools\r\n\r\nTraining Schedule:\r\n- Student Orientation: February 15-16, 2024\r\n- Parent Orientation: February 17, 2024\r\n- Teacher Training: February 12-14, 2024\r\n\r\nSystem Requirements:\r\n• Internet connection\r\n• Updated web browser\r\n• Minimum 4GB RAM device\r\n• Webcam and microphone\r\n\r\nThe new system will be fully implemented starting February 20, 2024.', 'Introducing our new digital learning platform for enhanced online education.', '../images/4.jpg', 'academic', '2024-02-10', '2024-11-15 00:32:02', 'active'),
+(5, 'Sports Festival 2024', 'Get ready for the most exciting sports event of the year - Sports Festival 2024!\r\n\r\nEvent Schedule:\r\nMarch 1-5, 2024\r\nDay 1: Opening Ceremony and Track Events\r\nDay 2: Basketball and Volleyball Tournaments\r\nDay 3: Swimming Competition\r\nDay 4: Traditional Filipino Games\r\nDay 5: Championship Games and Closing Ceremony\r\n\r\nSports Categories:\r\n• Track and Field\r\n• Basketball (Boys/Girls)\r\n• Volleyball (Boys/Girls)\r\n• Swimming\r\n• Table Tennis\r\n• Badminton\r\n• Chess\r\n\r\nSpecial Events:\r\n- Inter-class Cheering Competition\r\n- Sports Exhibition Matches\r\n- Alumni Games\r\n- Teachers vs. Students Friendly Matches\r\n\r\nRegistration:\r\n• Sign up through your PE teachers\r\n• Deadline: February 25, 2024\r\n• Medical clearance required\r\n• Parent consent form mandatory\r\n\r\nPrizes for each category:\r\nGold Medal + Certificate\r\nSilver Medal + Certificate\r\nBronze Medal + Certificate', 'Get ready for our annual sports festival featuring various athletic competitions.', '../images/2.jpg', 'event', '2024-03-01', '2024-11-15 00:32:02', 'active'),
+(6, 'Enrollment Period Extended', 'IMPORTANT ANNOUNCEMENT: Enrollment Period Extension\r\n\r\nWe are extending the enrollment period until March 15, 2024, to accommodate more students and ensure a smooth registration process.\r\n\r\nExtended Schedule:\r\n• Online Registration: 24/7 until March 15\r\n• On-site Enrollment: Monday-Friday, 8AM-5PM\r\n• Saturday Special Enrollment: 8AM-12PM\r\n\r\nRequired Documents:\r\n1. Form 137 (Report Card)\r\n2. Good Moral Certificate\r\n3. Birth Certificate\r\n4. 2x2 ID Pictures (4 pieces)\r\n5. Certificate of Completion/Graduation\r\n\r\nPayment Options:\r\n- Full Payment with 5% discount\r\n- Quarterly Payment Plan\r\n- Monthly Payment Plan\r\n\r\nSpecial Considerations:\r\n• Early bird discount until March 1\r\n• Sibling discount available\r\n• Scholar application extended\r\n• Financial assistance programs\r\n\r\nFor inquiries:\r\nEmail: enrollment@camerinohub.edu.ph\r\nPhone: (02) 8123-4567\r\nMobile: 0912-345-6789\r\n\r\nDon\'t miss this opportunity to be part of our academic community!', 'The enrollment period has been extended until March 15, 2024.', '../images/1.jpg', 'announcement', '2024-02-25', '2024-11-15 00:32:02', 'active');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `notifications`
 --
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `section_id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL,
   `user_type` enum('student','teacher','admin') NOT NULL,
   `type` enum('quiz','activity','assignment','announcement') NOT NULL,
   `reference_id` int(11) NOT NULL,
+  `activity_id` int(11) DEFAULT NULL,
   `announcement_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `message` text NOT NULL,
@@ -364,9 +437,9 @@ CREATE TABLE `notifications` (
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `user_id`, `user_type`, `type`, `reference_id`, `announcement_id`, `title`, `message`, `is_read`, `is_system`, `created_at`) VALUES
-(1, 2, 'student', 'announcement', 0, NULL, 'New Announcement', 'Teacher John Doe posted a new announcement', 0, 0, '2024-11-14 07:36:10'),
-(2, 1, 'student', 'announcement', 0, NULL, 'New Announcement', 'Teacher John Doe posted a new announcement', 0, 0, '2024-11-14 07:36:10');
+INSERT INTO `notifications` (`id`, `user_id`, `section_id`, `subject_id`, `user_type`, `type`, `reference_id`, `activity_id`, `announcement_id`, `title`, `message`, `is_read`, `is_system`, `created_at`) VALUES
+(1, 2, 0, 0, 'student', 'announcement', 0, NULL, NULL, 'New Announcement', 'Teacher John Doe posted a new announcement', 0, 0, '2024-11-14 07:36:10'),
+(2, 1, 0, 0, 'student', 'announcement', 0, NULL, NULL, 'New Announcement', 'Teacher John Doe posted a new announcement', 0, 0, '2024-11-14 07:36:10');
 
 -- --------------------------------------------------------
 
@@ -519,6 +592,20 @@ CREATE TABLE `security_violations` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `site_map_content`
+--
+
+CREATE TABLE `site_map_content` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('active','inactive') DEFAULT 'active'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `student`
 --
 
@@ -545,7 +632,7 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`student_id`, `username`, `password`, `email`, `firstname`, `lastname`, `middlename`, `profile_image`, `cys`, `status`, `login_attempts`, `lockout_until`, `user_online`, `created_at`, `updated_at`) VALUES
-(1, 'king', 'b38ce63f61c5be0f1a1906d4d37b8725', 'student1@camerinohub.edu.ph', 'christian', 'pacifico', NULL, NULL, 'BSIT-2A', 'active', 0, NULL, 1, '2024-11-06 15:41:01', '2024-11-14 14:17:01'),
+(1, 'king', 'b38ce63f61c5be0f1a1906d4d37b8725', 'student1@camerinohub.edu.ph', 'christian', 'pacifico', NULL, '../images/student1.png', 'BSIT-2A', 'active', 0, NULL, 1, '2024-11-06 15:41:01', '2024-11-15 03:58:16'),
 (2, 'student2024', 'b38ce63f61c5be0f1a1906d4d37b8725', 'student2024@camerinohub.edu.ph', 'Juan', 'Dela Cruz', 'Santos', NULL, 'Grade 7', 'active', 0, NULL, 0, '2024-11-07 04:50:43', '2024-11-07 04:50:43'),
 (3, 'student_aster1', 'b38ce63f61c5be0f1a1906d4d37b8725', 'aster1@camerinohub.edu.ph', 'John', 'Smith', 'A', NULL, 'Grade 7', 'active', 0, NULL, 0, '2024-11-14 13:10:56', '2024-11-14 13:10:56'),
 (4, 'student_aster2', 'b38ce63f61c5be0f1a1906d4d37b8725', 'aster2@camerinohub.edu.ph', 'Mary', 'Johnson', 'B', NULL, 'Grade 7', 'active', 0, NULL, 0, '2024-11-14 13:10:56', '2024-11-14 13:10:56'),
@@ -604,15 +691,6 @@ CREATE TABLE `student_activity_submissions` (
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` varchar(20) DEFAULT 'submitted'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `student_activity_submissions`
---
-
-INSERT INTO `student_activity_submissions` (`submission_id`, `student_id`, `activity_id`, `points`, `feedback`, `file_path`, `submitted_at`, `status`) VALUES
-(4, 1, 8, NULL, NULL, NULL, '2024-11-14 14:24:52', 'submitted'),
-(5, 1, 9, NULL, NULL, NULL, '2024-11-14 06:39:45', 'submitted'),
-(6, 1, 10, NULL, NULL, NULL, '2024-11-14 14:58:56', 'submitted');
 
 -- --------------------------------------------------------
 
@@ -673,7 +751,15 @@ INSERT INTO `student_login_logs` (`id`, `student_id`, `ip_address`, `status`, `c
 (23, 1, '::1', 'failed', '2024-11-14 13:29:50'),
 (24, 1, '::1', 'success', '2024-11-14 13:30:16'),
 (25, 1, '::1', 'success', '2024-11-14 13:30:39'),
-(26, 1, '::1', 'success', '2024-11-14 14:17:01');
+(26, 1, '::1', 'success', '2024-11-14 14:17:01'),
+(27, 1, '::1', 'success', '2024-11-15 00:12:36'),
+(28, 1, '::1', 'success', '2024-11-15 01:17:57'),
+(29, 1, '::1', 'success', '2024-11-15 02:07:35'),
+(30, 1, '::1', 'success', '2024-11-15 02:51:39'),
+(31, 1, '::1', 'success', '2024-11-15 03:39:37'),
+(32, 1, '::1', 'failed', '2024-11-15 03:58:06'),
+(33, 1, '::1', 'failed', '2024-11-15 03:58:10'),
+(34, 1, '::1', 'success', '2024-11-15 03:58:16');
 
 -- --------------------------------------------------------
 
@@ -813,14 +899,6 @@ CREATE TABLE `submission_files` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `submission_files`
---
-
-INSERT INTO `submission_files` (`file_id`, `submission_id`, `file_name`, `file_path`, `file_type`, `file_size`, `uploaded_at`, `created_at`) VALUES
-(1, 4, 'qweqweqwe.pdf', 'uploads/submissions/8/submission_673608346ad90_qweqweqwe.pdf', 'application/pdf', 270728, '2024-11-14 14:24:52', '2024-11-14 14:24:52'),
-(2, 6, '6735a779233cb.docx', 'uploads/assignments/1/6736103020551_1731596336.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 165924, '2024-11-14 14:58:56', '2024-11-14 14:58:56');
-
 -- --------------------------------------------------------
 
 --
@@ -905,11 +983,19 @@ INSERT INTO `teacher_login_logs` (`id`, `teacher_id`, `ip_address`, `status`, `c
 (30, 1, '::1', 'success', '2024-11-14 13:52:46'),
 (31, 1, '::1', 'success', '2024-11-14 14:40:41'),
 (32, 1, '::1', 'success', '2024-11-14 15:10:36'),
-(33, 1, '::1', 'success', '2024-11-14 15:14:29');
+(33, 1, '::1', 'success', '2024-11-14 15:14:29'),
+(34, 1, '::1', 'success', '2024-11-15 01:40:39'),
+(35, 1, '::1', 'success', '2024-11-15 03:54:52');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `about_us_content`
+--
+ALTER TABLE `about_us_content`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `academic_years`
@@ -930,8 +1016,9 @@ ALTER TABLE `active_sessions`
 ALTER TABLE `activities`
   ADD PRIMARY KEY (`activity_id`),
   ADD KEY `idx_teacher_type` (`teacher_id`,`type`),
-  ADD KEY `section_subject_id` (`section_subject_id`),
-  ADD KEY `idx_teacher_recent` (`teacher_id`,`created_at`);
+  ADD KEY `idx_teacher_recent` (`teacher_id`,`created_at`),
+  ADD KEY `idx_teacher_activities` (`teacher_id`,`created_at`),
+  ADD KEY `idx_section_subject` (`section_subject_id`);
 
 --
 -- Indexes for table `activity_files`
@@ -962,7 +1049,8 @@ ALTER TABLE `announcements`
   ADD PRIMARY KEY (`id`),
   ADD KEY `section_id` (`section_id`),
   ADD KEY `subject_id` (`subject_id`),
-  ADD KEY `idx_teacher_recent` (`teacher_id`,`created_at`);
+  ADD KEY `idx_teacher_recent` (`teacher_id`,`created_at`),
+  ADD KEY `idx_teacher_announcements` (`teacher_id`,`created_at`);
 
 --
 -- Indexes for table `announcement_comments`
@@ -1007,12 +1095,31 @@ ALTER TABLE `classes`
   ADD KEY `subject_id` (`subject_id`);
 
 --
+-- Indexes for table `contact_information`
+--
+ALTER TABLE `contact_information`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `date_ranges`
+--
+ALTER TABLE `date_ranges`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `news`
+--
+ALTER TABLE `news`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
   ADD KEY `reference_id` (`reference_id`),
-  ADD KEY `notifications_announcement_fk` (`announcement_id`);
+  ADD KEY `notifications_announcement_fk` (`announcement_id`),
+  ADD KEY `fk_notifications_activity` (`activity_id`);
 
 --
 -- Indexes for table `remember_tokens`
@@ -1068,6 +1175,12 @@ ALTER TABLE `security_violations`
   ADD KEY `quiz_id` (`quiz_id`);
 
 --
+-- Indexes for table `site_map_content`
+--
+ALTER TABLE `site_map_content`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `student`
 --
 ALTER TABLE `student`
@@ -1081,7 +1194,8 @@ ALTER TABLE `student`
 ALTER TABLE `student_activity_submissions`
   ADD PRIMARY KEY (`submission_id`),
   ADD KEY `student_id` (`student_id`),
-  ADD KEY `idx_activity_submitted` (`activity_id`,`submitted_at`);
+  ADD KEY `idx_activity_submitted` (`activity_id`,`submitted_at`),
+  ADD KEY `idx_activity_submissions` (`activity_id`,`submitted_at`);
 
 --
 -- Indexes for table `student_grades`
@@ -1147,6 +1261,12 @@ ALTER TABLE `teacher_login_logs`
 --
 
 --
+-- AUTO_INCREMENT for table `about_us_content`
+--
+ALTER TABLE `about_us_content`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `academic_years`
 --
 ALTER TABLE `academic_years`
@@ -1162,7 +1282,7 @@ ALTER TABLE `active_sessions`
 -- AUTO_INCREMENT for table `activities`
 --
 ALTER TABLE `activities`
-  MODIFY `activity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `activity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `activity_files`
@@ -1186,7 +1306,7 @@ ALTER TABLE `admin_login_logs`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `announcement_comments`
@@ -1219,6 +1339,24 @@ ALTER TABLE `classes`
   MODIFY `class_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `contact_information`
+--
+ALTER TABLE `contact_information`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `date_ranges`
+--
+ALTER TABLE `date_ranges`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `news`
+--
+ALTER TABLE `news`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
@@ -1246,7 +1384,7 @@ ALTER TABLE `section_advisers`
 -- AUTO_INCREMENT for table `section_schedules`
 --
 ALTER TABLE `section_schedules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `section_subjects`
@@ -1261,6 +1399,12 @@ ALTER TABLE `security_violations`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `site_map_content`
+--
+ALTER TABLE `site_map_content`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
@@ -1270,7 +1414,7 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `student_activity_submissions`
 --
 ALTER TABLE `student_activity_submissions`
-  MODIFY `submission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `submission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `student_grades`
@@ -1282,13 +1426,13 @@ ALTER TABLE `student_grades`
 -- AUTO_INCREMENT for table `student_login_logs`
 --
 ALTER TABLE `student_login_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `student_sections`
 --
 ALTER TABLE `student_sections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `subjects`
@@ -1306,7 +1450,7 @@ ALTER TABLE `subject_grade_levels`
 -- AUTO_INCREMENT for table `submission_files`
 --
 ALTER TABLE `submission_files`
-  MODIFY `file_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `file_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `teacher`
@@ -1318,7 +1462,7 @@ ALTER TABLE `teacher`
 -- AUTO_INCREMENT for table `teacher_login_logs`
 --
 ALTER TABLE `teacher_login_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- Constraints for dumped tables
@@ -1396,6 +1540,7 @@ ALTER TABLE `classes`
 -- Constraints for table `notifications`
 --
 ALTER TABLE `notifications`
+  ADD CONSTRAINT `fk_notifications_activity` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`activity_id`),
   ADD CONSTRAINT `notifications_announcement_fk` FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`) ON DELETE CASCADE;
 
 --

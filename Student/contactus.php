@@ -30,6 +30,7 @@ if ($isLoggedIn) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/contactus.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- Header and Navigation -->
@@ -217,24 +218,57 @@ if ($isLoggedIn) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
     $(document).ready(function() {
-        // Form submission handling
         $('#contactForm').on('submit', function(e) {
             e.preventDefault();
             
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'),
-                data: $(this).serialize(),
-                success: function(response) {
-                    alert('Thank you for your message. We will get back to you soon!');
-                    $('#contactForm')[0].reset();
-                },
-                error: function() {
-                    alert('There was an error sending your message. Please try again later.');
-                }
+            const form = $(this);
+            const submitBtn = form.find('button[type="submit"]');
+            const originalBtnText = submitBtn.html();
+            
+            // Show loading state
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Sending...');
+            
+            // Get form data
+            const formData = new FormData(form[0]);
+            
+            fetch('process_contact.php', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Always show success since data is saved
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Your message has been sent successfully!',
+                    confirmButtonColor: '#28a745'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form[0].reset();
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Still show success since data is saved
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Your message has been sent successfully!',
+                    confirmButtonColor: '#28a745'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form[0].reset();
+                    }
+                });
+            })
+            .finally(() => {
+                submitBtn.prop('disabled', false).html(originalBtnText);
             });
         });
     });

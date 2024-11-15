@@ -18,6 +18,27 @@ if ($isLoggedIn) {
         $userData = mysqli_fetch_array($result);
     }
 }
+
+require_once('../db/dbConnector.php');
+
+// Initialize database connection
+$db = new DbConnector();
+
+// Get search query if exists
+$searchQuery = isset($_GET['query']) ? $db->real_escape_string($_GET['query']) : '';
+
+// Fetch news from database with optional search
+$sql = "SELECT * FROM news WHERE status = 'active'";
+if (!empty($searchQuery)) {
+    $sql .= " AND (title LIKE '%$searchQuery%' OR excerpt LIKE '%$searchQuery%')";
+}
+$sql .= " ORDER BY date DESC";
+
+$result = $db->query($sql);
+$newsItems = [];
+while ($row = $db->fetchAssoc($result)) {
+    $newsItems[] = $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,10 +99,8 @@ if ($isLoggedIn) {
                     <div class="cta-buttons">
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
-                            <a href="student_courses.php" class="btn btn-outline-primary">My Courses</a>
                         <?php else: ?>
                             <a href="Student-Login.php" class="btn btn-primary">Login Now</a>
-                            <a href="student_registration.php" class="btn btn-outline-primary">Enroll Now!</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -91,33 +110,29 @@ if ($isLoggedIn) {
             </div>
             
             <!-- Search and Quick Links -->
-            <div class="search-container">
-                <input type="text" id="newsSearch" placeholder="Search news...">
-                <button class="btn-search" onclick="searchNews()">Search</button>
-            </div>
-            
-            <!-- Quick Links -->
-            <div class="quick-links">
-                <p>News Categories</p>
-                <div class="links">
-                    <a href="#" class="link-item" data-category="all">
-                        <i class="fas fa-globe"></i>
-                        <span>All News</span>
-                    </a>
-                    <a href="#" class="link-item" data-category="academic">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Academic</span>
-                    </a>
-                    <a href="#" class="link-item" data-category="events">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Events</span>
-                    </a>
-                    <a href="#" class="link-item" data-category="announcements">
-                        <i class="fas fa-bullhorn"></i>
-                        <span>Announcements</span>
-                    </a>
+            <?php if ($isLoggedIn): ?>
+                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
+                    <form action="search_results.php" method="GET" class="search-form">
+                        <input 
+                            type="text" 
+                            name="query" 
+                            id="newsSearch" 
+                            placeholder="Search news..." 
+                            required
+                            autocomplete="off"
+                        >
+                    </form>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
+                    <input 
+                        type="text" 
+                        id="newsSearch" 
+                        placeholder="Please login to access search features" 
+                        disabled
+                    >
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -125,124 +140,97 @@ if ($isLoggedIn) {
     <section class="news-categories section-gap">
         <div class="container">
             <div class="category-filters text-center mb-4">
-                <button class="btn btn-filter active" data-category="all">All News</button>
-                <button class="btn btn-filter" data-category="academic">Academic</button>
-                <button class="btn btn-filter" data-category="event">Events</button>
-                <button class="btn btn-filter" data-category="announcement">Announcements</button>
+                <?php
+                // Get active category from URL parameter
+                $activeCategory = isset($_GET['category']) ? $_GET['category'] : 'all';
+                ?>
+                <button class="btn btn-filter <?php echo $activeCategory === 'all' ? 'active' : ''; ?>" 
+                        data-category="all">All News</button>
+                <button class="btn btn-filter <?php echo $activeCategory === 'academic' ? 'active' : ''; ?>" 
+                        data-category="academic">Academic</button>
+                <button class="btn btn-filter <?php echo $activeCategory === 'event' ? 'active' : ''; ?>" 
+                        data-category="event">Events</button>
+                <button class="btn btn-filter <?php echo $activeCategory === 'announcement' ? 'active' : ''; ?>" 
+                        data-category="announcement">Announcements</button>
             </div>
 
-            <div class="search-news mb-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="newsSearch" placeholder="Search news...">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
+            <!-- Search Section -->
+            <?php if ($isLoggedIn): ?>
+                <div class="search-news mb-4">
+                    <form action="news.php" method="GET" class="search-form">
+                        <div class="input-group">
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                name="query" 
+                                id="newsSearch" 
+                                placeholder="Search news..."
+                                value="<?php echo htmlspecialchars($searchQuery); ?>"
+                            >
+                        </div>
+                    </form>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="search-news mb-4 animate__animated animate__fadeInUp animate__delay-3s">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Please login to access search features" 
+                        disabled
+                    >
+                </div>
+            <?php endif; ?>
 
             <!-- News Updates Section -->
             <div class="row" id="newsContainer">
-                <?php
-                // Sample news items - Replace with database fetch
-                $newsItems = [
-                    [
-                        'image' => '../images/1.jpg',
-                        'title' => 'School Year 2023-2024 Opening',
-                        'date' => '2024-01-15',
-                        'category' => 'academic',
-                        'excerpt' => 'Welcome back students! The new school year begins with excitement and new opportunities.'
-                    ],
-                    [
-                        'image' => '../images/2.jpg',
-                        'title' => 'Annual Science Fair 2024',
-                        'date' => '2024-02-20',
-                        'category' => 'event',
-                        'excerpt' => 'Join us for an exciting showcase of student science projects and innovations.'
-                    ],
-                    [
-                        'image' => '../images/3.jpg',
-                        'title' => 'Important: Class Schedule Updates',
-                        'date' => '2024-02-15',
-                        'category' => 'announcement',
-                        'excerpt' => 'Please check the revised class schedules for the upcoming semester.'
-                    ],
-                    [
-                        'image' => '../images/4.jpg',
-                        'title' => 'New Learning Management System',
-                        'date' => '2024-02-10',
-                        'category' => 'academic',
-                        'excerpt' => 'Introducing our new digital learning platform for enhanced online education.'
-                    ],
-                    [
-                        'image' => '../images/2.jpg',
-                        'title' => 'Sports Festival 2024',
-                        'date' => '2024-03-01',
-                        'category' => 'event',
-                        'excerpt' => 'Get ready for our annual sports festival featuring various athletic competitions.'
-                    ],
-                    [
-                        'image' => '../images/1.jpg',
-                        'title' => 'Enrollment Period Extended',
-                        'date' => '2024-02-25',
-                        'category' => 'announcement',
-                        'excerpt' => 'The enrollment period has been extended until March 15, 2024.'
-                    ]
-                ];
-
-                foreach ($newsItems as $news): ?>
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card news-card" data-category="<?php echo htmlspecialchars($news['category']); ?>">
-                            <div class="card-img-wrapper">
-                                <img src="<?php echo htmlspecialchars($news['image']); ?>" class="card-img-top" alt="News Image">
-                                <div class="category-badge <?php echo htmlspecialchars($news['category']); ?>">
-                                    <?php echo ucfirst(htmlspecialchars($news['category'])); ?>
+                <?php if (empty($newsItems)): ?>
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                        <h3>No News Found</h3>
+                        <p class="text-muted">There are no news items to display at this time.</p>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($newsItems as $news): ?>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card news-card" data-category="<?php echo htmlspecialchars($news['category']); ?>">
+                                <div class="card-img-wrapper">
+                                    <img src="<?php echo htmlspecialchars($news['image']); ?>" class="card-img-top" alt="News Image">
+                                    <div class="category-badge <?php echo htmlspecialchars($news['category']); ?>">
+                                        <?php echo ucfirst(htmlspecialchars($news['category'])); ?>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="news-meta">
-                                    <span class="date">
-                                        <i class="far fa-calendar-alt"></i> 
-                                        <?php echo date('M d, Y', strtotime($news['date'])); ?>
-                                    </span>
+                                <div class="card-body">
+                                    <div class="news-meta">
+                                        <span class="date">
+                                            <i class="far fa-calendar-alt"></i> 
+                                            <?php echo date('M d, Y', strtotime($news['date'])); ?>
+                                        </span>
+                                    </div>
+                                    <h5 class="card-title"><?php echo htmlspecialchars($news['title']); ?></h5>
+                                    <p class="card-text"><?php echo htmlspecialchars($news['excerpt']); ?></p>
+                                    <a href="news-detail.php?id=<?php echo $news['id']; ?>" 
+                                       class="btn btn-outline-primary read-more-btn"
+                                       onclick="return checkLoginStatus(<?php echo $isLoggedIn ? 'true' : 'false'; ?>)">
+                                        Read More <i class="fas fa-arrow-right"></i>
+                                    </a>
                                 </div>
-                                <h5 class="card-title"><?php echo htmlspecialchars($news['title']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars($news['excerpt']); ?></p>
-                                <a href="news-detail.php?id=<?php echo $news['id'] ?? '1'; ?>" class="btn btn-outline-primary">
-                                    Read More <i class="fas fa-arrow-right"></i>
-                                </a>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
 
-            <!-- No Results Message -->
-            <div id="noResults" class="text-center py-5" style="display: none;">
-                <i class="fas fa-search fa-3x text-muted"></i>
-                <h3 class="mt-3">No Results Found</h3>
-                <p class="text-muted">Try adjusting your search or filter to find what you're looking for.</p>
-            </div>
-            
-            <!-- Pagination -->
+            <!-- Pagination (you'll need to implement the logic) -->
+            <?php
+            $totalPages = ceil(count($newsItems) / 6); // 6 items per page
+            if ($totalPages > 1):
+            ?>
             <nav aria-label="News pagination" class="mt-4">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">
-                            <i class="fas fa-chevron-left"></i> Previous
-                        </a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            Next <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
+                    <!-- Add pagination logic here -->
                 </ul>
             </nav>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -309,6 +297,105 @@ if ($isLoggedIn) {
 
             // Show/hide no results message
             noResults.style.display = visibleCards === 0 ? 'block' : 'none';
+        });
+    });
+    </script>
+
+    <!-- Add this JavaScript for live search functionality -->
+    <script>
+    document.getElementById('newsSearch').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const newsCards = document.querySelectorAll('.news-card');
+        let hasResults = false;
+
+        newsCards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const excerpt = card.querySelector('.card-text').textContent.toLowerCase();
+            const category = card.dataset.category.toLowerCase();
+
+            if (title.includes(searchTerm) || 
+                excerpt.includes(searchTerm) || 
+                category.includes(searchTerm)) {
+                card.closest('.col-lg-4').style.display = 'block';
+                hasResults = true;
+            } else {
+                card.closest('.col-lg-4').style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
+    });
+    </script>
+
+    <script>
+    function checkLoginStatus(isLoggedIn) {
+        if (!isLoggedIn) {
+            Swal.fire({
+                title: 'Login Required',
+                text: 'Please login to read the full news article',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Login',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'Student-Login.php';
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+    </script>
+
+    <!-- Add this JavaScript at the bottom of your file -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        const newsCards = document.querySelectorAll('.news-card');
+        const noResults = document.getElementById('noResults');
+
+        // Filter function
+        function filterNews(category) {
+            let visibleCount = 0;
+
+            newsCards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (category === 'all' || cardCategory === category) {
+                    card.closest('.col-lg-4').style.display = 'block';
+                    visibleCount++;
+                    // Add fade-in animation
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 50);
+                } else {
+                    card.closest('.col-lg-4').style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+
+            // Update URL without page reload
+            const url = new URL(window.location);
+            url.searchParams.set('category', category);
+            window.history.pushState({}, '', url);
+        }
+
+        // Event listeners for filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                // Filter news
+                filterNews(this.getAttribute('data-category'));
+            });
         });
     });
     </script>

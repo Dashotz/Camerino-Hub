@@ -359,6 +359,34 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
         .file-upload-area {
             transition: all 0.3s ease;
         }
+
+        /* Back Button Styles */
+        .btn-outline-primary {
+            color: #1967d2;
+            border-color: #1967d2;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #1967d2;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3);
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -373,13 +401,19 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
         unset($_SESSION['success']);
     }
     ?>
-    <?php include 'includes/navigation.php'; ?>
+
     
     <div class="dashboard-container">
-        <?php include 'includes/sidebar.php'; ?>
         
         <div class="main-content">
             <div class="activity-container">
+                <!-- Add Back Button -->
+                <div class="mb-4">
+                    <a href="student_activities.php" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Activities
+                    </a>
+                </div>
+
                 <!-- Activity Header -->
                 <div class="activity-header">
                     <div class="activity-title">

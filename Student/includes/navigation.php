@@ -151,7 +151,7 @@
                         <a class="dropdown-item" href="student_profile.php">
                             <i class="fas fa-user mr-2"></i>My Profile
                         </a>
-                        <a class="dropdown-item" href="student_settings.php">
+                        <a class="dropdown-item" href="student_profile.php?tab=settings">
                             <i class="fas fa-cog mr-2"></i>Settings
                         </a>
                         <div class="dropdown-divider"></div>

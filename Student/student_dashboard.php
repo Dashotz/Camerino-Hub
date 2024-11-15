@@ -57,37 +57,32 @@ $stmt->execute();
 $recent_activities = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Fetch upcoming assignments
-$tasks_query = "SELECT 
-    a.activity_id,
-    a.title,
-    a.due_date,
-    sub.subject_name,
-    sub.subject_code,
-    ssub.schedule_day,
-    ssub.schedule_time
-FROM student_sections ss
-JOIN sections sec ON ss.section_id = sec.section_id
-JOIN section_subjects ssub ON sec.section_id = ssub.section_id
-JOIN subjects sub ON ssub.subject_id = sub.id
-JOIN activities a ON ssub.id = a.section_subject_id
-WHERE ss.student_id = ?
-    AND ss.status = 'active'
-    AND ssub.status = 'active'
-    AND ss.academic_year_id = (SELECT id FROM academic_years WHERE status = 'active' LIMIT 1)
-    AND a.type = 'assignment'
+$upcoming_tasks_query = "
+    SELECT 
+        a.activity_id,
+        a.title,
+        a.due_date,
+        s.subject_name as course_name
+    FROM activities a
+    JOIN section_subjects ss ON a.section_subject_id = ss.id
+    JOIN subjects s ON ss.subject_id = s.id
+    JOIN student_sections sts ON ss.section_id = sts.section_id
+    WHERE sts.student_id = ?
+    AND a.status = 'active'
+    AND sts.status = 'active'
     AND a.due_date > NOW()
-    AND a.activity_id NOT IN (
-        SELECT activity_id 
-        FROM student_activity_submissions 
-        WHERE student_id = ?
-    )
-ORDER BY a.due_date ASC
-LIMIT 5";
+    ORDER BY a.due_date ASC
+    LIMIT 5";
 
-$stmt = $db->prepare($tasks_query);
-$stmt->bind_param("ii", $student_id, $student_id);
-$stmt->execute();
-$upcoming_tasks = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+try {
+    $stmt = $db->prepare($upcoming_tasks_query);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $upcoming_tasks = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+} catch (Exception $e) {
+    error_log("Error fetching upcoming tasks: " . $e->getMessage());
+    $upcoming_tasks = [];
+}
 
 // Calculate attendance rate
 $attendance_query = "SELECT 
@@ -358,9 +353,13 @@ function getStatusBadgeClass($status) {
                                     <li>
                                         <span class="task-title">
                                             <?php echo htmlspecialchars($task['title']); ?>
-                                            <small class="d-block text-muted"><?php echo htmlspecialchars($task['course_name']); ?></small>
+                                            <small class="d-block text-muted">
+                                                <?php echo htmlspecialchars($task['course_name'] ?? 'No subject name'); ?>
+                                            </small>
                                         </span>
-                                        <span class="task-date">Due: <?php echo formatDueDate($task['due_date']); ?></span>
+                                        <span class="task-date">
+                                            Due: <?php echo formatDueDate($task['due_date']); ?>
+                                        </span>
                                     </li>
                                 <?php endforeach; ?>
                                 <?php if (empty($upcoming_tasks)): ?>

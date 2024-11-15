@@ -21,53 +21,49 @@ $stmt->execute();
 $result = $stmt->get_result();
 $userData = $result->fetch_assoc();
 
-// Fetch grades for all subjects
+// Get student's subjects and grades
 $grades_query = "
     SELECT 
         s.subject_name,
-        s.id as subject_id,
         s.subject_code,
+        ss.id as section_subject_id,
         COUNT(DISTINCT a.activity_id) as total_activities,
         COUNT(DISTINCT sas.submission_id) as submitted_activities,
-        ROUND(AVG(sas.points), 1) as average_grade,
-        MAX(sas.submitted_at) as last_submission
-    FROM student_sections ss
-    JOIN sections sec ON ss.section_id = sec.section_id
-    JOIN section_subjects ssub ON sec.section_id = ssub.section_id
-    JOIN subjects s ON ssub.subject_id = s.id
-    LEFT JOIN activities a ON ssub.teacher_id = a.teacher_id 
-        AND a.type = 'assignment'
+        COALESCE(AVG(sas.points), 0) as average_grade,
+        t.firstname as teacher_fname,
+        t.lastname as teacher_lname
+    FROM student_sections sts
+    JOIN section_subjects ss ON sts.section_id = ss.section_id
+    JOIN subjects s ON ss.subject_id = s.id
+    JOIN teacher t ON ss.teacher_id = t.teacher_id
+    LEFT JOIN activities a ON ss.id = a.section_subject_id AND a.status = 'active'
     LEFT JOIN student_activity_submissions sas ON a.activity_id = sas.activity_id 
         AND sas.student_id = ?
-    WHERE ss.student_id = ? 
+    WHERE sts.student_id = ? 
+        AND sts.status = 'active'
         AND ss.status = 'active'
-        AND ssub.status = 'active'
-    GROUP BY s.id, s.subject_name, s.subject_code
-    ORDER BY s.subject_name";
+        AND sts.academic_year_id = (SELECT id FROM academic_years WHERE status = 'active' LIMIT 1)
+    GROUP BY s.id, ss.id";
 
 $stmt = $db->prepare($grades_query);
 $stmt->bind_param("ii", $student_id, $student_id);
 $stmt->execute();
-$grades_result = $stmt->get_result();
-$subjects_grades = $grades_result->fetch_all(MYSQLI_ASSOC);
+$subjects_grades = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Calculate overall statistics
-$overall_stats = [
-    'total_subjects' => count($subjects_grades),
-    'average_grade' => 0,
-    'total_activities' => 0,
-    'completed_activities' => 0
-];
+$total_subjects = count($subjects_grades);
+$overall_grade = 0;
+$total_activities = 0;
+$completed_activities = 0;
 
 foreach ($subjects_grades as $subject) {
-    $overall_stats['average_grade'] += $subject['average_grade'] ?? 0;
-    $overall_stats['total_activities'] += $subject['total_activities'];
-    $overall_stats['completed_activities'] += $subject['submitted_activities'];
+    $overall_grade += $subject['average_grade'];
+    $total_activities += $subject['total_activities'];
+    $completed_activities += $subject['submitted_activities'];
 }
 
-if ($overall_stats['total_subjects'] > 0) {
-    $overall_stats['average_grade'] = round($overall_stats['average_grade'] / $overall_stats['total_subjects'], 1);
-}
+$average_grade = $total_subjects ? round($overall_grade / $total_subjects, 2) : 0;
+$completion_rate = $total_activities ? round(($completed_activities / $total_activities) * 100, 2) : 0;
 ?>
 
 <!DOCTYPE html>
@@ -99,46 +95,20 @@ if ($overall_stats['total_subjects'] > 0) {
                 <div class="row">
                     <div class="col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-book"></i>
-                            </div>
-                            <div class="stat-info">
-                                <h3><?php echo $overall_stats['total_subjects']; ?></h3>
-                                <p>Total Subjects</p>
-                            </div>
+                            <div class="stat-value"><?php echo $total_subjects; ?></div>
+                            <div class="stat-label">Total Subjects</div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="stat-info">
-                                <h3><?php echo $overall_stats['average_grade']; ?>%</h3>
-                                <p>Overall Average</p>
-                            </div>
+                            <div class="stat-value"><?php echo $average_grade; ?>%</div>
+                            <div class="stat-label">Overall Average</div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div class="stat-info">
-                                <h3><?php echo $overall_stats['total_activities']; ?></h3>
-                                <p>Total Activities</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="stat-info">
-                                <h3><?php echo $overall_stats['completed_activities']; ?></h3>
-                                <p>Completed</p>
-                            </div>
+                            <div class="stat-value"><?php echo $completion_rate; ?>%</div>
+                            <div class="stat-label">Completion Rate</div>
                         </div>
                     </div>
                 </div>
@@ -148,63 +118,47 @@ if ($overall_stats['total_subjects'] > 0) {
             <div class="subjects-grades">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Subject Performance</h5>
+                        <h5>Subject Grades</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Subject Code</th>
-                                        <th>Subject Name</th>
-                                        <th>Activities</th>
-                                        <th>Completed</th>
-                                        <th>Average Grade</th>
-                                        <th>Last Submission</th>
+                                        <th>Subject</th>
+                                        <th>Teacher</th>
+                                        <th>Progress</th>
+                                        <th>Grade</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($subjects_grades as $subject): ?>
+                                    <?php foreach ($subjects_grades as $subject): 
+                                        $completion_rate = $subject['total_activities'] ? 
+                                            ($subject['submitted_activities'] / $subject['total_activities']) * 100 : 0;
+                                    ?>
                                         <tr>
-                                            <td><?php echo htmlspecialchars($subject['subject_code']); ?></td>
-                                            <td><?php echo htmlspecialchars($subject['subject_name']); ?></td>
-                                            <td><?php echo $subject['total_activities']; ?></td>
+                                            <td>
+                                                <strong><?php echo htmlspecialchars($subject['subject_code']); ?></strong><br>
+                                                <small><?php echo htmlspecialchars($subject['subject_name']); ?></small>
+                                            </td>
+                                            <td><?php echo htmlspecialchars($subject['teacher_fname'] . ' ' . $subject['teacher_lname']); ?></td>
                                             <td>
                                                 <div class="progress">
-                                                    <?php 
-                                                    $completion_rate = $subject['total_activities'] > 0 
-                                                        ? ($subject['submitted_activities'] / $subject['total_activities']) * 100 
-                                                        : 0;
-                                                    ?>
                                                     <div class="progress-bar" style="width: <?php echo $completion_rate; ?>%">
                                                         <?php echo $subject['submitted_activities']; ?>/<?php echo $subject['total_activities']; ?>
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td><?php echo number_format($subject['average_grade'], 2); ?>%</td>
                                             <td>
-                                                <span class="grade-badge">
-                                                    <?php echo $subject['average_grade'] ?? 'N/A'; ?>%
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <?php echo $subject['last_submission'] 
-                                                    ? date('M j, Y', strtotime($subject['last_submission'])) 
-                                                    : 'No submissions'; ?>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary" 
-                                                        onclick="viewDetails(<?php echo $subject['subject_id']; ?>)">
+                                                <button class="btn btn-sm btn-primary" 
+                                                        onclick="viewDetails(<?php echo $subject['section_subject_id']; ?>)">
                                                     View Details
                                                 </button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
-                                    <?php if (empty($subjects_grades)): ?>
-                                        <tr>
-                                            <td colspan="6" class="text-center">No subjects found</td>
-                                        </tr>
-                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>

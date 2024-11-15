@@ -252,6 +252,36 @@ function getActivityFiles($activity_id) {
             position: relative;
             cursor: pointer;
         }
+
+        .btn-group .btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .activity-card {
+            transition: all 0.3s ease;
+        }
+
+        .activity-card[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .activity-card[style*="display: block"] {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .loading-state {
+            display: none;
+        }
+        button:disabled .normal-state {
+            display: none;
+        }
+        button:disabled .loading-state {
+            display: inline-block;
+        }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -275,12 +305,12 @@ function getActivityFiles($activity_id) {
 
             <!-- Activity Filters -->
             <div class="mb-4">
-                <div class="btn-group">
-                    <button class="btn btn-outline-primary active" data-filter="all">All Active</button>
-                    <button class="btn btn-outline-primary" data-filter="assignment">Assignments</button>
-                    <button class="btn btn-outline-primary" data-filter="quiz">Quizzes</button>
-                    <button class="btn btn-outline-primary" data-filter="activity">Activities</button>
-                    <button class="btn btn-outline-secondary" data-filter="archived">Archived</button>
+                <div class="btn-group" role="group" aria-label="Activity filters">
+                    <button type="button" class="btn btn-outline-primary active" data-filter="all">All Active</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="assignment">Assignments</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="quiz">Quizzes</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="activity">Activities</button>
+                    <button type="button" class="btn btn-outline-secondary" data-filter="archived">Archived</button>
                 </div>
             </div>
 
@@ -288,8 +318,8 @@ function getActivityFiles($activity_id) {
             <div class="activities-container">
                 <?php foreach ($activities as $activity): ?>
                     <div class="card activity-card" 
-                         data-type="<?php echo $activity['type']; ?>"
-                         data-status="<?php echo $activity['status']; ?>">
+                         data-type="<?php echo htmlspecialchars($activity['type']); ?>"
+                         data-status="<?php echo htmlspecialchars($activity['status']); ?>">
                         <div class="activity-header d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="subject-badge"><?php echo htmlspecialchars($activity['subject_code']); ?></span>
@@ -426,9 +456,18 @@ function getActivityFiles($activity_id) {
 
                         <div class="form-group">
                             <label>Activity Files</label>
-                            <input type="file" name="activity_files[]" class="form-control-file" multiple>
+                            <input type="file" name="activity_files[]" class="form-control-file" multiple 
+                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx">
                             <small class="text-muted">You can upload multiple files. Allowed types: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX</small>
                         </div>
+
+                        <button type="submit" class="btn btn-primary" id="submitActivity">
+                            <span class="normal-state">Create Activity</span>
+                            <span class="loading-state d-none">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Creating...
+                            </span>
+                        </button>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -536,30 +575,45 @@ function getActivityFiles($activity_id) {
     });
 
     // Filter activities
-    document.querySelectorAll('[data-filter]').forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.dataset.filter;
-            
-            // Update active button
-            document.querySelectorAll('[data-filter]').forEach(btn => 
-                btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter activities
-            document.querySelectorAll('.activity-card').forEach(card => {
-                if (filter === 'archived') {
-                    // Show only archived activities
-                    card.style.display = card.dataset.status === 'archived' ? 'block' : 'none';
-                } else if (filter === 'all') {
-                    // Show all active (non-archived) activities
-                    card.style.display = card.dataset.status !== 'archived' ? 'block' : 'none';
-                } else {
-                    // Show active activities of specific type
-                    card.style.display = (card.dataset.type === filter && card.dataset.status !== 'archived') 
-                        ? 'block' : 'none';
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('[data-filter]');
+        const activityCards = document.querySelectorAll('.activity-card');
+
+        // Function to filter activities
+        function filterActivities(filterType) {
+            activityCards.forEach(card => {
+                const type = card.dataset.type;
+                const status = card.dataset.status;
+                
+                switch(filterType) {
+                    case 'all':
+                        card.style.display = status !== 'archived' ? 'block' : 'none';
+                        break;
+                    case 'archived':
+                        card.style.display = status === 'archived' ? 'block' : 'none';
+                        break;
+                    default:
+                        card.style.display = (type === filterType && status !== 'archived') ? 'block' : 'none';
                 }
             });
+        }
+
+        // Add click event listeners to filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Apply filter
+                filterActivities(this.dataset.filter);
+            });
         });
+
+        // Initialize with "All Active" filter
+        filterActivities('all');
     });
 
     // Edit activity
@@ -676,75 +730,58 @@ function getActivityFiles($activity_id) {
     document.getElementById('createActivityForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Basic validation
-        const requiredFields = ['section_subject_id', 'type', 'title', 'description', 'due_date', 'points'];
-        let isValid = true;
-        
-        requiredFields.forEach(field => {
-            const input = this.elements[field];
-            if (!input.value.trim()) {
-                isValid = false;
-                input.classList.add('is-invalid');
-            } else {
-                input.classList.remove('is-invalid');
-            }
-        });
-        
-        if (!isValid) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Please fill in all required fields',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
+        // Disable submit button to prevent double submission
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
         
         const formData = new FormData(this);
         
-        // Debug log
-        console.log('Submitting form data:');
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
-        
+        // Get activity details for announcement
+        const type = formData.get('type');
+        const title = formData.get('title');
+        const dueDate = new Date(formData.get('due_date')).toLocaleDateString();
+        const points = formData.get('points');
+        const sectionSubjectSelect = document.querySelector('select[name="section_subject_id"]');
+        const selectedOption = sectionSubjectSelect.options[sectionSubjectSelect.selectedIndex];
+        const sectionSubjectText = selectedOption.text;
+
+        // Create single announcement content
+        let announcementContent = `New ${type} posted: "${title}"\n\n` +
+                                `Due Date: ${dueDate}\n` +
+                                `Total Points: ${points}\n` +
+                                `Section: ${sectionSubjectText}`;
+
+        formData.append('create_announcement', 'true');
+        formData.append('announcement_content', announcementContent);
+        formData.append('single_notification', 'true');
+
+        // Add timestamp to prevent duplicate submissions
+        formData.append('submission_timestamp', Date.now());
+
         fetch('create_activity.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 Swal.fire({
                     title: 'Success!',
-                    text: data.message,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
+                    text: 'Activity created successfully!',
+                    icon: 'success'
                 }).then(() => {
                     location.reload();
                 });
             } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: data.message || 'An error occurred while creating the activity',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
+                throw new Error(data.message || 'Failed to create activity');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'An unexpected error occurred. Please check the console for details.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
+            Swal.fire('Error!', error.message, 'error');
+        })
+        .finally(() => {
+            // Re-enable submit button
+            submitButton.disabled = false;
         });
     });
 
@@ -1003,34 +1040,21 @@ function getActivityFiles($activity_id) {
         const selectedOption = sectionSubjectSelect.options[sectionSubjectSelect.selectedIndex];
         const sectionSubjectText = selectedOption.text;
 
-        // Create announcement content based on activity type
-        let announcementContent = '';
-        switch(type) {
-            case 'quiz':
-                announcementContent = `A new quiz has been posted: "${title}"\n\n` +
-                                    `Please complete this quiz by ${dueDate}.\n` +
-                                    `Total Points: ${points}\n` +
-                                    `Section: ${sectionSubjectText}`;
-                break;
-            case 'assignment':
-                announcementContent = `A new assignment has been posted: "${title}"\n\n` +
-                                    `Please submit your work by ${dueDate}.\n` +
-                                    `Total Points: ${points}\n` +
-                                    `Section: ${sectionSubjectText}`;
-                break;
-            case 'activity':
-                announcementContent = `A new activity has been posted: "${title}"\n\n` +
-                                    `Please complete this activity by ${dueDate}.\n` +
-                                    `Total Points: ${points}\n` +
-                                    `Section: ${sectionSubjectText}`;
-                break;
-        }
+        // Create single announcement content
+        let announcementContent = `New ${type} posted: "${title}"\n\n` +
+                                `Due Date: ${dueDate}\n` +
+                                `Total Points: ${points}\n` +
+                                `Section: ${sectionSubjectText}`;
 
-        // Add announcement data to formData
+        // Add announcement data to formData (only once)
         formData.append('create_announcement', 'true');
         formData.append('announcement_content', announcementContent);
+        formData.append('single_notification', 'true'); // Add this flag
 
-        // Submit the form with both activity and announcement data
+        // Add timestamp to prevent duplicate submissions
+        formData.append('submission_timestamp', Date.now());
+
+        // Submit the form
         fetch('create_activity.php', {
             method: 'POST',
             body: formData
@@ -1040,7 +1064,7 @@ function getActivityFiles($activity_id) {
             if (data.success) {
                 Swal.fire({
                     title: 'Success!',
-                    text: 'Activity created and announcement posted successfully!',
+                    text: 'Activity created successfully!',
                     icon: 'success'
                 }).then(() => {
                     location.reload();
