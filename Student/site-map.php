@@ -314,11 +314,11 @@ if ($isLoggedIn) {
     <section class="comment-suggestion section-gap">
         <div class="container">
             <div class="logo-bar">
-                <img src="images/Logo.png" alt="DepEd Logo">
-                <img src="images/Logo.png" alt="Bagong Pilipinas Logo">
-                <img src="images/Logo.png" alt="Seal 1">
-                <img src="images/Logo.png" alt="Seal 2">
-                <img src="images/Logo.png" alt="Seal 3">
+                <img src="../images/deped.png" alt="DepEd Logo">
+                <img src="../images/bagongpilipinas.png" alt="Bagong Pilipinas Logo">
+                <img src="../images/Logo.png" alt="Seal 1">
+                <img src="../images/Logo.png" alt="Seal 2">
+                <img src="../images/Logo.png" alt="Seal 3">
             </div>
             <h2>Leave a <span class="text-primary">Comment</span> and <span class="text-primary">Suggestion</span></h2>
             <div class="row">
