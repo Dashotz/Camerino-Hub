@@ -49,7 +49,7 @@ $teachers_result = $db->query($teachers_query);
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
 </head>

@@ -77,6 +77,7 @@ $completion_rate = $total_activities ? round(($completed_activities / $total_act
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <link rel="stylesheet" href="css/grades.css">
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>

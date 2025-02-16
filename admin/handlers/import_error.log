@@ -1,0 +1,18 @@
+[2024-11-22 11:00:01] Starting import process
+[2024-11-22 11:00:01] File upload details: Array
+(
+    [file] => Array
+        (
+            [name] => student_import_template.csv
+            [full_path] => student_import_template.csv
+            [type] => text/csv
+            [tmp_name] => C:\xampp\tmp\php8AEC.tmp
+            [error] => 0
+            [size] => 160
+        )
+
+)
+
+[2024-11-22 11:00:01] File extension: csv
+[2024-11-22 11:00:01] Attempting to move file to: C:\xampp\htdocs\learning-design\Camerino-Hub\admin\handlers/../../uploads/temp/6740562166412_student_import_template.csv
+[2024-11-22 11:00:01] Loading spreadsheet

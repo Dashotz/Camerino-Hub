@@ -22,6 +22,8 @@ $assignment_query = "
         sas.submission_id,
         sas.submitted_at,
         sas.points as achieved_points,
+        sas.feedback,
+        sas.result_file,
         GROUP_CONCAT(DISTINCT af.file_name) as attachment_names,
         GROUP_CONCAT(DISTINCT af.file_path) as attachment_paths,
         CASE 
@@ -71,7 +73,7 @@ try {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="css/dashboard-shared.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <style>
         .activity-container {
             max-width: 800px;
@@ -283,16 +285,115 @@ try {
         .submission-details p {
             margin: 0;
         }
+
+        .btn-warning {
+            background-color: #ffd600;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-warning:hover {
+            background-color: #ffea00;
+        }
+
+        .submitted-file {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 16px;
+        }
+
+        .submitted-file i {
+            margin-right: 12px;
+            color: #5f6368;
+        }
+
+        .submitted-file a {
+            color: #1967d2;
+            text-decoration: none;
+        }
+
+        .submitted-file a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            color: #5f6368;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #f1f3f4;
+            color: #1967d2;
+            text-decoration: none;
+        }
+
+        .btn-back i {
+            margin-right: 8px;
+        }
+
+        .feedback-section {
+            margin: 15px 0;
+        }
+
+        .feedback-content {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            color: #495057;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .result-file-section {
+            margin: 15px 0;
+        }
+
+        .result-file {
+            border: 1px solid #e9ecef;
+            transition: background-color 0.2s;
+        }
+
+        .result-file:hover {
+            background-color: #e9ecef;
+        }
+
+        .result-file .btn {
+            white-space: nowrap;
+        }
+
+        .result-file i {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
-    <?php include 'includes/navigation.php'; ?>
+ 
     
     <div class="dashboard-container">
-        <?php include 'includes/sidebar.php'; ?>
+        
         
         <div class="main-content">
             <div class="activity-container">
+                <!-- Back Button -->
+                <a href="student_assignments.php" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Assignments
+                </a>
+
                 <!-- Assignment Header -->
                 <div class="activity-header">
                     <span class="activity-type-badge">Assignment</span>
@@ -321,15 +422,19 @@ try {
                             <?php
                             $names = explode(',', $assignment['attachment_names']);
                             $paths = explode(',', $assignment['attachment_paths']);
-                            for ($i = 0; $i < count($names); $i++):
+                            
+                            foreach ($paths as $index => $path):
+                                $name = isset($names[$index]) ? trim($names[$index]) : basename(trim($path));
+                                $clean_path = trim($path);
                             ?>
-                            <div class="attachment-item">
-                                <i class="fas fa-file-alt mr-2"></i>
-                                <a href="<?php echo htmlspecialchars($paths[$i]); ?>" target="_blank">
-                                    <?php echo htmlspecialchars($names[$i]); ?>
-                                </a>
-                            </div>
-                            <?php endfor; ?>
+                                <div class="attachment-item">
+                                    <i class="fas fa-file-alt mr-2"></i>
+                                    <a href="handlers/download_file.php?file=<?php echo urlencode($clean_path); ?>&name=<?php echo urlencode($name); ?>" 
+                                       class="attachment-link" target="_blank">
+                                        <?php echo htmlspecialchars($name); ?>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -363,13 +468,51 @@ try {
                                     <i class="fas fa-calendar-check text-muted mr-2"></i>
                                     Submitted <?php echo date('M j, Y g:i A', strtotime($assignment['submitted_at'])); ?>
                                 </p>
-                                <?php if (isset($assignment['grade'])): ?>
+                                
+                                <!-- Add Feedback Display -->
+                                <?php if (!empty($assignment['feedback'])): ?>
+                                    <div class="feedback-section mt-3">
+                                        <h6 class="mb-2">Teacher's Feedback</h6>
+                                        <div class="feedback-content p-3 bg-light rounded">
+                                            <?php echo nl2br(htmlspecialchars($assignment['feedback'])); ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Add Result File Display -->
+                                <?php if (!empty($assignment['result_file'])): ?>
+                                    <div class="result-file-section mt-3">
+                                        <h6 class="mb-2">Graded Work</h6>
+                                        <div class="result-file p-2 bg-light rounded d-flex align-items-center">
+                                            <i class="fas fa-file-alt text-primary mr-2"></i>
+                                            <span class="flex-grow-1"><?php echo basename($assignment['result_file']); ?></span>
+                                            <a href="handlers/download_result.php?file=<?php echo urlencode($assignment['result_file']); ?>" 
+                                               class="btn btn-sm btn-primary" target="_blank">
+                                                <i class="fas fa-download mr-1"></i> Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (isset($assignment['achieved_points'])): ?>
                                     <div class="grade-display">
                                         <h6>Grade</h6>
                                         <div class="grade-value">
-                                            <?php echo $assignment['grade']; ?>/<?php echo $assignment['points']; ?>
+                                            <?php echo $assignment['achieved_points']; ?>/<?php echo $assignment['points']; ?>
                                         </div>
                                     </div>
+                                <?php else: ?>
+                                    <?php 
+                                    // Check if assignment is still within due date
+                                    $canUnsubmit = !isset($assignment['achieved_points']) && 
+                                                  strtotime($assignment['due_date']) > time();
+                                    if ($canUnsubmit): 
+                                    ?>
+                                        <button type="button" class="btn btn-warning mt-3" 
+                                                onclick="unsubmitAssignment(<?php echo $assignment_id; ?>)">
+                                            <i class="fas fa-undo mr-2"></i>Unsubmit
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -524,6 +667,60 @@ try {
             $(fileInput).trigger('change');
         });
     });
+    </script>
+    <script>
+    function unsubmitAssignment(assignmentId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be able to submit a new file for this assignment",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unsubmit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Processing...',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                });
+
+                $.ajax({
+                    url: 'handlers/unsubmit_assignment.php',
+                    type: 'POST',
+                    data: { assignment_id: assignmentId },
+                    success: function(response) {
+                        try {
+                            const result = typeof response === 'string' ? JSON.parse(response) : response;
+                            
+                            if (result.success) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Assignment has been unsubmitted. You can now submit a new file.',
+                                    icon: 'success'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                throw new Error(result.message || 'Failed to unsubmit assignment');
+                            }
+                        } catch (error) {
+                            console.error('Unsubmit error:', error);
+                            Swal.fire('Error!', error.message, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Ajax error:', {xhr, status, error});
+                        Swal.fire('Error!', 'Failed to unsubmit assignment', 'error');
+                    }
+                });
+            }
+        });
+    }
     </script>
 </body>
 </html>

@@ -689,39 +689,6 @@ $admin = $result->fetch_assoc();
                 });
             };
 
-            // Add delete function
-            function deleteSubject(id) {
-                Swal.fire({
-                    title: 'Delete Subject?',
-                    text: "This action cannot be undone",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: 'handlers/subject_handler.php',
-                            type: 'POST',
-                            data: { 
-                                action: 'delete_subject', 
-                                id: id 
-                            },
-                            success: function(response) {
-                                if (response.status === 'success') {
-                                    Swal.fire('Deleted!', response.message, 'success');
-                                    archivedTable.ajax.reload();
-                                    loadDashboardStats();
-                                } else {
-                                    Swal.fire('Error', response.message, 'error');
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-
             // Refresh tables when switching tabs
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
@@ -824,6 +791,72 @@ $admin = $result->fetch_assoc();
                             } else {
                                 Swal.fire('Error', response.message, 'error');
                             }
+                        }
+                    });
+                }
+            });
+        }
+
+        function deleteSubject(id) {
+            Swal.fire({
+                title: 'Delete Subject?',
+                text: "This action cannot be undone",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: 'handlers/subject_handler.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { 
+                            action: 'delete_subject', 
+                            id: id 
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    // Refresh both tables
+                                    $('#activeSubjectTable').DataTable().ajax.reload();
+                                    $('#archivedSubjectTable').DataTable().ajax.reload();
+                                    // Refresh stats
+                                    loadDashboardStats();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to delete subject'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Delete error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to connect to server. Please try again.'
+                            });
                         }
                     });
                 }

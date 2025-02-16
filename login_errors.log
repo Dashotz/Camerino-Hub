@@ -1,0 +1,10 @@
+[10-Dec-2024 12:55:59 Europe/Berlin] Starting student login process for LRN: 999999999999
+[10-Dec-2024 12:55:59 Europe/Berlin] Found student with ID: 50
+[10-Dec-2024 12:55:59 Europe/Berlin] Comparing passwords - Input hash: 8e852f72a491cb6e2b8ed524a50ab361 vs Stored: 8e852f72a491cb6e2b8ed524a50ab361
+[10-Dec-2024 12:55:59 Europe/Berlin] Password match successful
+[10-Dec-2024 12:55:59 Europe/Berlin] Redirecting to dashboard
+[10-Dec-2024 12:59:12 Europe/Berlin] Starting student login process for LRN: 999999999999
+[10-Dec-2024 12:59:12 Europe/Berlin] Found student with ID: 50
+[10-Dec-2024 12:59:12 Europe/Berlin] Comparing passwords - Input hash: 8e852f72a491cb6e2b8ed524a50ab361 vs Stored: 8e852f72a491cb6e2b8ed524a50ab361
+[10-Dec-2024 12:59:12 Europe/Berlin] Password match successful
+[10-Dec-2024 12:59:12 Europe/Berlin] Redirecting to dashboard

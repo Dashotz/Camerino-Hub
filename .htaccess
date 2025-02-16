@@ -2,12 +2,23 @@
     RewriteEngine On
     RewriteBase /
 
+    # Allow direct access to specific asset file types
+    RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|jpeg|gif|ico|woff|woff2|ttf|svg)$ [NC]
+
     # Allow direct access to actual files and directories
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
 
-    # Redirect all other requests to index.php
-    RewriteRule ^(.*)$ index.php [L]
+    # Rewrite URLs to remove .php extension
+    RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA]
+
+    # New rules to prevent requests to URLs ending with a slash
+    RewriteCond %{REQUEST_URI} !^/$
+    RewriteCond %{REQUEST_URI} /$
+    RewriteRule ^ - [F]
+
+    # Default page
+    DirectoryIndex login.php
 </IfModule>
 
 # Prevent directory listing
@@ -15,5 +26,22 @@ Options -Indexes
 
 # Set default character set
 AddDefaultCharset UTF-8
+
+# Enable Gzip compression for better performance
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json
+</IfModule>
+
+# Leverage browser caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+</IfModule>
+
 
 

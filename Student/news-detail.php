@@ -33,7 +33,7 @@ $news = $result->fetch_assoc();
 
 // If news not found, redirect to news listing
 if (!$news) {
-    header("Location: news.php");
+    header("Location: News.php");
     exit();
 }
 ?>
@@ -48,6 +48,7 @@ if (!$news) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/news.css">
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
     <!-- Full Navigation Code -->
@@ -94,7 +95,7 @@ if (!$news) {
             <div class="col-lg-8 mx-auto">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="news.php">News</a></li>
+                        <li class="breadcrumb-item"><a href="News.php">News</a></li>
                         <li class="breadcrumb-item active"><?php echo htmlspecialchars($news['title']); ?></li>
                     </ol>
                 </nav>
@@ -126,7 +127,7 @@ if (!$news) {
                     </div>
 
                     <div class="news-footer mt-4">
-                        <a href="news.php" class="btn btn-outline-primary">
+                        <a href="News.php" class="btn btn-outline-primary">
                             <i class="fas fa-arrow-left"></i> Back to News
                         </a>
                     </div>

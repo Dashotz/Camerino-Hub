@@ -26,6 +26,7 @@ $userData = mysqli_fetch_array($result);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="class-subject.css">
+	<link rel="icon" href="../images/light-logo.png">
     <style>
         .form-container {
             background-color: white;

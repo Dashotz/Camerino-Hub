@@ -1,29 +1,35 @@
 <?php
 function checkSession() {
-    $inactive = 28800; // 8 hours in seconds
-    
-    if (isset($_SESSION['last_activity'])) {
-        $session_life = time() - $_SESSION['last_activity'];
+    if (isset($_SESSION['id'])) {
+        // Update last activity time
+        $currentTime = time();
         
-        if ($session_life > $inactive) {
+        // Only update if more than 5 minutes have passed since last update
+        if (!isset($_SESSION['last_activity']) || ($currentTime - $_SESSION['last_activity']) > 300) {
             require_once('../db/dbConnector.php');
             $db = new DbConnector();
             
-            // Update user_online status to 0
-            if (isset($_SESSION['id'])) {
-                $update_status = "UPDATE student SET user_online = 0 WHERE student_id = ?";
-                $stmt = $db->prepare($update_status);
-                $stmt->bind_param("i", $_SESSION['id']);
-                $stmt->execute();
-            }
+            $student_id = $_SESSION['id'];
+            $currentTimestamp = date('YmdHis');
             
-            // Clear session
-            session_unset();
-            session_destroy();
-            return false;
+            // Update last_activity in database
+            $query = "UPDATE student SET 
+                     last_activity = ?, 
+                     session_id = ? 
+                     WHERE student_id = ?";
+            
+            $stmt = $db->prepare($query);
+            $stmt->bind_param('ssi', $currentTimestamp, session_id(), $student_id);
+            $stmt->execute();
+            
+            $_SESSION['last_activity'] = $currentTime;
         }
+        
+        return true;
     }
-    
-    $_SESSION['last_activity'] = time();
-    return true;
+    return false;
 }
+
+// Set session timeout to 2 hours
+ini_set('session.gc_maxlifetime', 7200);
+session_set_cookie_params(7200);

@@ -53,7 +53,7 @@ $teachers_result = $db->query($teachers_query);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>
@@ -213,6 +213,9 @@ $teachers_result = $db->query($teachers_query);
                                 </td>
                                 <td>
                                     <div class="btn-group action-buttons">
+                                        <button class="btn btn-sm btn-info" onclick="assignAdviser(<?php echo $row['section_id']; ?>, '<?php echo htmlspecialchars($row['section_name']); ?>')">
+                                            <i class="fas fa-user-plus"></i>
+                                        </button>
                                         <a href="edit_section.php?id=<?php echo $row['section_id']; ?>" class="btn btn-sm btn-primary">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -269,6 +272,48 @@ $teachers_result = $db->query($teachers_query);
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save Section</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adviser Assignment Modal -->
+    <div class="modal fade" id="assignAdviserModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign Adviser</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="assignAdviserForm">
+                    <div class="modal-body">
+                        <input type="hidden" name="action" value="assign_adviser">
+                        <input type="hidden" name="section_id" id="assignSectionId">
+                        
+                        <div class="form-group">
+                            <label>Section Name:</label>
+                            <input type="text" class="form-control" id="sectionNameDisplay" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Select Adviser*</label>
+                            <select class="form-control" name="adviser_id" required>
+                                <option value="">Select an Adviser</option>
+                                <?php 
+                                $teachers_result->data_seek(0);
+                                while($teacher = $teachers_result->fetch_assoc()): 
+                                ?>
+                                    <option value="<?php echo $teacher['teacher_id']; ?>">
+                                        <?php echo htmlspecialchars($teacher['lastname'] . ', ' . $teacher['firstname']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Assign Adviser</button>
                     </div>
                 </form>
             </div>
@@ -345,6 +390,58 @@ $teachers_result = $db->query($teachers_query);
                     }
                 });
             });
+
+            $('#assignAdviserForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: 'handlers/section_handler.php',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        Swal.close();
+                        
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Adviser assigned successfully',
+                                showConfirmButton: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Failed to assign adviser'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to process request. Please try again.'
+                        });
+                    }
+                });
+            });
         });
     </script>
     <script>
@@ -393,6 +490,13 @@ $teachers_result = $db->query($teachers_query);
                 });
             }
         });
+    }
+    </script>
+    <script>
+    function assignAdviser(sectionId, sectionName) {
+        $('#assignSectionId').val(sectionId);
+        $('#sectionNameDisplay').val(sectionName);
+        $('#assignAdviserModal').modal('show');
     }
     </script>
 </body>

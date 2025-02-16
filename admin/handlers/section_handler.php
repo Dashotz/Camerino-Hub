@@ -132,6 +132,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
                 break;
 
+            case 'assign_adviser':
+                try {
+                    $section_id = $_POST['section_id'] ?? '';
+                    $adviser_id = $_POST['adviser_id'] ?? '';
+
+                    if (empty($section_id) || empty($adviser_id)) {
+                        throw new Exception('Missing required fields');
+                    }
+
+                    $query = "UPDATE sections SET adviser_id = ? WHERE section_id = ?";
+                    $stmt = $db->prepare($query);
+                    $stmt->bind_param("ii", $adviser_id, $section_id);
+
+                    if ($stmt->execute()) {
+                        echo json_encode(['status' => 'success']);
+                    } else {
+                        throw new Exception('Failed to assign adviser');
+                    }
+                } catch (Exception $e) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => $e->getMessage()
+                    ]);
+                }
+                break;
+
             default:
                 throw new Exception('Invalid action');
         }

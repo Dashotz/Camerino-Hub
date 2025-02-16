@@ -13,6 +13,7 @@ if (isset($_SESSION['admin_id'])) {
     <title>Admin Login - Gov D.M. Camerino</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+	<link rel="icon" href="../images/light-logo.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -230,13 +231,11 @@ if (isset($_SESSION['admin_id'])) {
     <nav class="nav-container">
         <div class="nav-content">
             <div class="logo-section">
-                <img src="../images/Logo.png" alt="School Logo">
+                <img src="../images/logo.png" alt="School Logo">
                 <span class="logo-text">Gov D.M. Camerino</span>
             </div>
             <div class="nav-links">
-                <a href="../index.php" class="nav-link">Home</a>
-                <a href="../about.php" class="nav-link">About</a>
-                <a href="../contact.php" class="nav-link">Contact</a>
+
             </div>
         </div>
     </nav>

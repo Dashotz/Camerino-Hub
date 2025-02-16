@@ -156,3 +156,225 @@
         padding: 0 20px;
     }
 }
+
+/* Search Bar Styles */
+.search-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Header Layout */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+/* Add these responsive styles */
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
+    /* Stats Overview */
+    .stats-overview {
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+    }
+
+    /* Table Adjustments */
+    .table th, .table td {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+    }
+
+    .table td small {
+        font-size: 0.8rem;
+    }
+
+    /* Progress Bar */
+    .progress {
+        width: 100px;
+        height: 6px;
+    }
+
+    .progress-bar {
+        font-size: 8px;
+        line-height: 6px;
+    }
+
+    /* Buttons */
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    /* Modal */
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-header {
+        padding: 15px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    /* Content Header */
+    .content-header {
+        padding: 0 10px;
+    }
+
+    .content-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .content-header p {
+        font-size: 0.85rem;
+    }
+
+    /* Stats Cards */
+    .col-md-3 {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .stat-card {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+    /* Table Adjustments */
+    .table {
+        display: block;
+        width: 100%;
+    }
+
+    .table thead {
+        display: none; /* Hide table header on mobile */
+    }
+
+    .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        margin-bottom: 15px;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 10px;
+    }
+
+    .table td {
+        text-align: left;
+        padding: 8px;
+        position: relative;
+        padding-left: 40%;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 8px;
+        width: 35%;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    /* Progress and Grade */
+    .progress {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .btn-sm {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .stats-overview .row {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        margin: 0 -5px;
+        padding-bottom: 10px;
+    }
+
+    .col-md-3 {
+        flex: 0 0 auto;
+        width: 200px;
+        padding: 0 5px;
+    }
+
+    .stat-card {
+        margin-bottom: 0;
+    }
+
+    /* Adjust table for landscape */
+    .table td {
+        white-space: nowrap;
+    }
+
+    .progress {
+        width: 120px;
+    }
+}
+
+/* Add data attributes for mobile table headers */
+@media (max-width: 480px) {
+    .table td:nth-of-type(1)::before { content: "Subject"; }
+    .table td:nth-of-type(2)::before { content: "Teacher"; }
+    .table td:nth-of-type(3)::before { content: "Progress"; }
+    .table td:nth-of-type(4)::before { content: "Grade"; }
+    .table td:nth-of-type(5)::before { content: "Actions"; }
+}

@@ -32,7 +32,7 @@ $quizzes_query = "
     JOIN section_subjects ssub ON sec.section_id = ssub.section_id
     JOIN subjects s ON ssub.subject_id = s.id
     JOIN teacher t ON ssub.teacher_id = t.teacher_id
-    JOIN activities a ON ssub.teacher_id = a.teacher_id
+    JOIN activities a ON a.section_subject_id = ssub.id
     LEFT JOIN student_activity_submissions sas ON a.activity_id = sas.activity_id 
         AND sas.student_id = ?
     WHERE ss.student_id = ?
@@ -69,7 +69,7 @@ $quizzes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <!-- External CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>
@@ -136,6 +136,51 @@ $quizzes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             border-radius: 4px;
             font-size: 0.9rem;
         }
+
+        /* Search Bar Styles */
+.search-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Header Layout */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
@@ -214,9 +259,10 @@ $quizzes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
                             <div class="quiz-footer">
                                 <?php if (!$is_submitted): ?>
-                                    <button class="btn btn-primary" onclick="startQuiz(<?php echo $quiz['activity_id']; ?>)">
-                                        <i class="fas fa-play-circle"></i> Start Quiz
-                                    </button>
+                                    <a href="quiz_iframe.php?quiz_id=<?php echo $quiz['activity_id']; ?>" 
+                                       class="btn btn-primary">
+                                        <i class="fas fa-pencil-alt mr-2"></i>Take Quiz
+                                    </a>
                                 <?php else: ?>
                                     <button class="btn btn-outline-secondary" disabled>
                                         <i class="fas fa-check-circle"></i> Completed

@@ -19,7 +19,63 @@ switch ($action) {
         editSubject($db);
         break;
     case 'delete_subject':
-        deleteSubject($db);
+        if (!isset($_POST['id'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Subject ID is required']);
+            exit;
+        }
+
+        $subject_id = intval($_POST['id']);
+        
+        // Start transaction
+        $db->begin_transaction();
+        
+        try {
+            // Check if subject exists and is archived
+            $check_query = "SELECT status FROM subjects WHERE id = ?";
+            $stmt = $db->prepare($check_query);
+            $stmt->bind_param("i", $subject_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows === 0) {
+                throw new Exception("Subject not found");
+            }
+            
+            $subject = $result->fetch_assoc();
+            if ($subject['status'] !== 'inactive') {
+                throw new Exception("Only archived subjects can be deleted");
+            }
+
+            // Delete related records first (maintain referential integrity)
+            // Delete from section_subjects
+            $query = "DELETE FROM section_subjects WHERE subject_id = ?";
+            $stmt = $db->prepare($query);
+            $stmt->bind_param("i", $subject_id);
+            $stmt->execute();
+
+            // Delete from subject_grade_levels
+            $query = "DELETE FROM subject_grade_levels WHERE subject_id = ?";
+            $stmt = $db->prepare($query);
+            $stmt->bind_param("i", $subject_id);
+            $stmt->execute();
+
+            // Finally delete the subject
+            $query = "DELETE FROM subjects WHERE id = ?";
+            $stmt = $db->prepare($query);
+            $stmt->bind_param("i", $subject_id);
+            $stmt->execute();
+
+            if ($stmt->affected_rows === 0) {
+                throw new Exception("Failed to delete subject");
+            }
+
+            $db->commit();
+            echo json_encode(['status' => 'success', 'message' => 'Subject deleted successfully']);
+            
+        } catch (Exception $e) {
+            $db->rollback();
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
         break;
     case 'get_subject_teachers':
         getSubjectTeachers($db);

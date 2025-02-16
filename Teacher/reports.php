@@ -15,8 +15,7 @@ $classes_query = "SELECT
     ss.id as class_id,
     CONCAT(sec.section_name, ' - ', sub.subject_code) as class_name,
     sub.subject_name,
-    ay.year_start,
-    ay.year_end,
+    ay.school_year,
     sec.section_name,
     sub.subject_code
 FROM section_subjects ss
@@ -33,6 +32,7 @@ $stmt->execute();
 $classes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 $selected_class = isset($_GET['class_id']) ? $_GET['class_id'] : null;
+$selected_range = isset($_GET['date_range']) ? $_GET['date_range'] : 'this_month';
 
 if ($selected_class) {
     // Get performance data for selected class
@@ -122,7 +122,7 @@ $end_date = $date_range['end'];
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.bootstrap4.min.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>
@@ -150,14 +150,27 @@ $end_date = $date_range['end'];
         .dashboard-container {
             display: flex;
             min-height: 100vh;
-            padding-top: 60px; /* Match your navigation height */
+            padding-top: 3%;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            width: 250px;
+            background: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1020;
+            transition: width 0.3s ease;
         }
 
         .main-content {
             flex: 1;
             padding: 20px;
+            margin-left: 250px;
             background: #f8f9fa;
-            margin-left: 250px; /* Match your sidebar width */
+            transition: margin-left 0.3s ease;
         }
 
         .content-header {
@@ -185,17 +198,7 @@ $end_date = $date_range['end'];
         }
 
         /* Fix the sidebar */
-        .sidebar {
-            position: fixed;
-            top: 60px; /* Match navigation height */
-            left: 0;
-            bottom: 0;
-            width: 250px;
-            background: #fff;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            z-index: 1020;
-            overflow-y: auto;
-        }
+        
 
         /* Improve card styling */
         .stat-card {
@@ -229,7 +232,7 @@ $end_date = $date_range['end'];
         .performance-table {
             background: #fff;
             border-radius: 8px;
-            overflow: hidden;
+            overflow: hidden;        
         }
 
         .performance-table th {
@@ -277,23 +280,99 @@ $end_date = $date_range['end'];
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
             .main-content {
-                margin-left: 0;
+                margin-left: 60px;
                 padding: 15px;
             }
 
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
+            /* Hide text, show only icons in sidebar */
+            .sidebar .nav-link span {
+                display: none;
             }
 
-            .sidebar.active {
-                transform: translateX(0);
+            .sidebar .nav-link i {
+                margin-right: 0;
+                font-size: 1.2rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            .sidebar-footer {
+                display: none !important;
+            }
+
+            /* Adjust filter section for mobile */
+            .filter-section {
+                padding: 1rem;
+            }
+
+            .filter-section select,
+            .filter-section button {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Adjust content spacing */
+            .content-header {
+                margin-bottom: 1rem;
+            }
+
+            .content-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 10px;
             }
 
             .stat-card {
-                margin-bottom: 1rem;
+                padding: 1rem;
             }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Table width fixes */
+        .card-body {
+            padding: 1.5rem;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .performance-table {
+            width: 100% !important; /* Force 100% width */
+        }
+
+        /* DataTables container fix */
+        .dataTables_wrapper {
+            width: 100%;
+        }
+
+        /* Make sure table cells distribute space evenly */
+        .performance-table th,
+        .performance-table td {
+            white-space: nowrap;
+            min-width: 120px; /* Minimum width for columns */
+        }
+
+        /* Adjust specific column widths */
+        .performance-table th:first-child,
+        .performance-table td:first-child {
+            min-width: 200px; /* Wider for student names */
+        }
+
+        .performance-table th:last-child,
+        .performance-table td:last-child {
+            min-width: 150px; /* Wider for performance level */
         }
     </style>
 </head>
@@ -328,10 +407,10 @@ $end_date = $date_range['end'];
                         </select>
 
                         <select name="date_range" class="form-control mr-2 mb-2">
-                            <option value="this_month">This Month</option>
-                            <option value="last_month">Last Month</option>
-                            <option value="this_week">This Week</option>
-                            <option value="last_week">Last Week</option>
+                            <option value="this_month" <?php echo ($selected_range == 'this_month') ? 'selected' : ''; ?>>This Month</option>
+                            <option value="last_month" <?php echo ($selected_range == 'last_month') ? 'selected' : ''; ?>>Last Month</option>
+                            <option value="this_week" <?php echo ($selected_range == 'this_week') ? 'selected' : ''; ?>>This Week</option>
+                            <option value="last_week" <?php echo ($selected_range == 'last_week') ? 'selected' : ''; ?>>Last Week</option>
                         </select>
 
                         <button type="submit" class="btn btn-primary mb-2">
@@ -489,12 +568,12 @@ $end_date = $date_range['end'];
     <script>
     $(document).ready(function() {
         $('#performanceTable').DataTable({
-            dom: 'Bfrtip',
+            dom: '<"row"<"col-12"B>><"row"<"col-12"f>><"row"<"col-12"t>><"row"<"col-12"ip>>',
             buttons: [
                 {
                     extend: 'excel',
                     text: '<i class="fas fa-file-excel"></i> Export Excel',
-                    className: 'btn btn-success btn-sm',
+                    className: 'btn btn-success btn-sm mb-2',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     }
@@ -502,7 +581,7 @@ $end_date = $date_range['end'];
                 {
                     extend: 'pdf',
                     text: '<i class="fas fa-file-pdf"></i> Export PDF',
-                    className: 'btn btn-danger btn-sm',
+                    className: 'btn btn-danger btn-sm mb-2',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     }
@@ -510,12 +589,30 @@ $end_date = $date_range['end'];
                 {
                     extend: 'print',
                     text: '<i class="fas fa-print"></i> Print',
-                    className: 'btn btn-info btn-sm',
+                    className: 'btn btn-info btn-sm mb-2',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     }
                 }
-            ]
+            ],
+            responsive: true,
+            scrollX: true,
+            language: {
+                search: "Search:",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: ">",
+                    previous: "<"
+                }
+            }
+        });
+
+        // Adjust table when window resizes
+        $(window).resize(function() {
+            $('#performanceTable').DataTable().columns.adjust();
         });
     });
     </script>

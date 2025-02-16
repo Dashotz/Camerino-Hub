@@ -111,3 +111,156 @@
 .student-info small {
     font-size: 0.85rem;
 }
+
+/* Base styles and responsive updates */
+.content-header {
+    padding: 20px;
+}
+
+/* Table responsiveness */
+@media (max-width: 768px) {
+    /* Header section */
+    .content-header .d-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header-actions {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    #classFilter {
+        width: 100%;
+        margin-right: 0 !important;
+    }
+
+    .header-actions .btn {
+        width: 100%;
+    }
+
+    /* Table adjustments */
+    .table-responsive {
+        margin: 0;
+        padding: 0;
+    }
+
+    #studentsTable {
+        display: block;
+        width: 100%;
+    }
+
+    #studentsTable thead {
+        display: none; /* Hide header on mobile */
+    }
+
+    #studentsTable tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+
+    #studentsTable tbody td {
+        display: block;
+        text-align: left;
+        padding: 12px 15px;
+        border: none;
+        position: relative;
+    }
+
+    /* Add labels for mobile */
+    #studentsTable tbody td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    /* Student info layout */
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .d-flex.align-items-center {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* Progress bars and badges */
+    .progress {
+        margin: 8px 0;
+    }
+
+    .badge {
+        display: inline-block;
+        margin: 4px 0;
+    }
+
+    /* Action buttons */
+    .btn-group {
+        display: flex;
+        gap: 5px;
+        width: 100%;
+    }
+
+    .btn-group .btn {
+        flex: 1;
+        padding: 8px;
+    }
+
+    /* Modal adjustments */
+    .modal-dialog {
+        margin: 10px;
+        max-width: none;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .student-details .row {
+        flex-direction: column;
+    }
+
+    .student-details .col-md-6 {
+        padding: 10px 0;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .content-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .content-header p {
+        font-size: 0.9rem;
+    }
+
+    .card-header {
+        padding: 15px;
+    }
+
+    .card-header h4 {
+        font-size: 1.2rem;
+    }
+
+    /* DataTables adjustments */
+    .dataTables_wrapper .dataTables_filter input {
+        width: 100%;
+        margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        text-align: left;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

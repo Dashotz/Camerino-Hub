@@ -1,0 +1,22 @@
+<% if (user.isTemporaryPassword) { %>
+  <!-- Bootstrap Modal -->
+  <div class="modal fade" id="temporaryPasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Change Your Password</h5>
+        </div>
+        <div class="modal-body">
+          <p>You are using a temporary password. Please change your password to continue using the system.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Show modal on page load
+    $(document).ready(function() {
+      $('#temporaryPasswordModal').modal('show');
+    });
+  </script>
+<% } %> 

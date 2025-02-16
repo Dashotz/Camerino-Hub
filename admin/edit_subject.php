@@ -38,6 +38,7 @@ if (!$subject) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="css/dashboard-shared.css" rel="stylesheet">
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
     <div class="wrapper">

@@ -61,15 +61,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <span>Settings</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="backup_restore.php" class="nav-link">
+                    <i class="fas fa-database"></i>
+                    <span>Backup & Restore</span>
+                </a>
+            </li>
         </ul>
 
-        <div class="sidebar-footer">
-            <div class="help-card">
-                <i class="fas fa-question-circle"></i>
-                <h6>Need Help?</h6>
-                <p>Access admin documentation and support</p>
-                <a href="admin_support.php" class="btn btn-sm btn-outline-primary">Get Help</a>
-            </div>
-        </div>
     </div>
 </div>

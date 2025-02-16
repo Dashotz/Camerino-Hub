@@ -28,12 +28,13 @@ if ($isLoggedIn) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/aboutus.css">
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
     <!-- Header and Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="home.php">
                 <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo">
                 <span class="logo-text">Gov D.M. Camerino</span>
             </a>
@@ -61,7 +62,7 @@ if ($isLoggedIn) {
                             </div>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link btn-signup" href="Student-Login.php">Log In</a></li>
+                        <li class="nav-item"><a class="nav-link btn-signup" href="../login.php">Log In</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -79,7 +80,7 @@ if ($isLoggedIn) {
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
                         <?php else: ?>
-                            <a href="Student-Login.php" class="btn btn-primary">Login Now</a>
+                            <a href="../login.php" class="btn btn-primary">Login Now</a>
                         <?php endif; ?>
                     </div>
                 </div>

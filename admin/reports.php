@@ -35,7 +35,7 @@ $current_year = $db->query($year_query)->fetch_assoc();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>
@@ -141,8 +141,8 @@ $current_year = $db->query($year_query)->fetch_assoc();
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Section</label>
-                            <select class="form-control" id="section">
-                                <option value="">All Sections</option>
+                            <select class="form-control" id="section" disabled>
+                                <option value="">Select Grade Level First</option>
                             </select>
                         </div>
                     </div>
@@ -358,9 +358,9 @@ $current_year = $db->query($year_query)->fetch_assoc();
                 },
                 columns: [
                     { 
-                        data: null,
+                        data: 'student_name',
                         render: function(data) {
-                            return data.firstname + ' ' + data.lastname;
+                            return data || 'N/A';
                         }
                     },
                     { data: 'grade_level' },

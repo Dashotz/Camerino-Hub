@@ -1,0 +1,96 @@
+[06-Dec-2024 05:49:20 Asia/Manila] 
+
+New submission attempt at 2024-12-06 05:49:20
+[06-Dec-2024 05:49:20 Asia/Manila] Received data: {"quiz_id":128,"answers":{"question_45":"70","question_46":"true","question_47":"test"},"time_spent":5,"security_violation":false,"violation_count":0}
+[06-Dec-2024 05:49:20 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 128
+    [answers] => Array
+        (
+            [question_45] => 70
+            [question_46] => true
+            [question_47] => test
+        )
+
+    [time_spent] => 5
+    [security_violation] => 
+    [violation_count] => 0
+)
+
+[06-Dec-2024 05:49:20 Asia/Manila] Processing question 45
+[06-Dec-2024 05:49:20 Asia/Manila] Student answer: 70
+[06-Dec-2024 05:49:20 Asia/Manila] Correct choice ID: 70
+[06-Dec-2024 05:49:20 Asia/Manila] Multiple choice/True False - Selected: 70, Correct: 1
+[06-Dec-2024 05:49:20 Asia/Manila] Answer correct! Adding 1 points
+[06-Dec-2024 05:49:20 Asia/Manila] Processing question 46
+[06-Dec-2024 05:49:20 Asia/Manila] Student answer: true
+[06-Dec-2024 05:49:20 Asia/Manila] Correct choice ID: 72
+[06-Dec-2024 05:49:20 Asia/Manila] Multiple choice/True False - Selected: true, Correct: 0
+[06-Dec-2024 05:49:20 Asia/Manila] Processing question 47
+[06-Dec-2024 05:49:20 Asia/Manila] Student answer: test
+[06-Dec-2024 05:49:20 Asia/Manila] Correct choice ID: 
+[06-Dec-2024 05:49:20 Asia/Manila] Short answer - Text: test
+[06-Dec-2024 05:49:20 Asia/Manila] Score calculation: 1 / 3 * 3 = 1
+[06-Dec-2024 05:49:20 Asia/Manila] About to insert submission with score: 1
+[06-Dec-2024 05:49:20 Asia/Manila] Student ID: 50, Quiz ID: 128
+[06-Dec-2024 05:49:20 Asia/Manila] Processing question 45
+[06-Dec-2024 05:49:20 Asia/Manila] Student answer: 70
+[06-Dec-2024 05:49:20 Asia/Manila] Correct choice ID: 70
+[06-Dec-2024 05:49:20 Asia/Manila] Multiple choice/True False - Selected: 70, Correct: 1
+[06-Dec-2024 05:49:20 Asia/Manila] Answer correct! Adding 1 points
+[06-Dec-2024 05:49:20 Asia/Manila] Processing question 46
+[06-Dec-2024 05:49:20 Asia/Manila] Student answer: true
+[06-Dec-2024 05:49:20 Asia/Manila] Correct choice ID: 72
+[06-Dec-2024 05:49:20 Asia/Manila] Multiple choice/True False - Selected: true, Correct: 0
+[06-Dec-2024 05:49:20 Asia/Manila] Processing question 47
+[06-Dec-2024 05:49:20 Asia/Manila] Student answer: test
+[06-Dec-2024 05:49:20 Asia/Manila] Correct choice ID: 
+[06-Dec-2024 05:49:20 Asia/Manila] Short answer - Text: test
+[06-Dec-2024 05:50:07 Asia/Manila] 
+
+New submission attempt at 2024-12-06 05:50:07
+[06-Dec-2024 05:50:07 Asia/Manila] Received data: {"quiz_id":128,"answers":{"question_45":"70","question_46":"true","question_47":"test"},"time_spent":3,"security_violation":false,"violation_count":0}
+[06-Dec-2024 05:50:07 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 128
+    [answers] => Array
+        (
+            [question_45] => 70
+            [question_46] => true
+            [question_47] => test
+        )
+
+    [time_spent] => 3
+    [security_violation] => 
+    [violation_count] => 0
+)
+
+[06-Dec-2024 05:50:07 Asia/Manila] Processing question 45
+[06-Dec-2024 05:50:07 Asia/Manila] Student answer: 70
+[06-Dec-2024 05:50:07 Asia/Manila] Correct choice ID: 70
+[06-Dec-2024 05:50:07 Asia/Manila] Multiple choice/True False - Selected: 70, Correct: 1
+[06-Dec-2024 05:50:07 Asia/Manila] Answer correct! Adding 1 points
+[06-Dec-2024 05:50:07 Asia/Manila] Processing question 46
+[06-Dec-2024 05:50:07 Asia/Manila] Student answer: true
+[06-Dec-2024 05:50:07 Asia/Manila] Correct choice ID: 72
+[06-Dec-2024 05:50:07 Asia/Manila] Multiple choice/True False - Selected: true, Correct: 0
+[06-Dec-2024 05:50:07 Asia/Manila] Processing question 47
+[06-Dec-2024 05:50:07 Asia/Manila] Student answer: test
+[06-Dec-2024 05:50:07 Asia/Manila] Correct choice ID: 
+[06-Dec-2024 05:50:07 Asia/Manila] Short answer - Text: test
+[06-Dec-2024 05:50:07 Asia/Manila] Score calculation: 1 / 3 * 3 = 1
+[06-Dec-2024 05:50:07 Asia/Manila] About to insert submission with score: 1
+[06-Dec-2024 05:50:07 Asia/Manila] Student ID: 50, Quiz ID: 128
+[06-Dec-2024 05:50:07 Asia/Manila] Processing question 45
+[06-Dec-2024 05:50:07 Asia/Manila] Student answer: 70
+[06-Dec-2024 05:50:07 Asia/Manila] Correct choice ID: 70
+[06-Dec-2024 05:50:07 Asia/Manila] Multiple choice/True False - Selected: 70, Correct: 1
+[06-Dec-2024 05:50:07 Asia/Manila] Answer correct! Adding 1 points
+[06-Dec-2024 05:50:07 Asia/Manila] Processing question 46
+[06-Dec-2024 05:50:07 Asia/Manila] Student answer: true
+[06-Dec-2024 05:50:07 Asia/Manila] Correct choice ID: 72
+[06-Dec-2024 05:50:07 Asia/Manila] Multiple choice/True False - Selected: true, Correct: 0
+[06-Dec-2024 05:50:07 Asia/Manila] Processing question 47
+[06-Dec-2024 05:50:07 Asia/Manila] Student answer: test
+[06-Dec-2024 05:50:07 Asia/Manila] Correct choice ID: 
+[06-Dec-2024 05:50:07 Asia/Manila] Short answer - Text: test

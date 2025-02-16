@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(0);
+ini_set('display_errors', 0);
+
 class DbConnector {
 
 var $theQuery;
@@ -9,16 +12,15 @@ private $isConnClosed = false;
 private $isMsgConnClosed = false;
 private $conn;
 
-function __construct($useMessageDb = false) {
-        // Database settings
-        $host = 'localhost';
-        $mainDb = 'camerinohub';
-        $messageDb = 'camerinohub_messages';
-        $user = 'root';
-        $pass = '';
+// Add these as class properties
+private $host = 'localhost';
+private $username = 'root';
+private $password = '';
+private $database = 'frncszxc_camerinohub2';
 
-        // Connect to main CamerinoHub database
-        $this->conn = new mysqli($host, $user, $pass, $mainDb);
+function __construct($useMessageDb = false) {
+        // Use the class properties instead of local variables
+        $this->conn = new mysqli($this->host, $this->username, $this->password, $this->database);
         if ($this->conn->connect_error) {
             throw new Exception('Connection failed: ' . $this->conn->connect_error);
         }
@@ -28,7 +30,7 @@ function __construct($useMessageDb = false) {
 
         // If message database is needed, create that connection
         if ($useMessageDb) {
-            $this->messageLink = new mysqli($host, $user, $pass, $messageDb);
+            $this->messageLink = new mysqli($this->host, $this->username, $this->password, $messageDb);
             if ($this->messageLink->connect_error) {
                 throw new Exception('Connection failed: ' . $this->messageLink->connect_error);
             }
@@ -161,6 +163,77 @@ function __construct($useMessageDb = false) {
 
     public function begin_transaction() {
         return $this->conn->begin_transaction();
+    }
+
+    public function fetchQuizzes($section_subject_id) {
+        $query = "SELECT a.*, 
+                  ss.section_id,
+                  s.section_name,
+                  sub.subject_name,
+                  CASE 
+                      WHEN a.due_date > NOW() THEN 'upcoming'
+                      ELSE 'expired'
+                  END as quiz_status
+                  FROM activities a
+                  JOIN section_subjects ss ON a.section_subject_id = ss.id
+                  JOIN sections s ON ss.section_id = s.section_id
+                  JOIN subjects sub ON ss.subject_id = sub.id
+                  WHERE a.type = 'quiz' 
+                  AND a.section_subject_id = ?
+                  AND a.status = 'active'
+                  ORDER BY a.created_at DESC";
+                  
+        $stmt = $this->prepare($query);
+        $stmt->bind_param("i", $section_subject_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function fetchStudentQuizzes($student_id) {
+        $query = "SELECT a.*,
+                  ss.section_id,
+                  s.section_name,
+                  sub.subject_name,
+                  CASE 
+                      WHEN a.due_date > NOW() THEN 'upcoming'
+                      ELSE 'expired'
+                  END as quiz_status,
+                  sas.submission_id,
+                  sas.submitted_at,
+                  sas.score
+                  FROM activities a
+                  JOIN section_subjects ss ON a.section_subject_id = ss.id
+                  JOIN sections s ON ss.section_id = s.section_id
+                  JOIN subjects sub ON ss.subject_id = sub.id
+                  JOIN student_sections sts ON s.section_id = sts.section_id
+                  LEFT JOIN student_activity_submissions sas ON a.activity_id = sas.activity_id 
+                      AND sas.student_id = ?
+                  WHERE a.type = 'quiz'
+                  AND sts.student_id = ?
+                  AND a.status = 'active'
+                  ORDER BY a.due_date DESC";
+                  
+        $stmt = $this->prepare($query);
+        $stmt->bind_param("ii", $student_id, $student_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Add these methods to your DbConnector class
+    public function getHost() {
+        return $this->host;
+    }
+
+    public function getUsername() {
+        return $this->username;
+    }
+
+    public function getPassword() {
+        return $this->password;
+    }
+
+    public function getDatabase() {
+        return $this->database;
     }
 
 }

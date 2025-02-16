@@ -201,11 +201,6 @@ body {
 }
 
 
-/* Contact Information Section */
-.contact-info {
-    background-color: #f8f9fa;
-    padding: 60px 0;
-}
 
 .info-header {
     display: flex;
@@ -284,57 +279,72 @@ body {
         grid-template-columns: 1fr;
     }
 }
-/* Footer */
-footer {
+
+
+/* Fix map and footer connection */
+.map-section {
+    padding-bottom: 60px;
+    margin-bottom: 0;
+    background-color: #fff;
+}
+
+.map-wrapper {
+    margin-bottom: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Newsletter section */
+.newsletter-section {
     background-color: #1B3C74;
-    color: #fff;
-    padding: 40px 0 20px;
-}
-
-footer h5 {
-    font-weight: bold;
-    margin-bottom: 20px;
+    padding: 20px 0;
     color: #fff;
 }
 
-footer ul {
-    padding-left: 0;
-    list-style-type: none;
+.newsletter-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
 }
 
-footer ul li {
-    margin-bottom: 10px;
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    max-width: 500px;
 }
 
-footer a {
-    color: #fff;
-    text-decoration: none;
-    transition: opacity 0.3s ease;
+.newsletter-form input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: none;
 }
 
-footer a:hover {
-    opacity: 0.8;
-    color: #fff;
+.newsletter-form button {
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.social-icons a {
-    font-size: 20px;
-    margin-right: 15px;
-}
-
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 20px;
-    margin-top: 30px;
+.newsletter-form button:hover {
+    background-color: #ffcd39;
 }
 
 @media (max-width: 768px) {
-    footer {
+    .newsletter-content {
+        flex-direction: column;
         text-align: center;
     }
     
-    .social-icons {
-        margin-top: 20px;
+    .newsletter-form {
+        width: 100%;
     }
 }
 
@@ -378,22 +388,258 @@ section:last-of-type {
     padding-bottom: 0;
 }
 
-/* Map Section specific */
-.map-section {
-    background-color: #f8f9fa;
-    margin-bottom: 0;
-}
 
 .map-wrapper {
     margin-bottom: 0;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-/* Footer connection */
-footer {
+
+
+/* Remove the gap between map and footer */
+.map-section + footer {
     margin-top: 0;
 }
 
 /* Ensure no white space between sections */
-section + section {
+section + section,
+section + footer {
     margin-top: 0;
 }
+
+/* Map button and section styles */
+.view-map-btn {
+    transition: all 0.3s ease;
+}
+
+.view-map-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.view-map-btn:active {
+    transform: translateY(0);
+}
+
+.view-map-btn i {
+    margin-right: 5px;
+}
+
+/* Map section highlight animation */
+@keyframes highlightSection {
+    0% { box-shadow: 0 0 0 rgba(0,123,255,0); }
+    50% { box-shadow: 0 0 20px rgba(0,123,255,0.3); }
+    100% { box-shadow: 0 0 0 rgba(0,123,255,0); }
+}
+
+.highlight-section {
+    animation: highlightSection 1.5s ease-out;
+}
+
+/* Map wrapper improvements */
+.map-wrapper {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.map-wrapper:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+}
+
+.map-wrapper iframe {
+    display: block;
+    border: 0;
+    margin-bottom: -6px;
+    width: 100%;
+}
+
+/* Optional: Add a smooth transition between map section and footer */
+.map-section::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: #1B3C74;
+    margin-top: -1px;
+}
+
+/* Add gap between map and footer */
+footer {
+    background-color: #1B3C74;
+    color: #fff;
+    padding: 40px 0 20px;
+    margin-top: 0;
+    position: relative;
+}
+
+/* Add a visual separator */
+footer::before {
+    content: '';
+    position: absolute;
+    top: -60px; /* Match map section padding */
+    left: 0;
+    right: 0;
+    height: 60px; /* Create gap */
+    background: linear-gradient(to bottom, #fff, #f8f9fa); /* Subtle gradient */
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    /* Hero section */
+    .hero {
+        padding: 40px 0;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-text {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p.lead {
+        font-size: 1rem;
+    }
+
+    /* Hide hero image on mobile */
+    .hero-image {
+        display: none;
+    }
+
+    /* Contact Info Cards */
+    .info-cards {
+        margin: 0 10px;
+    }
+
+    .info-card {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    /* Contact Form Section */
+    .contact-wrapper {
+        padding: 20px !important;
+    }
+
+    .form-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .contact-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    /* Office Hours Card */
+    .office-hours-card {
+        margin: 20px 0;
+        padding: 15px !important;
+    }
+
+    .schedule-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 8px 0;
+    }
+
+    .schedule-item .day,
+    .schedule-item .time {
+        display: block;
+        width: 100%;
+    }
+
+    /* Social Icons */
+    .social-connect {
+        margin-top: 20px;
+    }
+
+    .social-icons-large {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .social-icon-lg {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    /* Map Section */
+    .map-wrapper {
+        margin: 0 10px;
+    }
+
+    .map-wrapper iframe {
+        height: 300px;
+    }
+
+    /* Buttons */
+    .btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .view-map-btn {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+
+    /* Form inputs */
+    .floating-label input,
+    .floating-label textarea {
+        font-size: 0.9rem;
+    }
+
+    /* Newsletter section */
+    .newsletter-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .newsletter-form input,
+    .newsletter-form button {
+        width: 100%;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .form-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .social-icon-lg {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .map-wrapper iframe {
+        height: 250px;
+    }
+}
+

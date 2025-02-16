@@ -53,4 +53,52 @@
         padding: 10px 40px 10px 15px;
         font-size: 14px;
     }
+}
+
+.search-results {
+    margin-top: 2rem;
+}
+
+.result-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-5px);
+}
+
+.result-type {
+    margin-bottom: 1rem;
+}
+
+.result-card h3 {
+    margin-bottom: 1rem;
+}
+
+.result-card h3 a {
+    color: #333;
+    text-decoration: none;
+}
+
+.result-card h3 a:hover {
+    color: #007bff;
+}
+
+.result-meta {
+    margin-top: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.result-meta span {
+    margin-right: 1rem;
+}
+
+.result-meta i {
+    margin-right: 0.5rem;
 } 

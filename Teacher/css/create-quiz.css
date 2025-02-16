@@ -1,0 +1,115 @@
+/* Quiz Form Specific Styles */
+.quiz-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: flex;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.form-row > .col {
+    padding-right: 15px;
+    padding-left: 15px;
+    flex: 1;
+}
+
+/* Quiz Settings Section */
+.quiz-settings {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.quiz-settings .custom-control {
+    margin-bottom: 0.5rem;
+}
+
+/* URL Input Styling */
+input[type="url"].form-control {
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+/* Duration Input Styling */
+input[type="number"].form-control {
+    width: 100%;
+    min-width: 80px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-row > .col {
+        margin-bottom: 1rem;
+    }
+    
+    .form-row > .col:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.question-card {
+    border: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.question-card .card-header {
+    background-color: #f8f9fa;
+    padding: 0.75rem 1rem;
+}
+
+.choice-inputs .input-group {
+    margin-bottom: 0.5rem;
+}
+
+.choice-inputs .input-group:last-child {
+    margin-bottom: 0;
+}
+
+.delete-question {
+    padding: 0.25rem 0.5rem;
+}
+
+.choices-container {
+    margin-top: 1rem;
+}
+
+.custom-radio {
+    margin-bottom: 0.5rem;
+}
+
+#questionsContainer .card {
+    transition: all 0.3s ease;
+}
+
+#questionsContainer .card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.modal-dialog {
+    max-width: 500px;
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 15px;
+    }
+    
+    .modal-dialog {
+        margin: 1rem;
+    }
+}

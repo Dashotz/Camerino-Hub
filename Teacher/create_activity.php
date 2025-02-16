@@ -1,207 +1,136 @@
 <?php
-// Prevent any output before JSON response
-ob_start();
-
 session_start();
 require_once('../db/dbConnector.php');
 
-// Set JSON content type header
-header('Content-Type: application/json');
-
-// Check authentication
 if (!isset($_SESSION['teacher_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    header("Location: Teacher-Login.php");
     exit();
 }
 
 $db = new DbConnector();
 $teacher_id = $_SESSION['teacher_id'];
 
-try {
-    // Start transaction using the correct method name
-    $db->beginTransaction();
-
-    // Check for duplicate activity title for the same section within a time window
-    $check_duplicate_sql = "
-        SELECT COUNT(*) as count 
-        FROM activities a 
-        WHERE a.section_subject_id = ? 
-        AND a.title = ? 
-        AND a.created_at >= NOW() - INTERVAL 5 MINUTE";
-
-    $stmt = $db->prepare($check_duplicate_sql);
-    if (!$stmt) {
-        throw new Exception('Failed to prepare duplicate check statement');
-    }
-
-    $stmt->bind_param("is", 
-        $_POST['section_subject_id'],
-        $_POST['title']
-    );
-
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-
-    if ($result['count'] > 0) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'An activity with this title was recently created. Please wait a few minutes before trying again or use a different title.'
-        ]);
-        exit();
-    }
-
-    // Create the activity with teacher_id
-    $activity_sql = "INSERT INTO activities (
-        section_subject_id,
-        teacher_id,
-        title,
-        description,
-        type,
-        due_date,
-        points,
-        status,
-        created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', NOW())";
-
-    $stmt = $db->prepare($activity_sql);
-    if (!$stmt) {
-        throw new Exception('Failed to prepare statement');
-    }
-
-    $stmt->bind_param("iissssi", 
-        $_POST['section_subject_id'],
-        $teacher_id,
-        $_POST['title'],
-        $_POST['description'],
-        $_POST['type'],
-        $_POST['due_date'],
-        $_POST['points']
-    );
-
-    if (!$stmt->execute()) {
-        throw new Exception('Failed to create activity: ' . $stmt->error);
-    }
-    
-    // Get the last inserted activity_id using the correct method
-    $activity_id = $db->lastInsertId();
-    
-    if (!$activity_id) {
-        throw new Exception('Failed to get activity ID');
-    }
-
-    // Handle file uploads
-    if (isset($_FILES['activity_files']) && !empty($_FILES['activity_files']['name'][0])) {
-        // Define upload directory
-        $base_dir = dirname(dirname(__FILE__));
-        $upload_dir = $base_dir . '/uploads/activities/';
-        
-        if (!file_exists($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-
-        // Track processed files to prevent duplication
-        $processed_files = [];
-
-        foreach ($_FILES['activity_files']['tmp_name'] as $key => $tmp_name) {
-            // Skip empty or already processed files
-            if (empty($tmp_name) || in_array($tmp_name, $processed_files)) {
-                continue;
-            }
-            
-            $file_name = $_FILES['activity_files']['name'][$key];
-            $file_size = $_FILES['activity_files']['size'][$key];
-            $file_type = $_FILES['activity_files']['type'][$key];
-            
-            // Validate file type
-            $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                             'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                             'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-            
-            if (!in_array($file_type, $allowed_types)) {
-                throw new Exception('Invalid file type: ' . $file_name);
-            }
-            
-            // Generate unique filename with timestamp and random string
-            $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-            $unique_file_name = uniqid(time() . '_') . '_' . bin2hex(random_bytes(8)) . '.' . $file_ext;
-            
-            // Create relative path for database
-            $db_file_path = 'uploads/activities/' . $unique_file_name;
-            
-            // Create full server path for move_uploaded_file
-            $full_upload_path = $upload_dir . $unique_file_name;
-            
-            // Move file
-            if (!move_uploaded_file($tmp_name, $full_upload_path)) {
-                throw new Exception('Failed to upload file: ' . $file_name);
-            }
-            
-            // Add to processed files
-            $processed_files[] = $tmp_name;
-            
-            // Save file information to database
-            $file_sql = "INSERT INTO activity_files (
-                activity_id,
-                file_name,
-                file_path,
-                file_type,
-                file_size,
-                created_at
-            ) VALUES (?, ?, ?, ?, ?, NOW())";
-            
-            $stmt = $db->prepare($file_sql);
-            if (!$stmt) {
-                // Clean up uploaded file if statement preparation fails
-                if (file_exists($full_upload_path)) {
-                    unlink($full_upload_path);
-                }
-                throw new Exception('Failed to prepare file statement');
-            }
-
-            $stmt->bind_param("isssi", 
-                $activity_id,
-                $file_name,
-                $db_file_path,
-                $file_type,
-                $file_size
-            );
-
-            if (!$stmt->execute()) {
-                // Clean up uploaded file if database insert fails
-                if (file_exists($full_upload_path)) {
-                    unlink($full_upload_path);
-                }
-                throw new Exception('Failed to save file information: ' . $stmt->error);
-            }
-        }
-    }
-
-    $db->commit();
-    
-    // Clear any output buffers
-    while (ob_get_level()) {
-        ob_end_clean();
-    }
-    
-    echo json_encode([
-        'success' => true, 
-        'message' => 'Activity created successfully',
-        'activity_id' => $activity_id
-    ]);
-
-} catch (Exception $e) {
-    $db->rollback();
-    
-    // Clear any output buffers
-    while (ob_get_level()) {
-        ob_end_clean();
-    }
-    
-    echo json_encode([
-        'success' => false, 
-        'message' => $e->getMessage()
-    ]);
-}
-
-exit();
+// Fetch sections for dropdown
+$sections_query = "SELECT ss.id as section_subject_id, s.section_name, sub.subject_name
+    FROM section_subjects ss
+    JOIN sections s ON ss.section_id = s.section_id
+    JOIN subjects sub ON ss.subject_id = sub.id
+    WHERE ss.teacher_id = ? AND ss.status = 'active'";
+$stmt = $db->prepare($sections_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$sections = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Activity - CamerinoHub</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard-shared.css">
+    <link rel="stylesheet" href="css/create-activity.css">
+	<link rel="icon" href="../images/light-logo.png">
+</head>
+<body>
+    <?php include 'includes/navigation.php'; ?>
+    
+    <div class="dashboard-container">
+        <?php include 'includes/sidebar.php'; ?>
+        
+        <div class="main-content">
+            <div class="content-header">
+                <h1>Create Activity</h1>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form action="handlers/save_activity.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="type" value="activity">
+                        
+                        <div class="form-group">
+                            <label>Section & Subject</label>
+                            <select name="section_subject_id" class="form-control" required>
+                                <option value="" disabled selected>Select Section & Subject</option>
+                                <?php foreach ($sections as $section): ?>
+                                    <option value="<?php echo $section['section_subject_id']; ?>">
+                                        <?php echo htmlspecialchars($section['section_name'] . ' - ' . $section['subject_name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Activity Title</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Due Date</label>
+                                    <?php
+                                    // Set default due date to 7 days from now
+                                    $default_due_date = date('Y-m-d\TH:i', strtotime('+7 days'));
+                                    ?>
+                                    <input type="datetime-local" 
+                                           name="due_date" 
+                                           class="form-control" 
+                                           required 
+                                           value="<?php echo $default_due_date; ?>"
+                                           min="<?php echo date('Y-m-d\TH:i'); ?>">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Points</label>
+                                    <input type="number" name="points" class="form-control" required value="100" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Activity Files</label>
+                            <input type="file" name="activity_files[]" class="form-control-file" multiple>
+                            <small class="text-muted">Allowed types: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX (Max size: 10MB per file)</small>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">Create Activity</button>
+                            <a href="manage_activities.php" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+
+                    <?php if (isset($_SESSION['error_message'])): ?>
+                        <div class="alert alert-danger mt-3">
+                            <?php 
+                            echo $_SESSION['error_message'];
+                            unset($_SESSION['error_message']);
+                            ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['success_message'])): ?>
+                        <div class="alert alert-success mt-3">
+                            <?php 
+                            echo $_SESSION['success_message'];
+                            unset($_SESSION['success_message']);
+                            ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

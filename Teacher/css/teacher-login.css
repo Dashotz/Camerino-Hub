@@ -4,6 +4,7 @@ body {
     padding: 0;
     display: flex;
     height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
@@ -41,6 +42,10 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
 }
 
 .sign-in-as {
@@ -52,11 +57,15 @@ body {
     width: 100%;
     max-width: 400px;
     margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
 }
 
 .illustration img {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     height: auto;
+    object-fit: contain;
 }
 
 .student-label {
@@ -231,36 +240,121 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
     .left-section {
-        padding: 1rem; /* Reduce padding for smaller screens */
+        min-height: auto;
+        max-height: 80vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    .right-section {
+        min-height: 20vh;
+        padding: 2rem 1rem;
     }
 
     .sign-in-as {
-        font-size: 2rem; /* Adjust font size for smaller screens */
+        font-size: 2rem;
     }
 
     .student-label {
-        font-size: 1.2rem; /* Adjust font size for smaller screens */
+        font-size: 1.2rem;
     }
 
     .form-container {
-        width: 90%; /* Adjust form width */
+        width: 90%;
+        padding: 1rem;
     }
 
     .form-container h2 {
-        font-size: 1.5rem; /* Adjust heading size */
+        font-size: 1.5rem;
     }
 
-    .google-btn {
-        width: 100%; /* Full width for the button */
+    .decoration {
+        width: 200px;  /* Smaller decorations on mobile */
     }
 
-    .signin-btn {
-        width: 100%; /* Full width for the button */
+    .decoration-1 {
+        top: 1%;
+        right: 1%;
+    }
+
+    .decoration-2 {
+        bottom: 1%;
+        left: 1%;
+    }
+
+    .back-button {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .illustration {
+        width: 100%;
+        max-width: 100%;
+        margin: 1rem 0;
+        padding: 0 1rem;
+    }
+
+    .illustration img {
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
     }
 }
 
+/* Additional mobile optimization */
+@media (max-width: 480px) {
+    .left-section {
+        max-height: 70vh;
+        padding: 1rem;
+    }
 
+    .logo {
+        padding: 15px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .logo-text {
+        font-size: 2rem;
+    }
+
+    .logo-subtext {
+        font-size: 1rem;
+    }
+
+    .decoration {
+        width: 150px;  /* Even smaller decorations on very small screens */
+    }
+
+    .illustration {
+        max-width: 100%;  /* Override previous max-width */
+        padding: 0 1rem;  /* Add some padding on very small screens */
+    }
+}
+
+/* Prevent horizontal scrolling */
+body {
+    overflow-x: hidden;
+}
+
+/* Ensure content is scrollable on mobile */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem 0;
+}
 
 /* Add this CSS for the message box */
 .message-box {

@@ -1,24 +1,15 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+<nav class="navbar navbar-expand navbar-light bg-white fixed-top">
     <div class="container-fluid px-4">
-        <a class="navbar-brand d-flex align-items-center" href="home.php">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="teacher_dashboard.php">
             <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo" height="40">
-            <span class="logo-text ml-2">CamerinoHub</span>
+            <span class="logo-text ml-2 d-none d-md-inline">CamerinoHub</span>
         </a>
-        
-        <!-- Mobile menu button -->
-        <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Search bar -->
-            <form class="form-inline mx-auto d-none d-md-flex position-relative">
-                <input class="form-control search-input" type="search" placeholder="Search...">
-                <i class="fas fa-search search-icon"></i>
-            </form>
 
-            <!-- Right-aligned items -->
-            <ul class="navbar-nav ml-auto align-items-center">
+        <!-- Right-aligned items -->
+        <div class="nav-items-container">
+            <ul class="navbar-nav align-items-center">
                 <!-- Notifications -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link" href="#" role="button" data-toggle="dropdown">
@@ -106,10 +97,7 @@
                             <?php
                         }
                         ?>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-center" href="all_notifications.php">
-                            <small>View All Notifications</small>
-                        </a>
+                        
                     </div>
                 </li>
 
@@ -140,3 +128,26 @@
         </div>
     </div>
 </nav>
+
+<style>
+.search-input {
+    padding-right: 35px;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .search-input {
+        max-width: 200px;
+    }
+}
+</style>

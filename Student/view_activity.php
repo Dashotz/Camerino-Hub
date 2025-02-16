@@ -22,6 +22,8 @@ $activity_query = "
         sas.submission_id,
         sas.submitted_at,
         sas.points as achieved_points,
+        sas.feedback,
+        sas.result_file,
         GROUP_CONCAT(DISTINCT af.file_name) as attachment_names,
         GROUP_CONCAT(DISTINCT af.file_path) as attachment_paths,
         CASE 
@@ -39,7 +41,7 @@ $activity_query = "
     WHERE a.activity_id = ?
     GROUP BY a.activity_id, s.subject_name, s.subject_code, 
              t.firstname, t.lastname, sas.submission_id, 
-             sas.submitted_at, sas.points";
+             sas.submitted_at, sas.points, sas.feedback, sas.result_file";
 
 try {
     $stmt = $db->prepare($activity_query);
@@ -84,7 +86,7 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="css/dashboard-shared.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <style>
         /* Main container styles */
         .activity-container {
@@ -387,6 +389,135 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
         .mr-2 {
             margin-right: 0.5rem;
         }
+
+        /* Enhanced Activity Header */
+        .activity-type-badge {
+            color: #5f6368;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .activity-title {
+            font-size: 2rem;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+
+        /* Status Styles */
+        .status-submitted { 
+            color: #1e8e3e;
+        }
+
+        .status-late { 
+            color: #d93025;
+        }
+
+        .status-assigned { 
+            color: #5f6368;
+        }
+
+        /* Button Styles */
+        .btn-warning {
+            background-color: #ffd600;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-warning:hover {
+            background-color: #ffea00;
+        }
+
+        /* Grade Display */
+        .grade-display {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 16px;
+        }
+
+        .grade-display h6 {
+            color: #202124;
+            font-size: 0.875rem;
+            margin: 0 0 8px 0;
+        }
+
+        .grade-value {
+            color: #1e8e3e;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        /* Add these to your existing styles */
+        .feedback-section {
+            margin-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .feedback-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            color: #3c4043;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .result-file-section {
+            margin-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .file-download-box {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .file-download-box .file-name {
+            flex: 1;
+            margin: 0 10px;
+            color: #3c4043;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-download-box .btn {
+            white-space: nowrap;
+        }
+
+        .grade-display {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .grade-display h6 {
+            color: #202124;
+            font-size: 0.875rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .grade-value {
+            font-size: 1.5rem;
+            color: #137333;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -416,6 +547,7 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
 
                 <!-- Activity Header -->
                 <div class="activity-header">
+                    <span class="activity-type-badge">Activity</span>
                     <div class="activity-title">
                         <?php echo htmlspecialchars($activity['title']); ?>
                     </div>
@@ -425,7 +557,7 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
                             <?php echo htmlspecialchars($activity['teacher_fname'] . ' ' . $activity['teacher_lname']); ?> • 
                             Posted <?php echo date('M j, Y', strtotime($activity['created_at'])); ?>
                         </div>
-                        <div><?php echo $activity['points']; ?> points</div>
+                        <div>100 points</div>
                     </div>
                 </div>
 
@@ -442,10 +574,11 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
                         $names = explode(',', $activity['attachment_names']);
                         $paths = explode(',', $activity['attachment_paths']);
                         for ($i = 0; $i < count($names); $i++):
+                            $filePath = '../' . trim($paths[$i]);
                         ?>
                         <div class="attachment-item">
                             <i class="fas fa-file-alt mr-2"></i>
-                            <a href="<?php echo htmlspecialchars($paths[$i]); ?>" target="_blank">
+                            <a href="download_attachment.php?file=<?php echo urlencode($filePath); ?>&name=<?php echo urlencode($names[$i]); ?>" class="attachment-link">
                                 <?php echo htmlspecialchars($names[$i]); ?>
                             </a>
                         </div>
@@ -483,18 +616,57 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
                                     <i class="fas fa-calendar-check text-muted mr-2"></i>
                                     Submitted <?php echo date('M j, Y g:i A', strtotime($activity['submitted_at'])); ?>
                                 </p>
+                                
                                 <?php if (isset($activity['achieved_points'])): ?>
                                     <div class="grade-display">
                                         <h6>Grade</h6>
                                         <div class="grade-value">
-                                            <?php echo $activity['achieved_points']; ?>/<?php echo $activity['points']; ?>
+                                            <?php echo $activity['achieved_points']; ?>/100
                                         </div>
+                                        
+                                        <!-- Add Teacher's Feedback Section -->
+                                        <?php if (!empty($activity['feedback'])): ?>
+                                        <div class="feedback-section mt-3">
+                                            <h6>Teacher's Feedback</h6>
+                                            <div class="feedback-content p-3 bg-white rounded border">
+                                                <?php echo nl2br(htmlspecialchars($activity['feedback'])); ?>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
+
+                                        <!-- Update the Result File Section -->
+                                        <?php if (!empty($activity['result_file'])): ?>
+                                        <div class="result-file-section mt-3">
+                                            <h6>Result File</h6>
+                                            <div class="file-download-box p-3 bg-white rounded border">
+                                                <i class="fas fa-file-alt text-primary mr-2"></i>
+                                                <span class="file-name"><?php echo basename($activity['result_file']); ?></span>
+                                                <a href="download_result.php?file=<?php echo urlencode($activity['result_file']); ?>" 
+                                                   class="btn btn-sm btn-primary ml-2"
+                                                   download>
+                                                    <i class="fas fa-download"></i> Download Result
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
+                                <?php else: ?>
+                                    <?php 
+                                    // Check if activity is still within due date
+                                    $canUnsubmit = !isset($activity['achieved_points']) && 
+                                                   strtotime($activity['due_date']) > time();
+                                    if ($canUnsubmit): 
+                                    ?>
+                                        <button type="button" class="btn btn-warning mt-3" 
+                                                onclick="unsubmitActivity(<?php echo $activity_id; ?>)">
+                                            <i class="fas fa-undo mr-2"></i>Unsubmit
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
                     <?php else: ?>
-                        <form action="handlers/submit_activity.php" method="POST" enctype="multipart/form-data" id="submissionForm" onsubmit="return validateForm()">
+                        <form id="activitySubmissionForm" enctype="multipart/form-data">
                             <input type="hidden" name="activity_id" value="<?php echo $activity_id; ?>">
                             <div class="file-upload-area" onclick="document.getElementById('fileInput').click();" id="uploadArea">
                                 <i class="fas fa-cloud-upload-alt fa-2x"></i>
@@ -525,6 +697,7 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
         function validateForm() {
@@ -607,6 +780,95 @@ $message = isset($_GET['message']) ? urldecode($_GET['message']) : '';
             const fileInput = document.getElementById('fileInput');
             fileInput.files = e.dataTransfer.files;
             fileInput.dispatchEvent(new Event('change'));
+        });
+
+        $(document).ready(function() {
+            // Form submission
+            $('#activitySubmissionForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const submitBtn = $(this).find('button[type="submit"]');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...');
+
+                let formData = new FormData(this);
+                
+                $.ajax({
+                    url: 'handlers/submit_activity.php',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        try {
+                            const result = typeof response === 'string' ? JSON.parse(response) : response;
+                            if (result.success) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Activity submitted successfully',
+                                    icon: 'success'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                throw new Error(result.message || 'Failed to submit activity');
+                            }
+                        } catch (error) {
+                            console.error('Submission error:', error);
+                            Swal.fire('Error!', error.message, 'error');
+                            submitBtn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-2"></i>Turn in');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', {xhr, status, error});
+                        Swal.fire('Error!', 'Network error occurred while submitting', 'error');
+                        submitBtn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-2"></i>Turn in');
+                    }
+                });
+            });
+
+            // Add unsubmit functionality if needed
+            window.unsubmitActivity = function(activityId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You will be able to submit a new file for this activity",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, unsubmit'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'handlers/unsubmit_activity.php',
+                            type: 'POST',
+                            data: { activity_id: activityId },
+                            success: function(response) {
+                                try {
+                                    const result = typeof response === 'string' ? JSON.parse(response) : response;
+                                    if (result.success) {
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: 'Activity has been unsubmitted. You can now submit a new file.',
+                                            icon: 'success'
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        throw new Error(result.message || 'Failed to unsubmit activity');
+                                    }
+                                } catch (error) {
+                                    console.error('Unsubmit error:', error);
+                                    Swal.fire('Error!', error.message, 'error');
+                                }
+                            },
+                            error: function() {
+                                Swal.fire('Error!', 'Failed to unsubmit activity', 'error');
+                            }
+                        });
+                    }
+                });
+            };
         });
     </script>
 </body>

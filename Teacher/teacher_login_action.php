@@ -8,53 +8,57 @@ if (isset($_POST['login'])) {
     $username = $db->escapeString($_POST['username']);
     $password = md5($db->escapeString($_POST['password']));
     
-    // First check if username exists in student table
-    $student_check = "SELECT * FROM student WHERE LOWER(username) = LOWER('$username')";
-    $student_result = $db->query($student_check);
+    // First check if username exists in student table (using LRN)
+    $student_check = "SELECT * FROM student WHERE lrn = ?";
+    $stmt = $db->prepare($student_check);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $student_result = $stmt->get_result();
     
-    if ($student_result && mysqli_num_rows($student_result) > 0) {
-        ?>
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Wrong Login Portal</title>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        </head>
-        <body>
-            <script>
-                Swal.fire({
-                    title: 'Wrong Login Portal',
-                    text: 'This account belongs to a student. Please use the student login page.',
-                    icon: 'error',
-                    confirmButtonText: 'Go to Student Login',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    window.location.href = '../Student/Student-Login.php';
-                });
-            </script>
-        </body>
-        </html>
-        <?php
+    if ($student_result && $student_result->num_rows > 0) {
+        $_SESSION['error_type'] = 'student_account';
+        header("Location: Teacher-Login.php");
         exit();
     }
     
-    // Check teacher credentials
-    $query = "SELECT * FROM teacher WHERE LOWER(username) = LOWER('$username')";
-    $result = $db->query($query);
+    // Check teacher credentials - modified query
+    $query = "SELECT * FROM teacher WHERE username = ?";
+    $stmt = $db->prepare($query);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
-    if ($result && mysqli_num_rows($result) > 0) {
-        $user = mysqli_fetch_assoc($result);
+    if ($result && $result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        
+        // Check if account is archived
+        if ($user['status'] === 'archived') {
+            $_SESSION['error_type'] = 'archived_account';
+            $_SESSION['error_message'] = 'Your account has been archived. Please contact the administrator.';
+            header("Location: Teacher-Login.php");
+            exit();
+        }
+        
+        // Check if account is inactive
+        if ($user['status'] !== 'active') {
+            $_SESSION['error_type'] = 'inactive_account';
+            $_SESSION['error_message'] = 'Your account is currently inactive. Please contact the administrator.';
+            header("Location: Teacher-Login.php");
+            exit();
+        }
         
         // Check if account is locked
         if ($user['login_attempts'] >= 3 && $user['lockout_time'] > date('Y-m-d H:i:s')) {
-            header("Location: Teacher-Login.php");
             $_SESSION['error_type'] = 'max_attempts';
+            header("Location: Teacher-Login.php");
             exit();
         } else if ($user['lockout_time'] !== null && $user['lockout_time'] <= date('Y-m-d H:i:s')) {
             // Reset lockout if time has passed
             $reset_query = "UPDATE teacher SET login_attempts = 0, lockout_time = NULL 
-                          WHERE teacher_id = '{$user['teacher_id']}'";
-            $db->query($reset_query);
+                          WHERE teacher_id = ?";
+            $stmt = $db->prepare($reset_query);
+            $stmt->bind_param("i", $user['teacher_id']);
+            $stmt->execute();
             $user['login_attempts'] = 0;
         }
         
@@ -63,15 +67,19 @@ if (isset($_POST['login'])) {
             // Log successful login
             $ip = $_SERVER['REMOTE_ADDR'];
             $log_query = "INSERT INTO teacher_login_logs (teacher_id, ip_address, status) 
-                         VALUES ('{$user['teacher_id']}', '$ip', 'success')";
-            $db->query($log_query);
+                         VALUES (?, ?, 'success')";
+            $stmt = $db->prepare($log_query);
+            $stmt->bind_param("is", $user['teacher_id'], $ip);
+            $stmt->execute();
             
             // Reset attempts
             $reset_query = "UPDATE teacher SET login_attempts = 0, lockout_time = NULL 
-                          WHERE teacher_id = '{$user['teacher_id']}'";
-            $db->query($reset_query);
+                          WHERE teacher_id = ?";
+            $stmt = $db->prepare($reset_query);
+            $stmt->bind_param("i", $user['teacher_id']);
+            $stmt->execute();
             
-            // Set session variables based on actual table structure
+            // Set session variables
             $_SESSION['teacher_id'] = $user['teacher_id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['firstname'] = $user['firstname'];
@@ -81,6 +89,23 @@ if (isset($_POST['login'])) {
             $_SESSION['just_logged_in'] = true;
             $_SESSION['last_activity'] = time();
             
+            // Check if this is a temporary password login
+            $check_temp_pwd = "SELECT password_recovery FROM teacher 
+                             WHERE teacher_id = ? 
+                             AND password_recovery = 'yes'";
+            $stmt = $db->prepare($check_temp_pwd);
+            $stmt->bind_param("i", $user['teacher_id']);
+            $stmt->execute();
+            $temp_pwd_result = $stmt->get_result();
+            
+            if ($temp_pwd_result && $temp_pwd_result->num_rows > 0) {
+                // Redirect to profile settings with password change requirement
+                $_SESSION['require_password_change'] = true;
+                header("Location: teacher_profile.php?tab=settings");
+                exit();
+            }
+            
+            // Normal login redirect
             header("Location: teacher_dashboard.php");
             exit();
         }
@@ -89,27 +114,24 @@ if (isset($_POST['login'])) {
         $attempts = $user['login_attempts'] + 1;
         $lockout_time = ($attempts >= 3) ? date('Y-m-d H:i:s', strtotime('+2 minutes')) : null;
         
-        $update_query = "UPDATE teacher SET login_attempts = $attempts, 
-                        lockout_time = " . ($lockout_time ? "'$lockout_time'" : "NULL") . " 
-                        WHERE teacher_id = '{$user['teacher_id']}'";
-        $db->query($update_query);
+        $update_query = "UPDATE teacher SET login_attempts = ?, 
+                        lockout_time = ? 
+                        WHERE teacher_id = ?";
+        $stmt = $db->prepare($update_query);
+        $stmt->bind_param("isi", $attempts, $lockout_time, $user['teacher_id']);
+        $stmt->execute();
         
-        if ($attempts >= 3) {
-            header("Location: Teacher-Login.php");
-            $_SESSION['error_type'] = 'max_attempts';
-        } else {
-            header("Location: Teacher-Login.php");
-            $_SESSION['error_type'] = 'wrong_password';
-        }
+        $_SESSION['error_type'] = ($attempts >= 3) ? 'max_attempts' : 'wrong_password';
+        header("Location: Teacher-Login.php");
         exit();
     }
     
-    header("Location: Teacher-Login.php");
     $_SESSION['error_type'] = 'wrong_username';
+    header("Location: Teacher-Login.php");
     exit();
 }
 
+$_SESSION['error_type'] = 'invalid_request';
 header("Location: Teacher-Login.php");
-$_SESSION['error_type'] = 'wrong_username';
 exit();
 ?>

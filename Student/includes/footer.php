@@ -39,57 +39,54 @@
                     </div>
                 </div>
 
-                <!-- Quick Links -->
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="mb-3">Quick Links</h5>
-                    <ul class="list-unstyled footer-links">
-                        <li><a href="home.php">Home</a></li>
-                        <li><a href="aboutus.php">About Us</a></li>
-                        <li><a href="News.php">News & Updates</a></li>
-                        <li><a href="site-map.php">Site Map</a></li>
-                        <li><a href="contactus.php">Contact Us</a></li>
-                    </ul>
-                </div>
+                <!-- Links Grid Section -->
+                <div class="col-lg-8">
+                    <div class="footer-links-grid">
+                        <!-- Quick Links -->
+                        <div class="links-section">
+                            <h5 class="mb-3">Quick Links</h5>
+                            <ul class="list-unstyled footer-links">
+                                <li><a href="home.php">Home</a></li>
+                                <li><a href="aboutus.php">About Us</a></li>
+                                <li><a href="News.php">News & Updates</a></li>
+                                <li><a href="site-map.php">Site Map</a></li>
+                                <li><a href="contactus.php">Contact Us</a></li>
+                            </ul>
+                        </div>
 
-                <!-- Student Portal -->
-                <div class="col-lg-2 col-md-4 mb-4">
-                    <h5 class="mb-3">Student Portal</h5>
-                    <ul class="list-unstyled footer-links">
-                        <li><a href="student_dashboard.php">Dashboard</a></li>
-                        <li><a href="student_courses.php">My Classes</a></li>
-                        <li><a href="student_profile.php">Profile</a></li>
-                        <li><a href="student_grades.php">Grades</a></li>
-                        <li><a href="student_calendar.php">Calendar</a></li>
-                    </ul>
-                </div>
+                        <!-- Student Portal -->
+                        <div class="links-section">
+                            <h5 class="mb-3">Student Portal</h5>
+                            <ul class="list-unstyled footer-links">
+                                <li><a href="student_dashboard.php">Dashboard</a></li>
+                                <li><a href="student_section.php">My Section</a></li>
+                                <li><a href="student_profile.php">Profile</a></li>
+                                <li><a href="student_grades.php">Grades</a></li>
+                                <li><a href="student_calendar.php">Calendar</a></li>
+                            </ul>
+                        </div>
 
-                <!-- Government Links -->
-                <div class="col-lg-4 col-md-4 mb-4">
-                    <h5 class="mb-3">Government Links</h5>
-                    <ul class="list-unstyled footer-links">
-                        <li><a href="https://lis.deped.gov.ph/" target="_blank">
-                            <i class="fas fa-external-link-alt mr-2"></i>Learner Information System
-                        </a></li>
-                        <li><a href="https://calabarzon.deped.gov.ph/" target="_blank">
-                            <i class="fas fa-external-link-alt mr-2"></i>DepEd CALABARZON
-                        </a></li>
-                        <li><a href="https://www.deped.gov.ph/" target="_blank">
-                            <i class="fas fa-external-link-alt mr-2"></i>Department of Education
-                        </a></li>
-                    </ul>
-                    <div class="social-links mt-3">
-                        <a href="#" class="social-link bg-white">
-                            <i class="fab fa-facebook-f text-primary"></i>
-                        </a>
-                        <a href="#" class="social-link bg-white">
-                            <i class="fab fa-twitter text-primary"></i>
-                        </a>
-                        <a href="#" class="social-link bg-white">
-                            <i class="fab fa-youtube text-primary"></i>
-                        </a>
-                        <a href="#" class="social-link bg-white">
-                            <i class="fab fa-instagram text-primary"></i>
-                        </a>
+                        <!-- Government Links -->
+                        <div class="links-section">
+                            <h5 class="mb-3">Government Links</h5>
+                            <ul class="list-unstyled footer-links">
+                                <li><a href="https://lis.deped.gov.ph/" target="_blank">
+                                    <i class="fas fa-external-link-alt mr-2"></i>Learner Information System
+                                </a></li>
+                                <li><a href="https://calabarzon.deped.gov.ph/" target="_blank">
+                                    <i class="fas fa-external-link-alt mr-2"></i>DepEd CALABARZON
+                                </a></li>
+                                <li><a href="https://www.deped.gov.ph/" target="_blank">
+                                    <i class="fas fa-external-link-alt mr-2"></i>Department of Education
+                                </a></li>
+                            </ul>
+                            <h5 class="mb-3 mt-4">Connect With Us</h5>
+                            <div class="social-links-grid">
+                                <a href="https://www.facebook.com/DepEdTayoGDMCIS107985" class="social-link" aria-label="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>                                
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,7 +202,31 @@
 
 @media (max-width: 768px) {
     .newsletter-form {
+        flex-direction: column;
+        gap: 10px;
         margin-top: 15px;
+    }
+    
+    .newsletter-form .btn {
+        width: 100%;
+    }
+    
+    .newsletter-section .text-white,
+    .newsletter-section .text-white-50 {
+        text-align: center;
+    }
+    
+    .footer-brand {
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .contact-info {
+        text-align: center;
+    }
+    
+    .social-links {
+        justify-content: center;
     }
     
     .bottom-footer {
@@ -216,11 +237,180 @@
         text-align: center !important;
         margin-top: 10px;
     }
+    
+    .list-inline {
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-footer h5 {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .footer-links {
+        text-align: center;
+    }
+    
+    .contact-info p {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .newsletter-section h4 {
+        font-size: 1.25rem;
+    }
+    
+    .newsletter-section p {
+        font-size: 0.9rem;
+    }
 }
 
 /* Make sure icons are visible */
 .fab {
     font-size: 16px;
     line-height: 1;
+}
+
+.footer-links-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+.links-section {
+    min-width: 0;
+}
+
+.links-section h5 {
+    color: white;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.links-section ul {
+    padding: 0;
+}
+
+.links-section ul li {
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+/* Prevent text overflow */
+.footer-links a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 991px) {
+    .footer-links-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .links-section h5 {
+        font-size: 1rem;
+    }
+    
+    .footer-links a {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-links-grid {
+        grid-template-columns: 1fr 1fr 1fr; /* Keep 3 columns but allow content to wrap */
+        gap: 10px;
+    }
+    
+    .links-section {
+        padding: 0 3px;
+    }
+    
+    .footer-links a {
+        font-size: 0.75rem;
+        white-space: normal; /* Allow text to wrap */
+        overflow: visible; /* Show all content */
+        line-height: 1.2; /* Add some line height for better readability */
+        margin-bottom: 8px; /* Add space between wrapped items */
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-links-grid {
+        grid-template-columns: repeat(3, 1fr); /* Keep 3 columns */
+        gap: 8px;
+    }
+    
+    .links-section h5 {
+        font-size: 0.8rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .footer-links a {
+        font-size: 0.7rem;
+        white-space: normal;
+        overflow: visible;
+    }
+    
+    .fa-external-link-alt {
+        font-size: 0.7rem;
+    }
+}
+
+/* Social links grid styles */
+.social-links-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 40px);
+    gap: 15px;
+    justify-content: start;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .social-links-grid {
+        grid-template-columns: repeat(4, 30px);
+        gap: 10px;
+    }
+}
+
+/* Additional fixes for very small screens */
+@media (max-width: 360px) {
+    .footer-links-grid {
+        gap: 5px;
+    }
+    
+    .links-section {
+        padding: 0 2px;
+    }
+    
+    .footer-links a {
+        font-size: 0.65rem;
+    }
+    
+    .links-section h5 {
+        font-size: 0.75rem;
+    }
+}
+
+/* Ensure icons are visible */
+.fab {
+    font-size: 16px;
+    line-height: 1;
+}
+
+@media (max-width: 576px) {
+    .fab {
+        font-size: 14px;
+    }
 }
 </style>

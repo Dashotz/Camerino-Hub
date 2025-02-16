@@ -1,0 +1,164 @@
+/* Form Container */
+.card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Label Styling */
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+/* Select Dropdown Styling */
+select.form-control {
+    height: calc(2.5rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23343a40' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.763L10.825 4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    padding-right: 2rem;
+}
+
+/* Select Focus State */
+select.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Select Option Styling */
+select.form-control option {
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Input Fields Styling */
+.form-control {
+    height: calc(2.5rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Textarea Specific Styling */
+textarea.form-control {
+    height: auto;
+    min-height: 100px;
+}
+
+/* File Input Styling */
+.form-control-file {
+    padding: 10px 0;
+    border: 1px dashed #ced4da;
+    border-radius: 0.25rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    cursor: pointer;
+    width: 100%;
+}
+
+.form-control-file:hover {
+    background-color: #e9ecef;
+}
+
+/* Helper Text */
+.text-muted {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Form Row Spacing */
+.form-row {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+.form-row > .col {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+/* Button Group Styling */
+.form-group.mt-4 {
+    margin-top: 2rem !important;
+}
+
+.btn {
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.btn-secondary {
+    margin-left: 0.5rem;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Loading State */
+.loading-state {
+    display: none;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card {
+        margin: 0 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .form-row > .col {
+        margin-bottom: 1rem;
+    }
+}

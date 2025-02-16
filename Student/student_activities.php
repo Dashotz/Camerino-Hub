@@ -22,7 +22,7 @@ $student_id = $_SESSION['id'];
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="css/dashboard-shared.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS for Google Classroom style -->
     <style>
         .activities-container {
@@ -119,6 +119,12 @@ $student_id = $_SESSION['id'];
             color: #c5221f;
         }
 
+        .status-graded {
+            background: #e6f4ea;
+            color: #137333;
+            border: 1px solid #137333;
+        }
+
         .btn-submit {
             background: #1967d2;
             color: white;
@@ -131,6 +137,18 @@ $student_id = $_SESSION['id'];
 
         .btn-submit:hover {
             background: #1557b0;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #137333;
+            border-color: #137333;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #0f6429;
+            border-color: #0f6429;
             color: white;
         }
 
@@ -159,7 +177,88 @@ $student_id = $_SESSION['id'];
             padding: 48px 0;
             color: #5f6368;
         }
+
+        .attachments {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+
+        .attachment-item {
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .attachment-item:hover {
+            background: #e8f0fe;
+        }
+
+        .attachment-link {
+            color: #1967d2;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .attachment-link:hover {
+            text-decoration: underline;
+            color: #1557b0;
+        }
+
+        .attachment-item i {
+            color: #5f6368;
+        }
+
+        /* Search Bar Styles */
+.search-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Header Layout */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
     </style>
+    
+    <!-- Add SweetAlert2 CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
@@ -171,50 +270,35 @@ $student_id = $_SESSION['id'];
             <div class="activities-container">
                 <h1 class="mb-4">Activities</h1>
                 
-                <!-- Subject Filter -->
-                <div class="subject-filter">
-                    <div class="filter-chip active">All</div>
-                    <?php
-                    // Get student's subjects
-                    $subjects_query = "
-                        SELECT DISTINCT s.subject_name, s.id
-                        FROM subjects s
-                        JOIN section_subjects ss ON s.id = ss.subject_id
-                        JOIN student_sections sts ON ss.section_id = sts.section_id
-                        WHERE sts.student_id = ? AND ss.status = 'active'
-                    ";
-                    $stmt = $db->prepare($subjects_query);
-                    $stmt->bind_param("i", $student_id);
-                    $stmt->execute();
-                    $subjects = $stmt->get_result();
-                    
-                    while($subject = $subjects->fetch_assoc()) {
-                        echo "<div class='filter-chip' data-subject-id='{$subject['id']}'>{$subject['subject_name']}</div>";
-                    }
-                    ?>
-                </div>
-
                 <!-- Activities List -->
                 <div class="activities-list">
                     <?php
                     $activities_query = "
-                        SELECT a.*, s.subject_name, ss.section_id,
-                               sas.submission_id, sas.submitted_at,
-                               CASE 
-                                   WHEN sas.submission_id IS NOT NULL THEN 'submitted'
-                                   WHEN NOW() > a.due_date THEN 'late'
-                                   ELSE 'assigned'
-                               END as status
+                        SELECT 
+                            a.*,
+                            s.subject_name,
+                            ss.section_id,
+                            sas.submission_id,
+                            sas.submitted_at,
+                            sas.points,
+                            sas.status as submission_status,
+                            sas.late_submission,
+                            GROUP_CONCAT(af.file_name) as attachment_names,
+                            GROUP_CONCAT(af.file_path) as attachment_paths
                         FROM activities a
                         JOIN section_subjects ss ON a.section_subject_id = ss.id
                         JOIN subjects s ON ss.subject_id = s.id
                         JOIN student_sections sts ON ss.section_id = sts.section_id
+                        LEFT JOIN activity_files af ON a.activity_id = af.activity_id
                         LEFT JOIN student_activity_submissions sas 
                             ON sas.activity_id = a.activity_id 
                             AND sas.student_id = ?
                         WHERE sts.student_id = ? 
                         AND a.status = 'active'
                         AND a.type = 'activity'
+                        GROUP BY a.activity_id, s.subject_name, ss.section_id,
+                                 sas.submission_id, sas.submitted_at, sas.points,
+                                 sas.status, sas.late_submission
                         ORDER BY a.due_date DESC";
                     
                     $stmt = $db->prepare($activities_query);
@@ -256,17 +340,72 @@ $student_id = $_SESSION['id'];
                                 
                                 <div class="activity-content">
                                     <?php echo nl2br(htmlspecialchars($activity['description'])); ?>
+                                    
+                                    <?php if (!empty($activity['attachment_names'])): ?>
+                                        <div class="attachments mt-3">
+                                            <h6 class="mb-2">Attachments</h6>
+                                            <?php
+                                            $names = explode(',', $activity['attachment_names']);
+                                            $paths = explode(',', $activity['attachment_paths']);
+                                            for ($i = 0; $i < count($names); $i++):
+                                            ?>
+                                            <div class="attachment-item">
+                                                <i class="fas fa-file-alt mr-2"></i>
+                                                <a href="download_activity.php?file=<?php echo urlencode($paths[$i]); ?>&name=<?php echo urlencode($names[$i]); ?>" 
+                                                   class="attachment-link">
+                                                    <?php echo htmlspecialchars($names[$i]); ?>
+                                                </a>
+                                            </div>
+                                            <?php endfor; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                                 
                                 <div class="activity-actions">
+                                    <?php 
+                                    // Determine status badge class and text
+                                    if (isset($activity['points'])) {
+                                        $status_class = 'status-graded';
+                                        $status_text = 'Graded: ' . $activity['points'] . ' points';
+                                    } elseif ($activity['submission_status'] === 'submitted') {
+                                        $status_class = 'status-submitted';
+                                        $status_text = 'Submitted';
+                                    } elseif (strtotime($activity['due_date']) < time()) {
+                                        $status_class = 'status-late';
+                                        $status_text = 'Missing';
+                                    } else {
+                                        $status_class = 'status-assigned';
+                                        $status_text = 'Assigned';
+                                    }
+                                    ?>
                                     <span class="status-badge <?php echo $status_class; ?>">
                                         <?php echo $status_text; ?>
                                     </span>
-                                    <?php if($activity['status'] !== 'submitted'): ?>
-                                        <a href="view_activity.php?id=<?php echo $activity['activity_id']; ?>" 
-                                           class="btn btn-submit">
-                                            View Activity
-                                        </a>
+                                    
+                                    <?php if($activity['submission_status'] === 'submitted' || $activity['submission_status'] === 'graded' || isset($activity['points'])): ?>
+                                        <div class="btn-group">
+                                            <a href="view_activity.php?id=<?php echo $activity['activity_id']; ?>" 
+                                               class="btn <?php echo isset($activity['points']) ? 'btn-success' : 'btn-info'; ?> mr-2">
+                                                View Submission
+                                            </a>
+                                            <?php if (!isset($activity['points']) && 
+                                                     strtotime($activity['due_date']) > time() && 
+                                                     !$activity['late_submission'] && 
+                                                     $activity['submission_status'] !== 'graded'): ?>
+                                                <button type="button" 
+                                                        class="btn btn-warning"
+                                                        onclick="unsubmitActivity(<?php echo $activity['activity_id']; ?>)">
+                                                    Unsubmit
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <?php if(!isset($activity['points'])): ?>
+                                            <a href="view_activity.php?id=<?php echo $activity['activity_id']; ?>" 
+                                               class="btn btn-submit">
+                                                <?php echo strtotime($activity['due_date']) < time() ? 'Submit Late' : 'Submit'; ?>
+                                            </a>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -315,6 +454,67 @@ $student_id = $_SESSION['id'];
                 });
             }
         });
+    </script>
+    <script>
+    function unsubmitActivity(activityId) {
+        console.log('Unsubmit clicked for activity:', activityId); // Debug log
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be able to submit a new file for this activity",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unsubmit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log('Confirmation accepted'); // Debug log
+                
+                // Show loading state
+                Swal.fire({
+                    title: 'Processing...',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                });
+
+                // Send unsubmit request
+                $.ajax({
+                    url: 'handlers/unsubmit_activity.php',
+                    type: 'POST',
+                    data: { activity_id: activityId },
+                    success: function(response) {
+                        console.log('Response received:', response); // Debug log
+                        try {
+                            const result = typeof response === 'string' ? JSON.parse(response) : response;
+                            
+                            if (result.success) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Activity has been unsubmitted. You can now submit a new file.',
+                                    icon: 'success'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                throw new Error(result.message || 'Failed to unsubmit activity');
+                            }
+                        } catch (error) {
+                            console.error('Unsubmit error:', error);
+                            Swal.fire('Error!', error.message, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Ajax error:', {xhr, status, error});
+                        Swal.fire('Error!', 'Failed to unsubmit activity', 'error');
+                    }
+                });
+            }
+        });
+    }
     </script>
 </body>
 </html>

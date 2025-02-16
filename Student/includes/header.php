@@ -33,7 +33,7 @@ if (!isset($currentPage)) {
 <!-- Header and Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container">
-        <a class="navbar-brand" href="home.php">
+        <a class="navbar-brand" href="student_dashboard.php">
             <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo">
             <span class="logo-text">Gov D.M. Camerino</span>
         </a>

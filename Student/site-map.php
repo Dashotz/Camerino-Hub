@@ -29,12 +29,13 @@ if ($isLoggedIn) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="css/site-map.css">
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
     <!-- Header and Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="home.php">
             <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo">
             <span class="logo-text">Gov D.M. Camerino</span>
             </a>
@@ -63,7 +64,7 @@ if ($isLoggedIn) {
                             </div>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link btn-signup" href="Student-Login.php">Log In</a></li>
+                        <li class="nav-item"><a class="nav-link btn-signup" href="../login.php">Log In</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -81,7 +82,7 @@ if ($isLoggedIn) {
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
                         <?php else: ?>
-                            <a href="Student-Login.php" class="btn btn-primary">Login Now</a>
+                            <a href="../login.php" class="btn btn-primary">Login Now</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -90,38 +91,35 @@ if ($isLoggedIn) {
                 </div>
             </div>
             
-            <?php if ($isLoggedIn): ?>
-                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
-                    <form action="search_results.php" method="GET" class="search-form">
-                        <input type="text" name="query" id="searchInput" placeholder="Search something..." required>
-                    </form>
-                </div>
-            <?php else: ?>
-                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
-                    <input type="text" id="searchInput" placeholder="Please login to access search features" disabled>
-                </div>
-            <?php endif; ?>
+            <div class="search-container">
+                <form action="search_results.php" method="GET" class="search-form">
+                    <input type="text" 
+                           <?php if (!$isLoggedIn): ?>disabled<?php endif; ?>
+                           placeholder="<?php echo $isLoggedIn ? 'Search something...' : 'Please login to access search features'; ?>"
+                           name="query">
+                </form>
+            </div>
             
             <div class="quick-links">
                 <p>You may be looking for</p>
                 <div class="links">
-                <a href="home.php" class="link-item">
+                    <a href="home.php" class="link-item home">
                         <i class="fas fa-home"></i>
                         <span>Home</span>
                     </a>
-                    <a href="site-map.php" class="link-item active">
+                    <a href="site-map.php" class="link-item">
                         <i class="fas fa-map"></i>
                         <span>Site Map</span>
                     </a>
-                    <a href="news.php" class="link-item">
-                        <i class="fas fa-newspaper"></i>
+                    <a href="News.php" class="link-item">
+                        <i class="fas fa-bell"></i>
                         <span>Updates</span>
                     </a>
                     <a href="aboutus.php" class="link-item">
                         <i class="fas fa-info-circle"></i>
                         <span>About Us</span>
                     </a>
-                    <a href="contactus.php" class="link-item">
+                    <a href="contactus.php" class="link-item contact">
                         <i class="fas fa-envelope"></i>
                         <span>Contact Us</span>
                     </a>
@@ -148,28 +146,27 @@ if ($isLoggedIn) {
                 
                 <div class="map-info">
                     <div class="info-card">
-                        <div class="icon">
-                            <i class="fas fa-map-marker-alt"></i>
+                        <div class="content-wrapper">
+                            <h3>Our Address</h3>
+                            <p>Medicion 2, A.Imus City, Cavite 4103</p>
                         </div>
-                        <h3>Our Address</h3>
-                        <p>Medicion 2, A.Imus City, Cavite 4103</p>
+                    </div>
+
+                    <div class="info-card contact-numbers">
+                        <div class="content-wrapper">
+                            <h3>Contact Numbers</h3>
+                            <p>
+                                +(64) 456 - 5874
+                                +(64) 456 - 5875
+                            </p>
+                        </div>
                     </div>
 
                     <div class="info-card">
-                        <div class="icon">
-                            <i class="fas fa-phone-alt"></i>
+                        <div class="content-wrapper">
+                            <h3>Email Address</h3>
+                            <p>profcamerino@yahoo.com</p>
                         </div>
-                        <h3>Contact Numbers</h3>
-                        <p>+(64) 456 - 5874</p>
-                        <p>+(64) 456 - 5875</p>
-                    </div>
-
-                    <div class="info-card">
-                        <div class="icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <h3>Email Address</h3>
-                        <p>profcamerino@yahoo.com</p>
                     </div>
                 </div>
             </div>
@@ -314,17 +311,17 @@ if ($isLoggedIn) {
     <section class="comment-suggestion section-gap">
         <div class="container">
             <div class="logo-bar">
-                <img src="images/Logo.png" alt="DepEd Logo">
-                <img src="images/Logo.png" alt="Bagong Pilipinas Logo">
-                <img src="images/Logo.png" alt="Seal 1">
-                <img src="images/Logo.png" alt="Seal 2">
-                <img src="images/Logo.png" alt="Seal 3">
+                <img src="../images/deped.png" alt="DepEd Logo">
+                <img src="../images/bagongpilipinas.png" alt="Bagong Pilipinas Logo">
+                <img src="../images/light-logo.png" alt="Seal 1">
+                <img src="../images/imus-logo.png" alt="Seal 2">
+                <img src="../images/cavite-logo.png" alt="Seal 3">
             </div>
             <h2>Leave a <span class="text-primary">Comment</span> and <span class="text-primary">Suggestion</span></h2>
             <div class="row">
                 <div class="col-md-6">
                     <div class="image-container">
-                        <img src="images/students.jpg" alt="Students" class="img-fluid">
+                        <img src="../images/studentbg.png" alt="Students" class="img-fluid">
                         <div class="overlay">
                             <span class="emoji">😊</span>
                             <span class="text">84k+</span>
@@ -363,45 +360,8 @@ if ($isLoggedIn) {
     </section>
 
     <!-- Footer -->
-    <footer class="bg-primary text-light py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5 class="mb-3">Gov D.M. Camerino</h5>
-                    <p>Medicion 2, A.Imus City, Cavite 4103</p>
-                    <p>+(64) 456 - 5874</p>
-                    <p>profcamerino@yahoo.com</p>
-                    <div class="social-icons">
-                        <a href="#" class="text-light"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">Quicklinks</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Home</a></li>
-                        <li><a href="#" class="text-light">About Us</a></li>
-                        <li><a href="#" class="text-light">Our Gallery</a></li>
-                        <li><a href="#" class="text-light">News and Updates</a></li>
-                        <li><a href="#" class="text-light">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">Government Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Learner Information System</a></li>
-                        <li><a href="#" class="text-light">DepEd CALABARZON</a></li>
-                        <li><a href="#" class="text-light">DepEd Imus City</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-4">
-            <p>&copy; 2024 All Rights Reserved</p>
-        </div>
-    </footer>
+	<?php require_once('includes/footer.php'); ?>
+   
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

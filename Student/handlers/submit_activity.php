@@ -2,36 +2,71 @@
 session_start();
 require_once('../../db/dbConnector.php');
 
-// Check if user is logged in
+header('Content-Type: application/json');
+
 if (!isset($_SESSION['id'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit();
 }
 
-$db = new DbConnector();
-$student_id = $_SESSION['id'];
-$activity_id = $_POST['activity_id'] ?? 0;
-
 try {
+    $db = new DbConnector();
+    $student_id = $_SESSION['id'];
+    $activity_id = $_POST['activity_id'] ?? null;
+
     // Validate submission
     if (!isset($_FILES['submission_file'])) {
         throw new Exception('No file uploaded');
     }
 
-    // File details
     $file = $_FILES['submission_file'];
-    $fileName = $file['name'];
-    $fileTmpName = $file['tmp_name'];
-    $fileSize = $file['size'];
-    $fileError = $file['error'];
-    $fileType = $file['type'];
+    
+    // Validate file size (10MB max)
+    if ($file['size'] > 10 * 1024 * 1024) {
+        throw new Exception('File size exceeds 10MB limit');
+    }
+
+    // Validate file type
+    $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'];
+    if (!in_array($file['type'], $allowed_types)) {
+        throw new Exception('Invalid file type. Allowed types: PDF, DOC, DOCX, ZIP');
+    }
+
+    // Create upload directory if it doesn't exist
+    $upload_dir = '../../uploads/activities/' . $student_id;
+    if (!file_exists($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
+    }
+
+    // Generate unique filename
+    $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $unique_filename = uniqid() . '_' . time() . '.' . $file_ext;
+    $upload_path = $upload_dir . '/' . $unique_filename;
+    $relative_path = 'uploads/activities/' . $student_id . '/' . $unique_filename;
 
     // Start transaction
-    $db->beginTransaction();
+    $db->begin_transaction();
 
     try {
-        // First, create the submission record and get the ID
+        // Verify student is enrolled in the section
+        $verify_query = "SELECT sts.student_id 
+                        FROM student_sections sts
+                        JOIN section_subjects ss ON sts.section_id = ss.section_id
+                        JOIN activities a ON ss.id = a.section_subject_id
+                        WHERE a.activity_id = ? 
+                        AND sts.student_id = ? 
+                        AND sts.status = 'active'";
+
+        $stmt = $db->prepare($verify_query);
+        $stmt->bind_param("ii", $activity_id, $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            throw new Exception('Unauthorized access - Not enrolled in this section');
+        }
+
+        // Create submission record
         $submission_query = "
             INSERT INTO student_activity_submissions 
             (student_id, activity_id, submitted_at, status) 
@@ -44,36 +79,22 @@ try {
             throw new Exception('Failed to create submission record');
         }
 
-        // Get the submission ID using mysqli_insert_id
         $submission_id = mysqli_insert_id($db->getConnection());
-
-        // Create submission directory if it doesn't exist
-        $uploadDir = '../uploads/submissions/' . $activity_id . '/';
-        if (!file_exists($uploadDir)) {
-            if (!mkdir($uploadDir, 0777, true)) {
-                throw new Exception('Failed to create upload directory');
-            }
-        }
-
-        // Generate unique filename
-        $newFileName = uniqid('submission_') . '_' . $fileName;
-        $uploadPath = $uploadDir . $newFileName;
 
         // Save file details
         $file_query = "
             INSERT INTO submission_files 
-            (submission_id, file_name, file_path, file_type, file_size, created_at) 
-            VALUES (?, ?, ?, ?, ?, NOW())";
-        
-        $relativePath = 'uploads/submissions/' . $activity_id . '/' . $newFileName;
+            (submission_id, file_name, file_path, file_type, file_size) 
+            VALUES (?, ?, ?, ?, ?)";
         
         $stmt = $db->prepare($file_query);
-        $stmt->bind_param("isssi", 
+        $stmt->bind_param(
+            "isssi", 
             $submission_id, 
-            $fileName, 
-            $relativePath, 
-            $fileType, 
-            $fileSize
+            $file['name'], 
+            $relative_path, 
+            $file['type'], 
+            $file['size']
         );
         
         if (!$stmt->execute()) {
@@ -81,15 +102,17 @@ try {
         }
 
         // Move uploaded file
-        if (!move_uploaded_file($fileTmpName, $uploadPath)) {
+        if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
             throw new Exception('Failed to save file');
         }
 
         // Commit transaction
         $db->commit();
         
-        // Redirect back with success message
-        header("Location: ../view_activity.php?id=$activity_id&status=success&message=Work submitted successfully");
+        echo json_encode([
+            'success' => true,
+            'message' => 'Activity submitted successfully'
+        ]);
 
     } catch (Exception $e) {
         // Rollback transaction
@@ -99,14 +122,13 @@ try {
 
 } catch (Exception $e) {
     // Delete uploaded file if exists
-    if (isset($uploadPath) && file_exists($uploadPath)) {
-        unlink($uploadPath);
+    if (isset($upload_path) && file_exists($upload_path)) {
+        unlink($upload_path);
     }
 
-    // Log the error
-    error_log("Submission error: " . $e->getMessage());
-    
-    // Redirect back with error message
-    header("Location: ../view_activity.php?id=$activity_id&status=error&message=" . urlencode($e->getMessage()));
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
 }
 ?>

@@ -24,14 +24,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Sanitize and validate input
         $firstname = htmlspecialchars(trim($_POST['firstname']));
+        $middlename = htmlspecialchars(trim($_POST['middlename']));
         $lastname = htmlspecialchars(trim($_POST['lastname']));
-        $email = htmlspecialchars(trim($_POST['email']));
-        $phone = htmlspecialchars(trim($_POST['phone']));
-        $address = htmlspecialchars(trim($_POST['address']));
+        $contact_number = htmlspecialchars(trim($_POST['contact_number']));
+        $gender = htmlspecialchars(trim($_POST['gender']));
+        $birthdate = $_POST['birthdate'];
+        
+        // Handle profile image upload
+        $profile_image_path = $student['profile_image']; // Keep existing image by default
+        
+        if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+            $upload_dir = "../uploads/students/profile/";
+            
+            // Create directory if it doesn't exist
+            if (!file_exists($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+            
+            $file_extension = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
+            $allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
+            
+            if (in_array($file_extension, $allowed_extensions)) {
+                // Generate unique filename
+                $new_filename = "student_" . $student_id . "_" . time() . "." . $file_extension;
+                $upload_path = $upload_dir . $new_filename;
+                
+                if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $upload_path)) {
+                    // Delete old profile picture if it exists
+                    if ($student['profile_image'] && file_exists($student['profile_image'])) {
+                        unlink($student['profile_image']);
+                    }
+                    $profile_image_path = $upload_path;
+                }
+            }
+        }
 
         // Update profile
-        $updateStmt = $db->prepare("UPDATE student SET firstname=?, lastname=?, email=?, phone=?, address=? WHERE student_id=?");
-        $updateStmt->bind_param("sssssi", $firstname, $lastname, $email, $phone, $address, $student_id);
+        $updateStmt = $db->prepare("UPDATE student SET 
+            firstname = ?, 
+            middlename = ?,
+            lastname = ?, 
+            contact_number = ?, 
+            gender = ?,
+            birthdate = ?,
+            profile_image = ?
+            WHERE student_id = ?");
+            
+        $updateStmt->bind_param("sssssssi", 
+            $firstname,
+            $middlename, 
+            $lastname, 
+            $contact_number,
+            $gender,
+            $birthdate,
+            $profile_image_path,
+            $student_id
+        );
         
         if ($updateStmt->execute()) {
             $_SESSION['success_message'] = "Profile updated successfully!";
@@ -45,6 +93,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['error_message'] = "An error occurred. Please try again.";
     }
 }
+
+if (isset($_SESSION['require_password_change']) || isset($_GET['force_change'])) {
+    echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Password Change Required',
+                text: 'You must change your temporary password before continuing.',
+                icon: 'warning',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: 'Change Password Now',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Scroll to password change section
+                    document.querySelector('#security-tab').click();
+                    document.querySelector('#current-password').focus();
+                }
+            });
+        });
+    </script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/home.css">
+	<link rel="icon" href="../images/light-logo.png">
     <style>
         .profile-section {
             padding: 50px 0;
@@ -148,14 +221,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 0.875rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+        
+        .feature-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info {
+            background: #e8f4f8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .btn-outline-primary {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            transform: translateY(-2px);
+        }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white">
     <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="student_dashboard.php">
             <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo">
             <span class="logo-text">Gov D.M. Camerino</span>
         </a>
@@ -165,21 +262,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="home.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="site-map.php">Site Map</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="News.php">News</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="aboutus.php">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="contactus.php">Contact Us</a>
-                </li>
                 
                 <?php if (isset($_SESSION['id'])): ?>
                     <li class="nav-item dropdown">
@@ -262,16 +344,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             <?php endif; ?>
 
-                            <form method="POST" action="student_profile.php">
+                            <form method="POST" action="student_profile.php" enctype="multipart/form-data">
+                                <div class="form-group text-center mb-4">
+                                    <img src="<?php echo $student['profile_image'] ?? '../images/default-avatar.png'; ?>" 
+                                         alt="Profile Picture" 
+                                         class="profile-avatar mb-3" 
+                                         id="preview-image">
+                                    <div>
+                                        <label for="profile_image" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-camera mr-2"></i>Change Photo
+                                        </label>
+                                        <input type="file" id="profile_image" name="profile_image" 
+                                               class="d-none" accept="image/*" onchange="previewImage(this);">
+                                    </div>
+                                </div>
+                                
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>First Name</label>
                                             <input type="text" class="form-control" name="firstname" 
                                                    value="<?php echo htmlspecialchars($student['firstname']); ?>" required>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Middle Name</label>
+                                            <input type="text" class="form-control" name="middlename" 
+                                                   value="<?php echo htmlspecialchars($student['middlename']); ?>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Last Name</label>
                                             <input type="text" class="form-control" name="lastname" 
@@ -280,21 +383,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" class="form-control" name="email" 
-                                           value="<?php echo htmlspecialchars($student['email']); ?>" required>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Contact Number</label>
+                                            <input type="tel" class="form-control" name="contact_number" 
+                                                   pattern="[0-9]{11}"
+                                                   title="Please enter a valid 11-digit phone number"
+                                                   value="<?php echo htmlspecialchars($student['contact_number']); ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Gender</label>
+                                            <select class="form-control" name="gender" required>
+                                                <option value="">Select Gender</option>
+                                                <option value="Male" <?php echo ($student['gender'] == 'Male') ? 'selected' : ''; ?>>Male</option>
+                                                <option value="Female" <?php echo ($student['gender'] == 'Female') ? 'selected' : ''; ?>>Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="tel" class="form-control" name="phone" 
-                                           value="<?php echo htmlspecialchars($student['phone'] ?? ''); ?>">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Address</label>
-                                    <textarea class="form-control" name="address" rows="3"><?php echo htmlspecialchars($student['address'] ?? ''); ?></textarea>
+                                    <label>Birthday</label>
+                                    <input type="date" class="form-control" name="birthdate" 
+                                           value="<?php echo $student['birthdate']; ?>" required>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">
@@ -307,8 +421,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <!-- Settings Tab -->
                     <div class="tab-pane fade" id="settings">
                         <div class="profile-card">
-                            <h5 class="mb-4">Account Settings</h5>
-                            
+                            <h5 class="mb-4">Account Settings</h5>    
+                            <hr>
+                                
                             <!-- Dark Mode Toggle with Coming Soon -->
                             <div class="form-group">
                                 <label class="d-flex justify-content-between align-items-center">
@@ -332,7 +447,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             <hr>
                             
-                            <!-- Notification Settings (optional) -->
+                            <!-- Notification Settings -->
                             <div class="form-group">
                                 <label class="d-flex justify-content-between align-items-center">
                                     <span>
@@ -346,6 +461,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </label>
                                 <small class="form-text text-muted">Receive email notifications about your account</small>
                             </div>
+
+                           
                         </div>
                     </div>
 
@@ -353,6 +470,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="tab-pane fade" id="security">
                         <div class="profile-card">
                             <h5 class="mb-4">Security Settings</h5>
+                            
+                            <?php if (isset($_SESSION['error_message'])): ?>
+                                <div class="alert alert-danger">
+                                    <?php 
+                                        echo $_SESSION['error_message'];
+                                        unset($_SESSION['error_message']);
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if (isset($_SESSION['success_message'])): ?>
+                                <div class="alert alert-success">
+                                    <?php 
+                                        echo $_SESSION['success_message'];
+                                        unset($_SESSION['success_message']);
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+
                             <form method="POST" action="change_password.php">
                                 <div class="form-group">
                                     <label>Current Password</label>
@@ -360,7 +496,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="form-group">
                                     <label>New Password</label>
-                                    <input type="password" class="form-control" name="new_password" required>
+                                    <input type="password" class="form-control" name="new_password" 
+                                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                                           title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Confirm New Password</label>
@@ -457,6 +595,40 @@ $(document).ready(function() {
     if (tab) {
         $('.nav-pills a[href="#' + tab + '"]').tab('show');
     }
+});
+</script>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-image').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (isset($_SESSION['require_password_change']) && $_SESSION['require_password_change']): ?>
+        Swal.fire({
+            title: 'Password Change Required',
+            text: 'You are using a temporary password. Please change your password now for security purposes.',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show security tab
+                $('.nav-pills a[href="#security"]').tab('show');
+                // Scroll to password section
+                document.querySelector('.profile-card').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    <?php endif; ?>
 });
 </script>
 

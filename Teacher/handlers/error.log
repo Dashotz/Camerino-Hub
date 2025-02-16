@@ -1,0 +1,2027 @@
+[06-Dec-2024 07:43:36 Asia/Manila] Received input: {"quiz_id":136,"text":"test","type":"multiple_choice","points":1,"choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 07:43:36 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [points] => 1
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 07:43:36 Asia/Manila] PHP Warning:  Undefined property: DbConnector::$connect_errno in E:\XAMPP\xampp2\htdocs\Camerino-Hub\teacher\handlers\save_quiz_question.php on line 33
+[06-Dec-2024 07:43:36 Asia/Manila] Error in save_quiz_question: Database connection failed
+[06-Dec-2024 07:44:49 Asia/Manila] Received input: {"quiz_id":136,"text":"test","type":"multiple_choice","points":1,"choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 07:44:49 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [points] => 1
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 07:44:49 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #5 cannot be passed by reference in E:\XAMPP\xampp2\htdocs\Camerino-Hub\teacher\handlers\save_quiz_question.php:119
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp2\htdocs\Camerino-Hub\teacher\handlers\save_quiz_question.php on line 119
+[06-Dec-2024 07:46:35 Asia/Manila] Received input: {"quiz_id":136,"text":"test","type":"multiple_choice","points":1,"choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 07:46:35 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [points] => 1
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 07:49:32 Asia/Manila] Received input: {"quiz_id":136,"text":"tryyy","type":"true_false","points":1,"correct_tf":"true"}
+[06-Dec-2024 07:49:32 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => tryyy
+    [type] => true_false
+    [points] => 1
+    [correct_tf] => true
+)
+
+[06-Dec-2024 07:49:41 Asia/Manila] Received input: {"quiz_id":136,"text":"try111","type":"short_answer","points":1,"correct_answer":"asd"}
+[06-Dec-2024 07:49:41 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => try111
+    [type] => short_answer
+    [points] => 1
+    [correct_answer] => asd
+)
+
+[06-Dec-2024 08:30:23 Asia/Manila] Received input: {"quiz_id":136,"text":"test","type":"true_false","points":1,"correct_tf":"false"}
+[06-Dec-2024 08:30:23 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => true_false
+    [points] => 1
+    [correct_tf] => false
+)
+
+[06-Dec-2024 08:30:57 Asia/Manila] Received input: {"quiz_id":136,"text":"test","type":"multiple_choice","points":1,"choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 08:30:57 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [points] => 1
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:31:04 Asia/Manila] Received input: {"quiz_id":136,"text":"test","type":"multiple_choice","points":1,"choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 08:31:04 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [points] => 1
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:33:33 Asia/Manila] Received input: {"quiz_id":136,"text":"test","type":"multiple_choice","points":1,"choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 08:33:33 Asia/Manila] Decoded data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [points] => 1
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:40:44 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:40:44 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 08:40:44 Asia/Manila] Error saving quiz question: Commands out of sync; you can't run this command now
+[06-Dec-2024 08:42:21 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => tet
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:42:21 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 08:42:21 Asia/Manila] Question type: multiple_choice
+[06-Dec-2024 08:42:21 Asia/Manila] Question ID: 82
+[06-Dec-2024 08:42:21 Asia/Manila] Processing multiple choice options
+[06-Dec-2024 08:42:21 Asia/Manila] Number of choices: 2
+[06-Dec-2024 08:42:21 Asia/Manila] Processing choice: Array
+(
+    [text] => a
+    [is_correct] => 1
+)
+
+[06-Dec-2024 08:42:21 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #5 cannot be passed by reference in E:\XAMPP\xampp2\htdocs\Camerino-Hub\teacher\handlers\save_quiz_question.php:108
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp2\htdocs\Camerino-Hub\teacher\handlers\save_quiz_question.php on line 108
+[06-Dec-2024 08:43:40 Asia/Manila] Raw input: {"quiz_id":136,"text":"test","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 08:43:40 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:43:40 Asia/Manila] Transaction started
+[06-Dec-2024 08:43:40 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 08:43:40 Asia/Manila] Question type: multiple_choice
+[06-Dec-2024 08:43:40 Asia/Manila] Question ID: 83
+[06-Dec-2024 08:43:40 Asia/Manila] Processing multiple choice options
+[06-Dec-2024 08:43:40 Asia/Manila] Number of choices: 2
+[06-Dec-2024 08:43:40 Asia/Manila] Processing choice: Array
+(
+    [text] => a
+    [is_correct] => 1
+)
+
+[06-Dec-2024 08:43:40 Asia/Manila] Error in save_quiz_question.php: mysqli_stmt::bind_param(): Argument #5 cannot be passed by reference
+[06-Dec-2024 08:43:40 Asia/Manila] Stack trace: #0 {main}
+[06-Dec-2024 08:44:11 Asia/Manila] Raw input: {"quiz_id":136,"text":"test","type":"true_false","correct_tf":"true"}
+[06-Dec-2024 08:44:11 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => true_false
+    [correct_tf] => true
+)
+
+[06-Dec-2024 08:44:11 Asia/Manila] Transaction started
+[06-Dec-2024 08:44:11 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 08:44:11 Asia/Manila] Question type: true_false
+[06-Dec-2024 08:44:11 Asia/Manila] Question ID: 84
+[06-Dec-2024 08:44:12 Asia/Manila] Successfully saved question and choices
+[06-Dec-2024 08:45:35 Asia/Manila] Raw input: {"quiz_id":136,"text":"test","type":"multiple_choice","choices":[{"text":"b","is_correct":1},{"text":"a","is_correct":0}]}
+[06-Dec-2024 08:45:35 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => b
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => a
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:45:35 Asia/Manila] Transaction started
+[06-Dec-2024 08:45:35 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 08:45:36 Asia/Manila] Question type: multiple_choice
+[06-Dec-2024 08:45:36 Asia/Manila] Question ID: 85
+[06-Dec-2024 08:45:36 Asia/Manila] Processing multiple choice options
+[06-Dec-2024 08:45:36 Asia/Manila] Number of choices: 2
+[06-Dec-2024 08:45:36 Asia/Manila] Processing choice: Array
+(
+    [text] => b
+    [is_correct] => 1
+)
+
+[06-Dec-2024 08:45:36 Asia/Manila] Binding parameters: question_id=85, text=b, is_correct=1, order=1
+[06-Dec-2024 08:45:36 Asia/Manila] Processing choice: Array
+(
+    [text] => a
+    [is_correct] => 0
+)
+
+[06-Dec-2024 08:45:36 Asia/Manila] Binding parameters: question_id=85, text=a, is_correct=0, order=2
+[06-Dec-2024 08:45:36 Asia/Manila] Successfully saved question and choices
+[06-Dec-2024 08:45:56 Asia/Manila] Raw input: {"quiz_id":136,"text":"test","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 08:45:56 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:45:56 Asia/Manila] Transaction started
+[06-Dec-2024 08:45:56 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 08:45:56 Asia/Manila] Question type: multiple_choice
+[06-Dec-2024 08:45:56 Asia/Manila] Question ID: 86
+[06-Dec-2024 08:45:56 Asia/Manila] Processing multiple choice options
+[06-Dec-2024 08:45:56 Asia/Manila] Number of choices: 2
+[06-Dec-2024 08:45:56 Asia/Manila] Processing choice: Array
+(
+    [text] => a
+    [is_correct] => 1
+)
+
+[06-Dec-2024 08:45:56 Asia/Manila] Binding parameters: question_id=86, text=a, is_correct=1, order=1
+[06-Dec-2024 08:45:56 Asia/Manila] Processing choice: Array
+(
+    [text] => b
+    [is_correct] => 0
+)
+
+[06-Dec-2024 08:45:56 Asia/Manila] Binding parameters: question_id=86, text=b, is_correct=0, order=2
+[06-Dec-2024 08:45:56 Asia/Manila] Successfully saved question and choices
+[06-Dec-2024 08:46:06 Asia/Manila] Raw input: {"quiz_id":136,"text":"testttt","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 08:46:06 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => testttt
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 08:46:06 Asia/Manila] Transaction started
+[06-Dec-2024 08:46:06 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 08:46:06 Asia/Manila] Question type: multiple_choice
+[06-Dec-2024 08:46:06 Asia/Manila] Question ID: 87
+[06-Dec-2024 08:46:06 Asia/Manila] Processing multiple choice options
+[06-Dec-2024 08:46:06 Asia/Manila] Number of choices: 2
+[06-Dec-2024 08:46:06 Asia/Manila] Processing choice: Array
+(
+    [text] => a
+    [is_correct] => 1
+)
+
+[06-Dec-2024 08:46:06 Asia/Manila] Binding parameters: question_id=87, text=a, is_correct=1, order=1
+[06-Dec-2024 08:46:06 Asia/Manila] Processing choice: Array
+(
+    [text] => b
+    [is_correct] => 0
+)
+
+[06-Dec-2024 08:46:06 Asia/Manila] Binding parameters: question_id=87, text=b, is_correct=0, order=2
+[06-Dec-2024 08:46:06 Asia/Manila] Successfully saved question and choices
+[06-Dec-2024 15:35:27 Asia/Manila] Raw input: {"quiz_id":136,"text":"testaa","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 15:35:27 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 136
+    [text] => testaa
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:35:27 Asia/Manila] Transaction started
+[06-Dec-2024 15:35:27 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 15:35:27 Asia/Manila] Question type: multiple_choice
+[06-Dec-2024 15:35:27 Asia/Manila] Question ID: 89
+[06-Dec-2024 15:35:27 Asia/Manila] Processing multiple choice options
+[06-Dec-2024 15:35:27 Asia/Manila] Number of choices: 2
+[06-Dec-2024 15:35:27 Asia/Manila] Processing choice: Array
+(
+    [text] => a
+    [is_correct] => 1
+)
+
+[06-Dec-2024 15:35:27 Asia/Manila] Binding parameters: question_id=89, text=a, is_correct=1, order=1
+[06-Dec-2024 15:35:27 Asia/Manila] Processing choice: Array
+(
+    [text] => b
+    [is_correct] => 0
+)
+
+[06-Dec-2024 15:35:27 Asia/Manila] Binding parameters: question_id=89, text=b, is_correct=0, order=2
+[06-Dec-2024 15:35:27 Asia/Manila] Successfully saved question and choices
+[06-Dec-2024 15:38:34 Asia/Manila] Raw input: {"quiz_id":137,"text":"testaasdasd","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]}
+[06-Dec-2024 15:38:34 Asia/Manila] Received quiz question data: Array
+(
+    [quiz_id] => 137
+    [text] => testaasdasd
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:38:34 Asia/Manila] Transaction started
+[06-Dec-2024 15:38:34 Asia/Manila] Validation query result rows: 1
+[06-Dec-2024 15:38:35 Asia/Manila] Question type: multiple_choice
+[06-Dec-2024 15:38:35 Asia/Manila] Question ID: 90
+[06-Dec-2024 15:38:35 Asia/Manila] Processing multiple choice options
+[06-Dec-2024 15:38:35 Asia/Manila] Number of choices: 2
+[06-Dec-2024 15:38:35 Asia/Manila] Processing choice: Array
+(
+    [text] => a
+    [is_correct] => 1
+)
+
+[06-Dec-2024 15:38:35 Asia/Manila] Binding parameters: question_id=90, text=a, is_correct=1, order=1
+[06-Dec-2024 15:38:35 Asia/Manila] Processing choice: Array
+(
+    [text] => b
+    [is_correct] => 0
+)
+
+[06-Dec-2024 15:38:35 Asia/Manila] Binding parameters: question_id=90, text=b, is_correct=0, order=2
+[06-Dec-2024 15:38:35 Asia/Manila] Successfully saved question and choices
+[06-Dec-2024 15:39:54 Asia/Manila] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #5 cannot be passed by reference in E:\XAMPP\xampp2\htdocs\Camerino-Hub\teacher\handlers\update_activity.php:108
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp2\htdocs\Camerino-Hub\teacher\handlers\update_activity.php on line 108
+[06-Dec-2024 15:41:01 Asia/Manila] Received input: {"activity_id":137,"section_subject_id":"56","title":"testasdasd","description":"asdads","due_date":"2024-12-07T15:20","points":"2","type":"quiz","quiz_duration":"60","prevent_tab_switch":0,"fullscreen_required":0,"questions":[{"question_id":90,"text":"","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]},{"question_id":88,"text":"","type":"short_answer","correct_answer":""}]}
+[06-Dec-2024 15:41:01 Asia/Manila] Decoded data: Array
+(
+    [activity_id] => 137
+    [section_subject_id] => 56
+    [title] => testasdasd
+    [description] => asdads
+    [due_date] => 2024-12-07T15:20
+    [points] => 2
+    [type] => quiz
+    [quiz_duration] => 60
+    [prevent_tab_switch] => 0
+    [fullscreen_required] => 0
+    [questions] => Array
+        (
+            [0] => Array
+                (
+                    [question_id] => 90
+                    [text] => 
+                    [type] => multiple_choice
+                    [choices] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [text] => a
+                                    [is_correct] => 1
+                                )
+
+                            [1] => Array
+                                (
+                                    [text] => b
+                                    [is_correct] => 0
+                                )
+
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [question_id] => 88
+                    [text] => 
+                    [type] => short_answer
+                    [correct_answer] => 
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:41:02 Asia/Manila] Processing question: Array
+(
+    [question_id] => 90
+    [text] => 
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:41:02 Asia/Manila] Error in update_activity.php: mysqli_stmt::bind_param(): Argument #5 cannot be passed by reference
+[06-Dec-2024 15:41:02 Asia/Manila] Stack trace: #0 {main}
+[06-Dec-2024 15:42:17 Asia/Manila] Received input: {"activity_id":137,"section_subject_id":"56","title":"testasdasd","description":"asdads","due_date":"2024-12-07T15:20","points":"2","type":"quiz","quiz_duration":60,"prevent_tab_switch":0,"fullscreen_required":0,"questions":[{"question_id":90,"text":"","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]},{"question_id":88,"text":"","type":"short_answer","correct_answer":""}]}
+[06-Dec-2024 15:42:17 Asia/Manila] Decoded data: Array
+(
+    [activity_id] => 137
+    [section_subject_id] => 56
+    [title] => testasdasd
+    [description] => asdads
+    [due_date] => 2024-12-07T15:20
+    [points] => 2
+    [type] => quiz
+    [quiz_duration] => 60
+    [prevent_tab_switch] => 0
+    [fullscreen_required] => 0
+    [questions] => Array
+        (
+            [0] => Array
+                (
+                    [question_id] => 90
+                    [text] => 
+                    [type] => multiple_choice
+                    [choices] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [text] => a
+                                    [is_correct] => 1
+                                )
+
+                            [1] => Array
+                                (
+                                    [text] => b
+                                    [is_correct] => 0
+                                )
+
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [question_id] => 88
+                    [text] => 
+                    [type] => short_answer
+                    [correct_answer] => 
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:42:17 Asia/Manila] Processing question: Array
+(
+    [question_id] => 90
+    [text] => 
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:42:17 Asia/Manila] Error in update_activity.php: mysqli_stmt::bind_param(): Argument #5 cannot be passed by reference
+[06-Dec-2024 15:42:17 Asia/Manila] Stack trace: #0 {main}
+[06-Dec-2024 15:47:40 Asia/Manila] Received input: {"activity_id":137,"section_subject_id":"56","title":"testasdasd","description":"asdads","due_date":"2024-12-07T15:20","points":"2","type":"quiz","quiz_duration":60,"prevent_tab_switch":0,"fullscreen_required":0,"questions":[{"question_id":90,"text":"testaasdasd","type":"multiple_choice","choices":[{"text":"a","is_correct":1},{"text":"b","is_correct":0}]},{"question_id":88,"text":"","type":"short_answer","correct_answer":""}]}
+[06-Dec-2024 15:47:40 Asia/Manila] Decoded data: Array
+(
+    [activity_id] => 137
+    [section_subject_id] => 56
+    [title] => testasdasd
+    [description] => asdads
+    [due_date] => 2024-12-07T15:20
+    [points] => 2
+    [type] => quiz
+    [quiz_duration] => 60
+    [prevent_tab_switch] => 0
+    [fullscreen_required] => 0
+    [questions] => Array
+        (
+            [0] => Array
+                (
+                    [question_id] => 90
+                    [text] => testaasdasd
+                    [type] => multiple_choice
+                    [choices] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [text] => a
+                                    [is_correct] => 1
+                                )
+
+                            [1] => Array
+                                (
+                                    [text] => b
+                                    [is_correct] => 0
+                                )
+
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [question_id] => 88
+                    [text] => 
+                    [type] => short_answer
+                    [correct_answer] => 
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:47:40 Asia/Manila] Types string: isssiiiii
+[06-Dec-2024 15:47:40 Asia/Manila] Params: Array
+(
+    [0] => 56
+    [1] => testasdasd
+    [2] => asdads
+    [3] => 2024-12-07T15:20
+    [4] => 2
+    [5] => 60
+    [6] => 0
+    [7] => 0
+    [8] => 137
+)
+
+[06-Dec-2024 15:47:40 Asia/Manila] Processing question: Array
+(
+    [question_id] => 90
+    [text] => testaasdasd
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => a
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => b
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[06-Dec-2024 15:47:40 Asia/Manila] Error in update_activity.php: mysqli_stmt::bind_param(): Argument #5 cannot be passed by reference
+[06-Dec-2024 15:47:40 Asia/Manila] Stack trace: #0 {main}
+[12-Dec-2024 13:17:31 Europe/Berlin] Raw input: {"quiz_id":160,"text":"asea","type":"multiple_choice","choices":[{"text":"asd","is_correct":0},{"text":"sd","is_correct":1}]}
+[12-Dec-2024 13:17:31 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 160
+    [text] => asea
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => asd
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => sd
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[12-Dec-2024 13:17:31 Europe/Berlin] Transaction started
+[12-Dec-2024 13:17:31 Europe/Berlin] Validation query result rows: 1
+[12-Dec-2024 13:17:31 Europe/Berlin] Question type: multiple_choice
+[12-Dec-2024 13:17:31 Europe/Berlin] Question ID: 143
+[12-Dec-2024 13:17:31 Europe/Berlin] Processing multiple choice options
+[12-Dec-2024 13:17:31 Europe/Berlin] Number of choices: 2
+[12-Dec-2024 13:17:31 Europe/Berlin] Processing choice: Array
+(
+    [text] => asd
+    [is_correct] => 0
+)
+
+[12-Dec-2024 13:17:31 Europe/Berlin] Binding parameters: question_id=143, text=asd, is_correct=0, order=1
+[12-Dec-2024 13:17:31 Europe/Berlin] Processing choice: Array
+(
+    [text] => sd
+    [is_correct] => 1
+)
+
+[12-Dec-2024 13:17:31 Europe/Berlin] Binding parameters: question_id=143, text=sd, is_correct=1, order=2
+[12-Dec-2024 13:17:31 Europe/Berlin] Successfully saved question and choices
+[15-Dec-2024 05:29:50 UTC] Raw input: {"quiz_id":168,"text":"Arts: Which of these is considered a primary color?","type":"multiple_choice","choices":[{"text":"Green","is_correct":0},{"text":"Yellow","is_correct":1},{"text":"Purple","is_correct":0}]}
+[15-Dec-2024 05:29:50 UTC] Received quiz question data: Array
+(
+    [quiz_id] => 168
+    [text] => Arts: Which of these is considered a primary color?
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => Green
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => Yellow
+                    [is_correct] => 1
+                )
+
+            [2] => Array
+                (
+                    [text] => Purple
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[15-Dec-2024 05:29:50 UTC] Transaction started
+[15-Dec-2024 05:29:50 UTC] Validation query result rows: 1
+[15-Dec-2024 05:29:50 UTC] Question type: multiple_choice
+[15-Dec-2024 05:29:50 UTC] Question ID: 151
+[15-Dec-2024 05:29:50 UTC] Processing multiple choice options
+[15-Dec-2024 05:29:50 UTC] Number of choices: 3
+[15-Dec-2024 05:29:50 UTC] Processing choice: Array
+(
+    [text] => Green
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:29:50 UTC] Binding parameters: question_id=151, text=Green, is_correct=0, order=1
+[15-Dec-2024 05:29:50 UTC] Processing choice: Array
+(
+    [text] => Yellow
+    [is_correct] => 1
+)
+
+[15-Dec-2024 05:29:50 UTC] Binding parameters: question_id=151, text=Yellow, is_correct=1, order=2
+[15-Dec-2024 05:29:50 UTC] Processing choice: Array
+(
+    [text] => Purple
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:29:50 UTC] Binding parameters: question_id=151, text=Purple, is_correct=0, order=3
+[15-Dec-2024 05:29:50 UTC] Successfully saved question and choices
+[15-Dec-2024 05:31:24 UTC] Raw input: {"quiz_id":168,"text":"Physical Education: Which activity is an example of aerobic exercise?\na) Running\nb) Weightlifting\nc) Stretching","type":"multiple_choice","choices":[{"text":"Running","is_correct":1},{"text":"Weightlifting","is_correct":0},{"text":"Stretching","is_correct":0}]}
+[15-Dec-2024 05:31:24 UTC] Received quiz question data: Array
+(
+    [quiz_id] => 168
+    [text] => Physical Education: Which activity is an example of aerobic exercise?
+a) Running
+b) Weightlifting
+c) Stretching
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => Running
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => Weightlifting
+                    [is_correct] => 0
+                )
+
+            [2] => Array
+                (
+                    [text] => Stretching
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[15-Dec-2024 05:31:24 UTC] Transaction started
+[15-Dec-2024 05:31:24 UTC] Validation query result rows: 1
+[15-Dec-2024 05:31:24 UTC] Question type: multiple_choice
+[15-Dec-2024 05:31:24 UTC] Question ID: 152
+[15-Dec-2024 05:31:24 UTC] Processing multiple choice options
+[15-Dec-2024 05:31:24 UTC] Number of choices: 3
+[15-Dec-2024 05:31:24 UTC] Processing choice: Array
+(
+    [text] => Running
+    [is_correct] => 1
+)
+
+[15-Dec-2024 05:31:24 UTC] Binding parameters: question_id=152, text=Running, is_correct=1, order=1
+[15-Dec-2024 05:31:24 UTC] Processing choice: Array
+(
+    [text] => Weightlifting
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:31:24 UTC] Binding parameters: question_id=152, text=Weightlifting, is_correct=0, order=2
+[15-Dec-2024 05:31:24 UTC] Processing choice: Array
+(
+    [text] => Stretching
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:31:24 UTC] Binding parameters: question_id=152, text=Stretching, is_correct=0, order=3
+[15-Dec-2024 05:31:24 UTC] Successfully saved question and choices
+[15-Dec-2024 05:31:55 UTC] Raw input: {"quiz_id":168,"text":"Health: What nutrient is essential for building and repairing body tissues?\na) Carbohydrates\nb) Proteins\nc) Fats","type":"multiple_choice","choices":[{"text":"Carbohydrates","is_correct":0},{"text":"Proteins","is_correct":1},{"text":"Fats","is_correct":0}]}
+[15-Dec-2024 05:31:55 UTC] Received quiz question data: Array
+(
+    [quiz_id] => 168
+    [text] => Health: What nutrient is essential for building and repairing body tissues?
+a) Carbohydrates
+b) Proteins
+c) Fats
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => Carbohydrates
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => Proteins
+                    [is_correct] => 1
+                )
+
+            [2] => Array
+                (
+                    [text] => Fats
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[15-Dec-2024 05:31:55 UTC] Transaction started
+[15-Dec-2024 05:31:55 UTC] Validation query result rows: 1
+[15-Dec-2024 05:31:55 UTC] Question type: multiple_choice
+[15-Dec-2024 05:31:55 UTC] Question ID: 153
+[15-Dec-2024 05:31:55 UTC] Processing multiple choice options
+[15-Dec-2024 05:31:55 UTC] Number of choices: 3
+[15-Dec-2024 05:31:55 UTC] Processing choice: Array
+(
+    [text] => Carbohydrates
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:31:55 UTC] Binding parameters: question_id=153, text=Carbohydrates, is_correct=0, order=1
+[15-Dec-2024 05:31:55 UTC] Processing choice: Array
+(
+    [text] => Proteins
+    [is_correct] => 1
+)
+
+[15-Dec-2024 05:31:55 UTC] Binding parameters: question_id=153, text=Proteins, is_correct=1, order=2
+[15-Dec-2024 05:31:55 UTC] Processing choice: Array
+(
+    [text] => Fats
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:31:55 UTC] Binding parameters: question_id=153, text=Fats, is_correct=0, order=3
+[15-Dec-2024 05:31:55 UTC] Successfully saved question and choices
+[15-Dec-2024 05:33:09 UTC] Raw input: {"quiz_id":168,"text":"Physical Education: Which activity is an example of aerobic exercise? ","type":"multiple_choice","choices":[{"text":"Running","is_correct":1},{"text":"Weightlifting","is_correct":0},{"text":"Stretching","is_correct":0}]}
+[15-Dec-2024 05:33:09 UTC] Received quiz question data: Array
+(
+    [quiz_id] => 168
+    [text] => Physical Education: Which activity is an example of aerobic exercise? 
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => Running
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => Weightlifting
+                    [is_correct] => 0
+                )
+
+            [2] => Array
+                (
+                    [text] => Stretching
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[15-Dec-2024 05:33:09 UTC] Transaction started
+[15-Dec-2024 05:33:09 UTC] Validation query result rows: 1
+[15-Dec-2024 05:33:09 UTC] Question type: multiple_choice
+[15-Dec-2024 05:33:09 UTC] Question ID: 154
+[15-Dec-2024 05:33:09 UTC] Processing multiple choice options
+[15-Dec-2024 05:33:09 UTC] Number of choices: 3
+[15-Dec-2024 05:33:09 UTC] Processing choice: Array
+(
+    [text] => Running
+    [is_correct] => 1
+)
+
+[15-Dec-2024 05:33:09 UTC] Binding parameters: question_id=154, text=Running, is_correct=1, order=1
+[15-Dec-2024 05:33:09 UTC] Processing choice: Array
+(
+    [text] => Weightlifting
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:33:09 UTC] Binding parameters: question_id=154, text=Weightlifting, is_correct=0, order=2
+[15-Dec-2024 05:33:09 UTC] Processing choice: Array
+(
+    [text] => Stretching
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:33:09 UTC] Binding parameters: question_id=154, text=Stretching, is_correct=0, order=3
+[15-Dec-2024 05:33:09 UTC] Successfully saved question and choices
+[15-Dec-2024 05:33:49 UTC] Raw input: {"quiz_id":168,"text":"Health: What nutrient is essential for building and repairing body tissues? ","type":"multiple_choice","choices":[{"text":"Carbohydrates","is_correct":0},{"text":"Proteins","is_correct":1},{"text":"Fats","is_correct":0}]}
+[15-Dec-2024 05:33:49 UTC] Received quiz question data: Array
+(
+    [quiz_id] => 168
+    [text] => Health: What nutrient is essential for building and repairing body tissues? 
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => Carbohydrates
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => Proteins
+                    [is_correct] => 1
+                )
+
+            [2] => Array
+                (
+                    [text] => Fats
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[15-Dec-2024 05:33:49 UTC] Transaction started
+[15-Dec-2024 05:33:49 UTC] Validation query result rows: 1
+[15-Dec-2024 05:33:49 UTC] Question type: multiple_choice
+[15-Dec-2024 05:33:49 UTC] Question ID: 155
+[15-Dec-2024 05:33:49 UTC] Processing multiple choice options
+[15-Dec-2024 05:33:49 UTC] Number of choices: 3
+[15-Dec-2024 05:33:49 UTC] Processing choice: Array
+(
+    [text] => Carbohydrates
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:33:49 UTC] Binding parameters: question_id=155, text=Carbohydrates, is_correct=0, order=1
+[15-Dec-2024 05:33:49 UTC] Processing choice: Array
+(
+    [text] => Proteins
+    [is_correct] => 1
+)
+
+[15-Dec-2024 05:33:49 UTC] Binding parameters: question_id=155, text=Proteins, is_correct=1, order=2
+[15-Dec-2024 05:33:49 UTC] Processing choice: Array
+(
+    [text] => Fats
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:33:49 UTC] Binding parameters: question_id=155, text=Fats, is_correct=0, order=3
+[15-Dec-2024 05:33:49 UTC] Successfully saved question and choices
+[15-Dec-2024 05:35:55 UTC] Raw input: {"quiz_id":167,"text":"dedd","type":"multiple_choice","choices":[{"text":"dewdwe","is_correct":1},{"text":"df","is_correct":0}]}
+[15-Dec-2024 05:35:55 UTC] Received quiz question data: Array
+(
+    [quiz_id] => 167
+    [text] => dedd
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => dewdwe
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => df
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[15-Dec-2024 05:35:55 UTC] Transaction started
+[15-Dec-2024 05:35:55 UTC] Validation query result rows: 1
+[15-Dec-2024 05:35:55 UTC] Question type: multiple_choice
+[15-Dec-2024 05:35:55 UTC] Question ID: 156
+[15-Dec-2024 05:35:55 UTC] Processing multiple choice options
+[15-Dec-2024 05:35:55 UTC] Number of choices: 2
+[15-Dec-2024 05:35:55 UTC] Processing choice: Array
+(
+    [text] => dewdwe
+    [is_correct] => 1
+)
+
+[15-Dec-2024 05:35:55 UTC] Binding parameters: question_id=156, text=dewdwe, is_correct=1, order=1
+[15-Dec-2024 05:35:55 UTC] Processing choice: Array
+(
+    [text] => df
+    [is_correct] => 0
+)
+
+[15-Dec-2024 05:35:55 UTC] Binding parameters: question_id=156, text=df, is_correct=0, order=2
+[15-Dec-2024 05:35:55 UTC] Successfully saved question and choices
+[18-Dec-2024 16:13:51 Europe/Berlin] Raw input: {"quiz_id":178,"text":"test","type":"multiple_choice","choices":[{"text":"12","is_correct":1},{"text":"32","is_correct":0}]}
+[18-Dec-2024 16:13:51 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 178
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => 12
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => 32
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[18-Dec-2024 16:13:51 Europe/Berlin] Transaction started
+[18-Dec-2024 16:13:51 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:13:51 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 16:13:51 Europe/Berlin] Question ID: 178
+[18-Dec-2024 16:13:51 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 16:13:51 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 16:13:51 Europe/Berlin] Processing choice: Array
+(
+    [text] => 12
+    [is_correct] => 1
+)
+
+[18-Dec-2024 16:13:51 Europe/Berlin] Binding parameters: question_id=178, text=12, is_correct=1, order=1
+[18-Dec-2024 16:13:51 Europe/Berlin] Processing choice: Array
+(
+    [text] => 32
+    [is_correct] => 0
+)
+
+[18-Dec-2024 16:13:51 Europe/Berlin] Binding parameters: question_id=178, text=32, is_correct=0, order=2
+[18-Dec-2024 16:13:51 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:14:02 Europe/Berlin] Raw input: {"quiz_id":178,"text":"23","type":"true_false","correct_tf":"true"}
+[18-Dec-2024 16:14:02 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 178
+    [text] => 23
+    [type] => true_false
+    [correct_tf] => true
+)
+
+[18-Dec-2024 16:14:02 Europe/Berlin] Transaction started
+[18-Dec-2024 16:14:02 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:14:02 Europe/Berlin] Question type: true_false
+[18-Dec-2024 16:14:02 Europe/Berlin] Question ID: 179
+[18-Dec-2024 16:14:02 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:42:53 Europe/Berlin] Raw input: {"quiz_id":172,"text":"An orchestra made up of a set of instruments from Java/Bali Indonesia.","type":"short_answer","correct_answer":"Gamelan"}
+[18-Dec-2024 16:42:53 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => An orchestra made up of a set of instruments from Java/Bali Indonesia.
+    [type] => short_answer
+    [correct_answer] => Gamelan
+)
+
+[18-Dec-2024 16:42:53 Europe/Berlin] Transaction started
+[18-Dec-2024 16:42:53 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:42:53 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 16:42:53 Europe/Berlin] Question ID: 186
+[18-Dec-2024 16:42:53 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:43:10 Europe/Berlin] Raw input: {"quiz_id":172,"text":"What movement of an animal was featured in the dance binanog?","type":"short_answer","correct_answer":"Eagle"}
+[18-Dec-2024 16:43:10 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => What movement of an animal was featured in the dance binanog?
+    [type] => short_answer
+    [correct_answer] => Eagle
+)
+
+[18-Dec-2024 16:43:10 Europe/Berlin] Transaction started
+[18-Dec-2024 16:43:10 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:43:10 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 16:43:10 Europe/Berlin] Question ID: 187
+[18-Dec-2024 16:43:10 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:43:26 Europe/Berlin] Raw input: {"quiz_id":172,"text":"It is where gamelan is originated.","type":"short_answer","correct_answer":"Indonesia"}
+[18-Dec-2024 16:43:26 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => It is where gamelan is originated.
+    [type] => short_answer
+    [correct_answer] => Indonesia
+)
+
+[18-Dec-2024 16:43:26 Europe/Berlin] Transaction started
+[18-Dec-2024 16:43:26 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:43:26 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 16:43:26 Europe/Berlin] Question ID: 188
+[18-Dec-2024 16:43:26 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:43:39 Europe/Berlin] Raw input: {"quiz_id":172,"text":"An indigenous dance that comes from Panay Bukidnon indigenous community.","type":"short_answer","correct_answer":"Binanog"}
+[18-Dec-2024 16:43:39 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => An indigenous dance that comes from Panay Bukidnon indigenous community.
+    [type] => short_answer
+    [correct_answer] => Binanog
+)
+
+[18-Dec-2024 16:43:39 Europe/Berlin] Transaction started
+[18-Dec-2024 16:43:39 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:43:39 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 16:43:39 Europe/Berlin] Question ID: 189
+[18-Dec-2024 16:43:39 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:43:52 Europe/Berlin] Raw input: {"quiz_id":172,"text":"It is the classification of instruments that is composed of string instruments.\n","type":"short_answer","correct_answer":"Chordophones"}
+[18-Dec-2024 16:43:52 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => It is the classification of instruments that is composed of string instruments.
+
+    [type] => short_answer
+    [correct_answer] => Chordophones
+)
+
+[18-Dec-2024 16:43:52 Europe/Berlin] Transaction started
+[18-Dec-2024 16:43:52 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:43:52 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 16:43:52 Europe/Berlin] Question ID: 190
+[18-Dec-2024 16:43:52 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:47:03 Europe/Berlin] Raw input: {"quiz_id":172,"text":"test","type":"multiple_choice","choices":[{"text":"test","is_correct":1},{"text":"sss","is_correct":0}]}
+[18-Dec-2024 16:47:03 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => test
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => sss
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[18-Dec-2024 16:47:03 Europe/Berlin] Transaction started
+[18-Dec-2024 16:47:03 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:47:03 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 16:47:03 Europe/Berlin] Question ID: 191
+[18-Dec-2024 16:47:03 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 16:47:03 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 16:47:03 Europe/Berlin] Processing choice: Array
+(
+    [text] => test
+    [is_correct] => 1
+)
+
+[18-Dec-2024 16:47:03 Europe/Berlin] Binding parameters: question_id=191, text=test, is_correct=1, order=1
+[18-Dec-2024 16:47:03 Europe/Berlin] Processing choice: Array
+(
+    [text] => sss
+    [is_correct] => 0
+)
+
+[18-Dec-2024 16:47:03 Europe/Berlin] Binding parameters: question_id=191, text=sss, is_correct=0, order=2
+[18-Dec-2024 16:47:03 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:50:54 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"short_answer","correct_answer":"qwe"}
+[18-Dec-2024 16:50:54 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => short_answer
+    [correct_answer] => qwe
+)
+
+[18-Dec-2024 16:50:54 Europe/Berlin] Transaction started
+[18-Dec-2024 16:50:54 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:50:54 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 16:50:54 Europe/Berlin] Question ID: 192
+[18-Dec-2024 16:50:54 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:51:40 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"qwe","is_correct":0},{"text":"qweeeee","is_correct":1}]}
+[18-Dec-2024 16:51:40 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => qweeeee
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 16:51:40 Europe/Berlin] Transaction started
+[18-Dec-2024 16:51:40 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:51:40 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 16:51:40 Europe/Berlin] Question ID: 193
+[18-Dec-2024 16:51:40 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 16:51:40 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 16:51:40 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 16:51:40 Europe/Berlin] Binding parameters: question_id=193, text=qwe, is_correct=0, order=1
+[18-Dec-2024 16:51:40 Europe/Berlin] Processing choice: Array
+(
+    [text] => qweeeee
+    [is_correct] => 1
+)
+
+[18-Dec-2024 16:51:40 Europe/Berlin] Binding parameters: question_id=193, text=qweeeee, is_correct=1, order=2
+[18-Dec-2024 16:51:40 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:57:55 Europe/Berlin] Raw input: {"quiz_id":172,"text":"test","type":"short_answer","correct_answer":"teeest"}
+[18-Dec-2024 16:57:55 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => test
+    [type] => short_answer
+    [correct_answer] => teeest
+)
+
+[18-Dec-2024 16:57:55 Europe/Berlin] Transaction started
+[18-Dec-2024 16:57:55 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:57:55 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 16:57:55 Europe/Berlin] Question ID: 194
+[18-Dec-2024 16:57:55 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 16:59:45 Europe/Berlin] Raw input: {"quiz_id":172,"text":"asd","type":"multiple_choice","choices":[{"text":"ss","is_correct":0},{"text":"ssss","is_correct":1}]}
+[18-Dec-2024 16:59:45 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => asd
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => ss
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => ssss
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 16:59:45 Europe/Berlin] Transaction started
+[18-Dec-2024 16:59:45 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 16:59:45 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 16:59:45 Europe/Berlin] Question ID: 195
+[18-Dec-2024 16:59:45 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 16:59:45 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 16:59:45 Europe/Berlin] Processing choice: Array
+(
+    [text] => ss
+    [is_correct] => 0
+)
+
+[18-Dec-2024 16:59:45 Europe/Berlin] Binding parameters: question_id=195, text=ss, is_correct=0, order=1
+[18-Dec-2024 16:59:45 Europe/Berlin] Processing choice: Array
+(
+    [text] => ssss
+    [is_correct] => 1
+)
+
+[18-Dec-2024 16:59:45 Europe/Berlin] Binding parameters: question_id=195, text=ssss, is_correct=1, order=2
+[18-Dec-2024 16:59:45 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:01:10 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qweqweqweqweqweqww","type":"short_answer","correct_answer":"w123"}
+[18-Dec-2024 17:01:10 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qweqweqweqweqweqww
+    [type] => short_answer
+    [correct_answer] => w123
+)
+
+[18-Dec-2024 17:01:10 Europe/Berlin] Transaction started
+[18-Dec-2024 17:01:10 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:01:10 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 17:01:10 Europe/Berlin] Question ID: 196
+[18-Dec-2024 17:01:10 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:05:16 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"qwe","is_correct":1},{"text":"eeeeee","is_correct":0}]}
+[18-Dec-2024 17:05:16 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwe
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => eeeeee
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:05:16 Europe/Berlin] Transaction started
+[18-Dec-2024 17:05:16 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:05:16 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:05:16 Europe/Berlin] Question ID: 197
+[18-Dec-2024 17:05:16 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:05:16 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:05:16 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwe
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:05:16 Europe/Berlin] Binding parameters: question_id=197, text=qwe, is_correct=1, order=1
+[18-Dec-2024 17:05:16 Europe/Berlin] Processing choice: Array
+(
+    [text] => eeeeee
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:05:16 Europe/Berlin] Binding parameters: question_id=197, text=eeeeee, is_correct=0, order=2
+[18-Dec-2024 17:05:16 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:08:45 Europe/Berlin] Raw input: {"quiz_id":172,"text":"test","type":"multiple_choice","choices":[{"text":"tt","is_correct":1},{"text":"tttt","is_correct":0}]}
+[18-Dec-2024 17:08:45 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => tt
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => tttt
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:08:45 Europe/Berlin] Transaction started
+[18-Dec-2024 17:08:45 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:08:45 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:08:45 Europe/Berlin] Question ID: 198
+[18-Dec-2024 17:08:45 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:08:45 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:08:45 Europe/Berlin] Processing choice: Array
+(
+    [text] => tt
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:08:45 Europe/Berlin] Binding parameters: question_id=198, text=tt, is_correct=1, order=1
+[18-Dec-2024 17:08:45 Europe/Berlin] Processing choice: Array
+(
+    [text] => tttt
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:08:45 Europe/Berlin] Binding parameters: question_id=198, text=tttt, is_correct=0, order=2
+[18-Dec-2024 17:08:45 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:10:28 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"qwe","is_correct":0},{"text":"eeee","is_correct":1}]}
+[18-Dec-2024 17:10:28 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => eeee
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:10:28 Europe/Berlin] Transaction started
+[18-Dec-2024 17:10:28 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:10:28 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:10:28 Europe/Berlin] Question ID: 199
+[18-Dec-2024 17:10:28 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:10:28 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:10:28 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:10:28 Europe/Berlin] Binding parameters: question_id=199, text=qwe, is_correct=0, order=1
+[18-Dec-2024 17:10:28 Europe/Berlin] Processing choice: Array
+(
+    [text] => eeee
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:10:28 Europe/Berlin] Binding parameters: question_id=199, text=eeee, is_correct=1, order=2
+[18-Dec-2024 17:10:28 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:11:51 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qweqwe","type":"multiple_choice","choices":[{"text":"qweqwe","is_correct":0},{"text":"qweqwessss","is_correct":1}]}
+[18-Dec-2024 17:11:51 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qweqwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qweqwe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => qweqwessss
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:11:51 Europe/Berlin] Transaction started
+[18-Dec-2024 17:11:51 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:11:51 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:11:51 Europe/Berlin] Question ID: 200
+[18-Dec-2024 17:11:51 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:11:51 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:11:51 Europe/Berlin] Processing choice: Array
+(
+    [text] => qweqwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:11:51 Europe/Berlin] Binding parameters: question_id=200, text=qweqwe, is_correct=0, order=1
+[18-Dec-2024 17:11:51 Europe/Berlin] Processing choice: Array
+(
+    [text] => qweqwessss
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:11:51 Europe/Berlin] Binding parameters: question_id=200, text=qweqwessss, is_correct=1, order=2
+[18-Dec-2024 17:11:51 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:13:11 Europe/Berlin] Raw input: {"quiz_id":172,"text":"test","type":"multiple_choice","choices":[{"text":"qweqwe","is_correct":0},{"text":"qweqweqqq","is_correct":1}]}
+[18-Dec-2024 17:13:11 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => test
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qweqwe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => qweqweqqq
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:13:11 Europe/Berlin] Transaction started
+[18-Dec-2024 17:13:11 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:13:11 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:13:11 Europe/Berlin] Question ID: 201
+[18-Dec-2024 17:13:11 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:13:11 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:13:11 Europe/Berlin] Processing choice: Array
+(
+    [text] => qweqwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:13:11 Europe/Berlin] Binding parameters: question_id=201, text=qweqwe, is_correct=0, order=1
+[18-Dec-2024 17:13:11 Europe/Berlin] Processing choice: Array
+(
+    [text] => qweqweqqq
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:13:11 Europe/Berlin] Binding parameters: question_id=201, text=qweqweqqq, is_correct=1, order=2
+[18-Dec-2024 17:13:11 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:13:39 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qweqw","type":"multiple_choice","choices":[{"text":"qwe","is_correct":0},{"text":"wwww","is_correct":1}]}
+[18-Dec-2024 17:13:39 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qweqw
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => wwww
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:13:39 Europe/Berlin] Transaction started
+[18-Dec-2024 17:13:39 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:13:39 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:13:39 Europe/Berlin] Question ID: 202
+[18-Dec-2024 17:13:39 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:13:39 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:13:39 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:13:39 Europe/Berlin] Binding parameters: question_id=202, text=qwe, is_correct=0, order=1
+[18-Dec-2024 17:13:39 Europe/Berlin] Processing choice: Array
+(
+    [text] => wwww
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:13:39 Europe/Berlin] Binding parameters: question_id=202, text=wwww, is_correct=1, order=2
+[18-Dec-2024 17:13:39 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:14:48 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"qwe","is_correct":1},{"text":"qwwwww","is_correct":0}]}
+[18-Dec-2024 17:14:48 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwe
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => qwwwww
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:14:48 Europe/Berlin] Transaction started
+[18-Dec-2024 17:14:48 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:14:48 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:14:48 Europe/Berlin] Question ID: 203
+[18-Dec-2024 17:14:48 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:14:48 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:14:48 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwe
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:14:48 Europe/Berlin] Binding parameters: question_id=203, text=qwe, is_correct=1, order=1
+[18-Dec-2024 17:14:48 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwwwww
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:14:48 Europe/Berlin] Binding parameters: question_id=203, text=qwwwww, is_correct=0, order=2
+[18-Dec-2024 17:14:48 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:17:23 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"qwe","is_correct":0},{"text":"sasdasadad","is_correct":1}]}
+[18-Dec-2024 17:17:23 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => sasdasadad
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:17:23 Europe/Berlin] Transaction started
+[18-Dec-2024 17:17:23 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:17:23 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:17:23 Europe/Berlin] Question ID: 204
+[18-Dec-2024 17:17:23 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:17:23 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:17:23 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:17:23 Europe/Berlin] Binding parameters: question_id=204, text=qwe, is_correct=0, order=1
+[18-Dec-2024 17:17:23 Europe/Berlin] Processing choice: Array
+(
+    [text] => sasdasadad
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:17:23 Europe/Berlin] Binding parameters: question_id=204, text=sasdasadad, is_correct=1, order=2
+[18-Dec-2024 17:17:23 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:19:04 Europe/Berlin] Raw input: {"quiz_id":172,"text":"test","type":"short_answer","correct_answer":"123qwe"}
+[18-Dec-2024 17:19:04 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => test
+    [type] => short_answer
+    [correct_answer] => 123qwe
+)
+
+[18-Dec-2024 17:19:04 Europe/Berlin] Transaction started
+[18-Dec-2024 17:19:04 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:19:04 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 17:19:04 Europe/Berlin] Question ID: 205
+[18-Dec-2024 17:19:04 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:20:06 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"short_answer","correct_answer":"qweee"}
+[18-Dec-2024 17:20:06 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => short_answer
+    [correct_answer] => qweee
+)
+
+[18-Dec-2024 17:20:06 Europe/Berlin] Transaction started
+[18-Dec-2024 17:20:06 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:20:06 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 17:20:06 Europe/Berlin] Question ID: 206
+[18-Dec-2024 17:20:06 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:23:12 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"short_answer","correct_answer":"123qwe"}
+[18-Dec-2024 17:23:12 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => short_answer
+    [correct_answer] => 123qwe
+)
+
+[18-Dec-2024 17:23:12 Europe/Berlin] Transaction started
+[18-Dec-2024 17:23:12 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:23:12 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 17:23:12 Europe/Berlin] Question ID: 207
+[18-Dec-2024 17:23:12 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:25:10 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"wqe","is_correct":0},{"text":"wqeeee","is_correct":1}]}
+[18-Dec-2024 17:25:10 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => wqe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => wqeeee
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:25:10 Europe/Berlin] Transaction started
+[18-Dec-2024 17:25:10 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:25:10 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:25:10 Europe/Berlin] Question ID: 208
+[18-Dec-2024 17:25:10 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:25:10 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:25:10 Europe/Berlin] Processing choice: Array
+(
+    [text] => wqe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:25:10 Europe/Berlin] Binding parameters: question_id=208, text=wqe, is_correct=0, order=1
+[18-Dec-2024 17:25:10 Europe/Berlin] Processing choice: Array
+(
+    [text] => wqeeee
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:25:10 Europe/Berlin] Binding parameters: question_id=208, text=wqeeee, is_correct=1, order=2
+[18-Dec-2024 17:25:10 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:26:20 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"qwesad","is_correct":1},{"text":"qweqwe","is_correct":0}]}
+[18-Dec-2024 17:26:20 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwesad
+                    [is_correct] => 1
+                )
+
+            [1] => Array
+                (
+                    [text] => qweqwe
+                    [is_correct] => 0
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:26:20 Europe/Berlin] Transaction started
+[18-Dec-2024 17:26:20 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:26:20 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:26:20 Europe/Berlin] Question ID: 209
+[18-Dec-2024 17:26:20 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:26:20 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:26:20 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwesad
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:26:20 Europe/Berlin] Binding parameters: question_id=209, text=qwesad, is_correct=1, order=1
+[18-Dec-2024 17:26:20 Europe/Berlin] Processing choice: Array
+(
+    [text] => qweqwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:26:20 Europe/Berlin] Binding parameters: question_id=209, text=qweqwe, is_correct=0, order=2
+[18-Dec-2024 17:26:20 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:27:49 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"multiple_choice","choices":[{"text":"qwe","is_correct":0},{"text":"qweeee","is_correct":1}]}
+[18-Dec-2024 17:27:49 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => multiple_choice
+    [choices] => Array
+        (
+            [0] => Array
+                (
+                    [text] => qwe
+                    [is_correct] => 0
+                )
+
+            [1] => Array
+                (
+                    [text] => qweeee
+                    [is_correct] => 1
+                )
+
+        )
+
+)
+
+[18-Dec-2024 17:27:49 Europe/Berlin] Transaction started
+[18-Dec-2024 17:27:49 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:27:49 Europe/Berlin] Question type: multiple_choice
+[18-Dec-2024 17:27:49 Europe/Berlin] Question ID: 210
+[18-Dec-2024 17:27:49 Europe/Berlin] Processing multiple choice options
+[18-Dec-2024 17:27:49 Europe/Berlin] Number of choices: 2
+[18-Dec-2024 17:27:49 Europe/Berlin] Processing choice: Array
+(
+    [text] => qwe
+    [is_correct] => 0
+)
+
+[18-Dec-2024 17:27:49 Europe/Berlin] Binding parameters: question_id=210, text=qwe, is_correct=0, order=1
+[18-Dec-2024 17:27:49 Europe/Berlin] Processing choice: Array
+(
+    [text] => qweeee
+    [is_correct] => 1
+)
+
+[18-Dec-2024 17:27:49 Europe/Berlin] Binding parameters: question_id=210, text=qweeee, is_correct=1, order=2
+[18-Dec-2024 17:27:49 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:29:03 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qwe","type":"true_false","correct_tf":"true"}
+[18-Dec-2024 17:29:03 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qwe
+    [type] => true_false
+    [correct_tf] => true
+)
+
+[18-Dec-2024 17:29:03 Europe/Berlin] Transaction started
+[18-Dec-2024 17:29:03 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:29:03 Europe/Berlin] Question type: true_false
+[18-Dec-2024 17:29:03 Europe/Berlin] Question ID: 211
+[18-Dec-2024 17:29:03 Europe/Berlin] Successfully saved question and choices
+[18-Dec-2024 17:29:52 Europe/Berlin] Raw input: {"quiz_id":172,"text":"qweqweq","type":"short_answer","correct_answer":"weeee"}
+[18-Dec-2024 17:29:52 Europe/Berlin] Received quiz question data: Array
+(
+    [quiz_id] => 172
+    [text] => qweqweq
+    [type] => short_answer
+    [correct_answer] => weeee
+)
+
+[18-Dec-2024 17:29:52 Europe/Berlin] Transaction started
+[18-Dec-2024 17:29:52 Europe/Berlin] Validation query result rows: 1
+[18-Dec-2024 17:29:52 Europe/Berlin] Question type: short_answer
+[18-Dec-2024 17:29:52 Europe/Berlin] Question ID: 212
+[18-Dec-2024 17:29:52 Europe/Berlin] Successfully saved question and choices

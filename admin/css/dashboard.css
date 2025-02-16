@@ -1,48 +1,154 @@
-/* Dashboard specific styles */
+/* Admin Dashboard Styles */
+:root {
+    --primary-color: #2196F3;
+    --primary-dark: #1976D2;
+    --secondary-color: #64B5F6;
+    --accent-color: #0D47A1;
+    --success-color: #4CAF50;
+    --warning-color: #FFC107;
+    --danger-color: #F44336;
+    --card-spacing: 1rem;
+}
+
+/* Layout */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+@media (min-width: 992px) {
+    .dashboard-container {
+        flex-direction: row;
+    }
+}
+
+.main-content {
+    padding: 0.75rem;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Welcome Section */
 .welcome-section {
-    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
 }
 
 .welcome-section h1 {
-    font-size: 2rem;
-    color: #2c3e50;
+    font-size: 1.5rem;
     margin-bottom: 0.5rem;
 }
 
-.welcome-section p {
-    color: #7f8c8d;
+@media (min-width: 768px) {
+    .welcome-section {
+        padding: 2rem;
+    }
+    .welcome-section h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Charts Section */
+.chart-card {
+    background: white;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.chart-card .card-header {
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.chart-card .card-body {
+    padding: 1.5rem;
+}
+
+.btn-group .btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-group .btn-outline-primary:hover,
+.btn-group .btn-outline-primary.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chart-card .card-header {
+        padding: 1rem;
+    }
+    
+    .chart-card .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Stats Cards */
+.stats-cards {
+    margin-bottom: 1.5rem;
 }
 
 .stats-cards .card {
     border: none;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .stats-cards .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .stats-cards .card-body {
     padding: 1.5rem;
+    text-align: center;
 }
 
 .stats-cards i {
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: 1rem;
+    color: var(--primary-color);
 }
 
-.stats-cards i.fa-users { color: #3498db; }
-.stats-cards i.fa-chalkboard-teacher { color: #2ecc71; }
-.stats-cards i.fa-book { color: #e74c3c; }
-.stats-cards i.fa-users-cog { color: #f1c40f; }
+.stats-cards h5 {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
 
-/* Activity styles */
+.stats-cards h3 {
+    color: #333;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Activity Section */
 .activity-item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     padding: 1rem;
     border-bottom: 1px solid #eee;
     transition: background-color 0.3s ease;
@@ -52,73 +158,132 @@
     background-color: #f8f9fa;
 }
 
-.activity-item:last-child {
-    border-bottom: none;
+.activity-item i {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: var(--primary-color);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(33, 150, 243, 0.1);
 }
 
-.activity-item i {
-    font-size: 1.2rem;
-    color: #3498db;
-    margin-right: 1rem;
-    padding: 0.5rem;
-    background: #f8f9fa;
-    border-radius: 50%;
+.activity-details {
+    flex: 1;
 }
 
 .activity-details h6 {
     margin: 0;
-    color: #2c3e50;
-}
-
-.activity-details p {
-    margin: 0.25rem 0;
-    color: #7f8c8d;
+    color: #333;
     font-size: 0.9rem;
 }
 
-.activity-details small {
-    color: #95a5a6;
-}
-
-.card-header {
-    background-color: white;
-    border-bottom: 1px solid #eee;
-    padding: 1rem 1.5rem;
-}
-
-.card-header h5 {
+.activity-details p {
     margin: 0;
-    color: #2c3e50;
-    font-weight: 600;
+    color: #666;
+    font-size: 0.8rem;
 }
 
+.activity-details small {
+    color: #999;
+    font-size: 0.75rem;
+}
+
+/* Quick Actions */
 .quick-actions-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+    padding: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .quick-actions-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .quick-action-item {
     display: flex;
     align-items: center;
     padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    color: #2c3e50;
-    text-decoration: none;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
     transition: all 0.3s ease;
+    text-decoration: none;
+    color: #333;
 }
 
 .quick-action-item:hover {
-    background: #e9ecef;
-    transform: translateX(5px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: var(--primary-color);
+    color: white;
     text-decoration: none;
-    color: #3498db;
 }
 
 .quick-action-item i {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     margin-right: 1rem;
-    width: 24px;
-    text-align: center;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid #eee;
+    padding: 1.5rem;
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.card-header h5 {
+    margin: 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* Scrollbars */
+.scrollable-content {
+    max-height: 400px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.scrollable-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 3px;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    .stats-cards h3 {
+        font-size: 1.5rem;
+    }
+    
+    .stats-cards i {
+        font-size: 2rem;
+    }
+    
+    .card-header h5 {
+        font-size: 1rem;
+    }
 }

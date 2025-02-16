@@ -65,7 +65,7 @@ foreach ($days as $day) {
     <!-- External CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>
@@ -122,6 +122,51 @@ foreach ($days as $day) {
             border-radius: 50%;
             margin-right: 10px;
         }
+
+        /* Search Bar Styles */
+.search-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Header Layout */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
     </style>
 </head>
 <body>
@@ -136,9 +181,6 @@ foreach ($days as $day) {
                     <h1>My Subjects</h1>
                     <p class="text-muted">View your enrolled subjects and schedule</p>
                 </div>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#joinSubjectModal">
-                    <i class="fas fa-plus-circle mr-2"></i> Join New Subject
-                </button>
             </div>
 
             <!-- Updated Subjects Grid View -->
@@ -235,86 +277,10 @@ foreach ($days as $day) {
                 </div>
             </div>
 
-
-    <!-- Add this modal at the bottom of the file, before the scripts -->
-    <div class="modal fade" id="joinSubjectModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Join a Subject</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="enrollmentCode">Enter Subject Code</label>
-                        <input type="text" class="form-control" id="enrollmentCode" 
-                               placeholder="Enter the code provided by your teacher">
-                        <small class="form-text text-muted">
-                            Ask your teacher for the subject enrollment code
-                        </small>
-                    </div>
-                    <div id="joinError" class="alert alert-danger d-none"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="joinSubject()">Join Subject</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-    function joinSubject() {
-        const code = document.getElementById('enrollmentCode').value.trim();
-        const errorDiv = document.getElementById('joinError');
-        
-        if (!code) {
-            errorDiv.textContent = 'Please enter an enrollment code';
-            errorDiv.classList.remove('d-none');
-            return;
-        }
-
-        // Reset error message
-        errorDiv.classList.add('d-none');
-
-        // Send request to join subject
-        $.ajax({
-            url: 'handlers/subject_handler.php',
-            type: 'POST',
-            data: {
-                action: 'join_subject',
-                code: code
-            },
-            success: function(response) {
-                if (response.status === 'success') {
-                    // Show success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'You have successfully joined the subject',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        // Reload page to show new subject
-                        window.location.reload();
-                    });
-                } else {
-                    // Show error message
-                    errorDiv.textContent = response.message;
-                    errorDiv.classList.remove('d-none');
-                }
-            },
-            error: function() {
-                errorDiv.textContent = 'An error occurred. Please try again.';
-                errorDiv.classList.remove('d-none');
-            }
-        });
-    }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

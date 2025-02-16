@@ -75,10 +75,10 @@ function createTeacher($db) {
             throw new Exception('Email already exists');
         }
 
-        // Hash password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Using better password hashing
+        // Hash password using MD5
+        $hashed_password = md5($password); // Changed from password_hash to md5
 
-        // Direct query approach instead of prepared statement
+        // Insert query
         $query = "INSERT INTO teacher (
             username,
             password,
@@ -86,7 +86,7 @@ function createTeacher($db) {
             firstname,
             lastname,
             middlename,
-            department,
+            department_id,
             status
         ) VALUES (
             '" . $db->escapeString($_POST['username']) . "',
@@ -103,7 +103,6 @@ function createTeacher($db) {
             throw new Exception("Database Error: " . mysqli_error($db->getConnection()));
         }
 
-        // Commit transaction
         $db->commit();
 
         echo json_encode([
@@ -112,12 +111,9 @@ function createTeacher($db) {
         ]);
 
     } catch (Exception $e) {
-        // Rollback transaction
         $db->rollback();
-        
         error_log("Teacher Creation Error: " . $e->getMessage());
         error_log("Last Query: " . $db->theQuery);
-        
         echo json_encode([
             'status' => 'error',
             'message' => $e->getMessage()

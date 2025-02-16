@@ -2,11 +2,56 @@
 session_start();
 
 // Initialize login status
-$isLoggedIn = isset($_SESSION['teacher_id']);
+$isLoggedIn = isset($_SESSION['id']);
+
+// Check for active session and device status
+if ($isLoggedIn) {
+    require_once('../db/dbConnector.php');
+    $db = new DbConnector();
+    
+    $student_id = $_SESSION['id'];
+    
+    // Check if user is logged in on another device - using only user_online first
+    $check_session_query = "SELECT user_online FROM student WHERE student_id = ?";
+    $stmt = $db->prepare($check_session_query);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_status = $result->fetch_assoc();
+
+    // Generate or get session ID
+    if (!isset($_SESSION['session_id'])) {
+        $_SESSION['session_id'] = session_id();
+    }
+
+    // Update user status and session
+    $update_status = "UPDATE student SET 
+        user_online = 1, 
+        session_id = ? 
+        WHERE student_id = ?";
+    $stmt = $db->prepare($update_status);
+    $stmt->bind_param("si", $_SESSION['session_id'], $student_id);
+    $stmt->execute();
+
+    // Check if this is a different session
+    $check_session = "SELECT session_id FROM student WHERE student_id = ?";
+    $stmt = $db->prepare($check_session);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $current_session = $result->fetch_assoc();
+
+    if ($current_session['session_id'] !== $_SESSION['session_id']) {
+        // Force logout
+        session_destroy();
+        header("Location: Student-Login.php?error=multiple_login");
+        exit();
+    }
+}
 
 // Only redirect if trying to access protected pages
 if (isset($requireLogin) && $requireLogin && !$isLoggedIn) {
-    header("Location: ../Student/Teacher-Login.php");
+    header("Location: Teacher-Login.php");
     exit();
 }
 
@@ -16,15 +61,12 @@ if ($isLoggedIn) {
     require_once('../db/dbConnector.php');
     $db = new DbConnector();
     
-    $teacher_id = $_SESSION['teacher_id'];
-    $query = "SELECT * FROM teacher WHERE teacher_id = ?";
-    $stmt = $db->prepare($query);
-    $stmt->bind_param("i", $teacher_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $student_id = $_SESSION['id'];
+    $query = "SELECT * FROM student WHERE student_id = '$student_id'";
+    $result = $db->query($query);
     
-    if ($result && $result->num_rows > 0) {
-        $userData = $result->fetch_array();
+    if ($result && mysqli_num_rows($result) > 0) {
+        $userData = mysqli_fetch_array($result);
     }
 }
 ?>
@@ -36,18 +78,20 @@ if ($isLoggedIn) {
     <title>Gov D.M. Camerino</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/Home.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
     <!-- Header and Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="home.php">
             <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo">
             <span class="logo-text">Gov D.M. Camerino</span>
             </a>
@@ -56,20 +100,23 @@ if ($isLoggedIn) {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
+                  
+                    
+                    
                     <?php if ($isLoggedIn): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <?php echo htmlspecialchars($userData['firstname'] ?? 'My Account'); ?>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="teacher_dashboard.php">Dashboard</a></li>
-                                <li><a class="dropdown-item" href="teacher_profile.php">Profile</a></li>
+                                <li><a class="dropdown-item" href="student_dashboard.php">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="student_profile.php">Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                             </ul>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link btn-signup" href="Teacher-Login.php">Log In</a></li>
+                        
                     <?php endif; ?>
                 </ul>
             </div>
@@ -87,10 +134,10 @@ if ($isLoggedIn) {
                     <p class="lead animate__animated animate__fadeInLeft animate__delay-1s">Nurturing Excellence, Building Character, Shaping Future Leaders</p>
                     <div class="cta-buttons animate__animated animate__fadeInUp animate__delay-2s">
                         <?php if ($isLoggedIn): ?>
-                            <a href="teacher_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
-                            <a href="teacher_profile.php" class="btn btn-outline-primary">Profile</a>
+                            <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
+                            <a href="student_section.php" class="btn btn-outline-primary">My Classes</a>
                         <?php else: ?>
-                            <a href="../Login.php" class="btn btn-primary">Teacher Portal</a>
+                            <a href="teacher_dashboard.php" class="btn btn-primary">Teacher Dashboard</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -99,11 +146,37 @@ if ($isLoggedIn) {
                 </div>
             </div>
             
-            <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
-                <input type="text" placeholder="Search something...">
-                <button class="btn-search">Search</button>
+            
+              
+          
+               
+           
+            
+            <div class="quick-links animate__animated animate__fadeInUp animate__delay-4s">
+                <p>You may be looking for</p>
+                <div class="links">
+                    <a href="home.php" class="link-item active">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="site-map.php" class="link-item">
+                        <i class="fas fa-map"></i>
+                        <span>Site Map</span>
+                    </a>
+                    <a href="News.php" class="link-item">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Updates</span>
+                    </a>
+                    <a href="aboutus.php" class="link-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                    <a href="contactus.php" class="link-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact Us</span>
+                    </a>
+                </div>
             </div>
-
         </div>
     </section>
 
@@ -301,8 +374,7 @@ if ($isLoggedIn) {
                         <div class="official-overlay">
                             <div class="social-links">
                                 <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-linkedin"></i></a>
+                               
                             </div>
                         </div>
                     </div>
@@ -320,8 +392,7 @@ if ($isLoggedIn) {
                         <div class="official-overlay">
                             <div class="social-links">
                                 <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-linkedin"></i></a>
+                              
                             </div>
                         </div>
                     </div>
@@ -471,140 +542,135 @@ if ($isLoggedIn) {
     // Welcome Alert Function
     function showWelcomeAlert() {
         Swal.fire({
-            title: 'Welcome to Camerino Hub LMS!',
+            title: '<div class="animate__animated animate__fadeInDown">Welcome to Camerino Hub LMS!</div>',
             html: `
-                <div class="welcome-content">
+                <div class="welcome-content animate__animated animate__fadeIn">
+                    <div class="welcome-icon animate__animated animate__zoomIn">
+                        <img src="../images/welcome-student.gif" alt="Welcome" style="width: 120px; margin-bottom: 20px;">
+                    </div>
                     <p class="welcome-text">
-                        Hello <?php echo htmlspecialchars($userData['firstname'] ?? ''); ?>!
+                        Hello, ${escapeHtml('<?php echo $_SESSION['welcome_name'] ?? ''; ?>')}!
+                    </p>
+                    <p class="welcome-subtext">
                         Welcome to Gov. D. M. Camerino Learning Management System.
                         Your gateway to digital education excellence.
                     </p>
-                    <p class="welcome-subtext">
-                        Explore your courses, connect with teachers, and enhance your learning journey.
+                    <p class="welcome-features">
+                        ✓ Access your courses<br>
+                        ✓ Connect with teachers<br>
+                        ✓ Track your progress
                     </p>
                 </div>
             `,
-            icon: 'success',
-            confirmButtonText: 'Get Started',
-            confirmButtonColor: '#007bff',
-            allowOutsideClick: false,
+            showConfirmButton: false,
+            timer: 3000, // Auto close after 3 seconds
+            timerProgressBar: true,
             customClass: {
-                popup: 'welcome-popup',
-                title: 'welcome-title',
-                content: 'welcome-content',
-                confirmButton: 'welcome-button'
+                popup: 'welcome-popup animate__animated animate__fadeInUp'
+            },
+            didOpen: () => {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            },
+            willClose: () => {
+                // Redirect after closing
+                window.location.href = 'teacher_dashboard.php';
             }
         });
     }
 
+    // Escape HTML to prevent XSS
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     // Show alert when page loads if user just logged in
-    <?php if ($isLoggedIn && isset($_SESSION['just_logged_in'])): ?>
-    window.addEventListener('DOMContentLoaded', (event) => {
-        showWelcomeAlert();
+    <?php if (isset($_SESSION['just_logged_in']) && $_SESSION['just_logged_in']): ?>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Small delay to ensure everything is loaded
+        setTimeout(() => {
+            showWelcomeAlert();
+            <?php 
+            // Remove the flags after showing the alert
+            unset($_SESSION['just_logged_in']);
+            unset($_SESSION['welcome_name']);
+            ?>
+        }, 100);
     });
-    <?php 
-        // Remove the flag so alert won't show again on refresh
-        unset($_SESSION['just_logged_in']);
-    endif; 
-    ?>
+    <?php endif; ?>
     </script>
 
     <style>
     .welcome-popup {
         padding: 2rem;
         border-radius: 15px;
+        background: linear-gradient(145deg, #ffffff, #f3f4f6);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .welcome-title {
-        color: #007bff;
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-    }
-
-    .welcome-text {
-        font-size: 1.1rem;
-        color: #333;
-        margin-bottom: 1rem;
-        line-height: 1.5;
-    }
-
-    .welcome-subtext {
-        color: #666;
-        font-size: 1rem;
+        color: #2c5282;
+        font-size: 2rem;
+        font-weight: 700;
         margin-bottom: 1.5rem;
     }
 
+    .welcome-text {
+        color: #2d3748;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtext {
+        color: #4a5568;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .welcome-features {
+        color: #2d3748;
+        font-size: 1.1rem;
+        text-align: left;
+        margin: 1.5rem auto;
+        max-width: 300px;
+        line-height: 1.8;
+    }
+
     .welcome-button {
-        padding: 10px 30px;
+        padding: 12px 30px;
         font-size: 1.1rem;
         border-radius: 25px;
         text-transform: uppercase;
         font-weight: 500;
+        box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
     }
 
-    .swal2-icon.swal2-success {
-        border-color: #007bff;
-        color: #007bff;
+    .welcome-icon {
+        margin-bottom: 1.5rem;
     }
 
-    .swal2-icon.swal2-success [class^='swal2-success-line'] {
-        background-color: #007bff;
-    }
-
-    .swal2-icon.swal2-success .swal2-success-ring {
-        border-color: rgba(0, 123, 255, 0.3);
+    .custom-start-button {
+        background: linear-gradient(45deg, #4CAF50, #45a049);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
     }
     </style>
 
-    <!-- Add this right after your existing scripts, before closing </body> tag -->
-    <script>
-    // Session timeout checking
-    function checkSession() {
-        fetch('check_session.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'timeout') {
-                    Swal.fire({
-                        title: 'Session Expired',
-                        text: 'Your session has expired due to inactivity. Please log in again.',
-                        icon: 'warning',
-                        confirmButtonText: 'Login Again',
-                        allowOutsideClick: false
-                    }).then((result) => {
-                        window.location.href = '../Student/Teacher-Login.php';
-                    });
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    // Check session every minute
-    setInterval(checkSession, 60000);
-
-    // Check session on user activity
-    let activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
-    let lastActivity = Date.now();
-
-    activityEvents.forEach(function(eventName) {
-        document.addEventListener(eventName, function() {
-            lastActivity = Date.now();
-            checkSession();
-        }, true);
-    });
-
-    // Optional: Add this if you want to track when users actually leave the site
-    let isLeaving = false;
-    window.addEventListener('unload', function() {
-        if (isLeaving) {
-            navigator.sendBeacon('logout.php');
-        }
-    });
-
-    // Add this for links that should trigger logout
-    document.querySelector('a[href="logout.php"]').addEventListener('click', function() {
-        isLeaving = true;
-    });
-    </script>
 
     <script>
     // Initialize Owl Carousel
@@ -663,6 +729,83 @@ if ($isLoggedIn) {
 
     document.querySelectorAll('.stat-number').forEach(counter => {
         observers.observe(counter);
+    });
+    </script>
+
+    <script>
+    function performSearch() {
+        const searchTerm = document.getElementById('searchInput').value.trim();
+        if (searchTerm) {
+            // You can modify this to point to your actual search endpoint
+            window.location.href = `search_results.php?q=${encodeURIComponent(searchTerm)}`;
+        }
+    }
+
+    function redirectToLogin() {
+        window.location.href = 'Teacher-Login.php';
+    }
+
+    // Optional: Add enter key support for search
+    document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && <?php echo $isLoggedIn ? 'true' : 'false' ?>) {
+            performSearch();
+        }
+    });
+    </script>
+
+    <script>
+    $(document).ready(function() {
+        let searchTimeout;
+        const searchInput = $('#searchInput');
+        
+        // Live search suggestions
+        searchInput.on('keyup', function() {
+            clearTimeout(searchTimeout);
+            const query = $(this).val();
+            
+            if (query.length >= 2) {
+                searchTimeout = setTimeout(function() {
+                    $.ajax({
+                        url: 'search_suggestions.php',
+                        method: 'GET',
+                        data: { query: query },
+                        success: function(response) {
+                            // Handle search suggestions
+                            showSuggestions(response);
+                        }
+                    });
+                }, 300);
+            }
+        });
+    });
+    </script>
+
+    <!-- Add this JavaScript before the closing body tag -->
+    <script>
+    // Simple activity update function
+    function updateActivity() {
+        fetch('update_activity.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .catch(error => {
+            console.log('Error updating activity:', error);
+        });
+    }
+
+    // Change from 60000 (1 minute) to 300000 (5 minutes)
+    setInterval(updateActivity, 300000);
+
+    // Only update activity when tab becomes visible and was hidden for more than 5 seconds
+    let lastHiddenTime = 0;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            lastHiddenTime = Date.now();
+        } else if (Date.now() - lastHiddenTime > 5000) { // Only update if hidden for more than 5 seconds
+            updateActivity();
+        }
     });
     </script>
 </body>

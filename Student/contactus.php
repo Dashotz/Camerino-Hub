@@ -30,13 +30,14 @@ if ($isLoggedIn) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/contactus.css">
+	<link rel="icon" href="../images/light-logo.png">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- Header and Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="home.php">
             <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo">
             <span class="logo-text">Gov D.M. Camerino</span>
             </a>
@@ -64,7 +65,7 @@ if ($isLoggedIn) {
                             </div>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link btn-signup" href="Student-Login.php">Log In</a></li>
+                        <li class="nav-item"><a class="nav-link btn-signup" href="../login.php">Log In</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -97,7 +98,7 @@ if ($isLoggedIn) {
                         </div>
                         <h3>Campus Location</h3>
                         <p>Medicion 2, A.Imus City,<br>Cavite 4103</p>
-                        <a href="#map" class="btn btn-primary rounded-pill">View on Map</a>
+                        <a href="#map-section" class="btn btn-primary rounded-pill view-map-btn">View on Map</a>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
@@ -186,10 +187,8 @@ if ($isLoggedIn) {
                             <div class="social-connect text-center">
                                 <h3 class="mb-4">Connect With Us</h3>
                                 <div class="social-icons-large">
-                                    <a href="#" class="social-icon-lg facebook"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#" class="social-icon-lg twitter"><i class="fab fa-twitter"></i></a>
-                                    <a href="#" class="social-icon-lg instagram"><i class="fab fa-instagram"></i></a>
-                                    <a href="#" class="social-icon-lg youtube"><i class="fab fa-youtube"></i></a>
+                                    <a href="https://www.facebook.com/DepEdTayoGDMCIS107985" class="social-icon-lg facebook"><i class="fab fa-facebook-f"></i></a>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -201,7 +200,7 @@ if ($isLoggedIn) {
     
 
     <!-- Map Section -->
-    <section class="map-section section-gap bg-light mb-0">
+    <section id="map-section" class="map-section section-gap bg-light mb-0">
         <div class="container">
             <div class="map-wrapper rounded-lg overflow-hidden shadow">
                 <iframe width="100%" height="450" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
@@ -269,6 +268,33 @@ if ($isLoggedIn) {
             })
             .finally(() => {
                 submitBtn.prop('disabled', false).html(originalBtnText);
+            });
+        });
+    });
+    </script>
+    <script>
+    $(document).ready(function() {
+        // Smooth scroll for View Map button
+        $('.view-map-btn').on('click', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const $btn = $(this);
+            const originalText = $btn.text();
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Loading Map...');
+            
+            // Smooth scroll to map section
+            $('html, body').animate({
+                scrollTop: $('#map-section').offset().top - 80 // 80px offset for navbar
+            }, 1000, 'swing', function() {
+                // Reset button state after animation
+                $btn.prop('disabled', false).text(originalText);
+                
+                // Optional: Highlight the map section
+                $('#map-section').addClass('highlight-section');
+                setTimeout(() => {
+                    $('#map-section').removeClass('highlight-section');
+                }, 1500);
             });
         });
     });

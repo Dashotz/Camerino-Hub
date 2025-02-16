@@ -1,0 +1,45 @@
+@import 'create-activity.css';
+
+/* Additional Assignment-specific styles */
+.assignment-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.file-upload-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.file-upload-section .form-control-file {
+    border: 2px dashed #ced4da;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.file-upload-section .form-control-file:hover {
+    border-color: #007bff;
+    background-color: #f1f8ff;
+}
+
+.file-requirements {
+    background-color: #e9ecef;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-top: 1rem;
+}
+
+.file-requirements ul {
+    margin-bottom: 0;
+    padding-left: 1.2rem;
+}
+
+.file-requirements li {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+} 

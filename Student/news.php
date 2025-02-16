@@ -49,12 +49,14 @@ while ($row = $db->fetchAssoc($result)) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/news.css">
+    <link rel="stylesheet" href="css/shared.css">
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
     <!-- Header and Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="home.php">
                 <img src="../images/logo.png" alt="Gov D.M. Camerino" class="navbar-logo">
                 <span class="logo-text">Gov D.M. Camerino</span>
             </a>
@@ -82,7 +84,7 @@ while ($row = $db->fetchAssoc($result)) {
                             </div>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link btn-signup" href="Student-Login.php">Log In</a></li>
+                        <li class="nav-item"><a class="nav-link btn-signup" href="../login.php">Log In</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -100,7 +102,7 @@ while ($row = $db->fetchAssoc($result)) {
                         <?php if ($isLoggedIn): ?>
                             <a href="student_dashboard.php" class="btn btn-primary">Go to Dashboard</a>
                         <?php else: ?>
-                            <a href="Student-Login.php" class="btn btn-primary">Login Now</a>
+                            <a href="../login.php" class="btn btn-primary">Login Now</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -109,30 +111,35 @@ while ($row = $db->fetchAssoc($result)) {
                 </div>
             </div>
             
-            <!-- Search and Quick Links -->
-            <?php if ($isLoggedIn): ?>
-                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
-                    <form action="search_results.php" method="GET" class="search-form">
-                        <input 
-                            type="text" 
-                            name="query" 
-                            id="newsSearch" 
-                            placeholder="Search news..." 
-                            required
-                            autocomplete="off"
-                        >
-                    </form>
+            <!-- Search Box (Moved here) -->
+          
+			
+            <!-- Quick Links Section -->
+            <div class="quick-links animate__animated animate__fadeInUp animate__delay-3s">
+                <p>You may be looking for</p>
+                <div class="links">
+                    <a href="home.php" class="link-item">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="site-map.php" class="link-item">
+                        <i class="fas fa-map"></i>
+                        <span>Site Map</span>
+                    </a>
+                    <a href="news.php" class="link-item active">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Updates</span>
+                    </a>
+                    <a href="aboutus.php" class="link-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                    <a href="contactus.php" class="link-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact Us</span>
+                    </a>
                 </div>
-            <?php else: ?>
-                <div class="search-container animate__animated animate__fadeInUp animate__delay-3s">
-                    <input 
-                        type="text" 
-                        id="newsSearch" 
-                        placeholder="Please login to access search features" 
-                        disabled
-                    >
-                </div>
-            <?php endif; ?>
+            </div>
         </div>
     </section>
 

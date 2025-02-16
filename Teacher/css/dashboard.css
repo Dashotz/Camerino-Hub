@@ -12,6 +12,9 @@ body {
     background-color: var(--background-color);
     color: var(--text-primary);
     font-family: 'Google Sans', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
 }
 
 /* Navbar */
@@ -19,6 +22,7 @@ body {
     background-color: var(--card-color);
     box-shadow: 0 1px 2px rgba(60,64,67,0.3);
     padding: 0.5rem 1rem;
+    margin-bottom: 0 !important;
 }
 
 .btn-menu {
@@ -170,17 +174,18 @@ body {
 
 /* Welcome Section */
 .welcome-section {
-    margin-bottom: 2rem;
+    margin-top: 0;
+    padding-top: 10px;
 }
 
 .welcome-section h1 {
-    color: var(--text-primary);
+    color: white;
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
 }
 
 .welcome-section p {
-    color: var(--text-secondary);
+    color: white;
     margin: 0;
 }
 
@@ -192,6 +197,182 @@ body {
     
     .btn-create span {
         display: none;
+    }
+
+    /* Stats Cards */
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stats-cards .col-md-3 {
+        width: 100%;
+        padding: 0;
+    }
+
+    .stats-cards .card {
+        height: 100%;
+        margin-bottom: 0;
+    }
+
+    .stats-cards .card-body {
+        padding: 15px;
+    }
+
+    .stats-cards .card i {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+
+    .stats-cards .card h5 {
+        font-size: 0.9rem;
+    }
+
+    .stats-cards .card h3 {
+        font-size: 1.3rem;
+    }
+
+    /* Quick Actions Grid */
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .quick-action-item {
+        padding: 12px;
+    }
+
+    .quick-action-item i {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+
+    .quick-action-item span {
+        font-size: 0.9rem;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+        margin: 0;
+        padding: 10px 5px;
+    }
+
+    .welcome-section h1 {
+        font-size: 1.4rem;
+    }
+
+    /* Activity and Announcement Lists */
+    .activity-list, .announcement-list {
+        max-height: 300px;
+    }
+
+    .activity-item, .announcement-item {
+        padding: 12px;
+    }
+
+    .activity-details h6 {
+        font-size: 0.95rem;
+    }
+
+    .activity-status .badge {
+        font-size: 0.8rem;
+    }
+
+    /* Card Headers */
+    .card-header {
+        padding: 12px 15px;
+    }
+
+    .card-header h5 {
+        font-size: 1rem;
+    }
+
+    /* Stats Cards */
+    .stats-cards {
+        margin: 0;
+        padding: 0 5px;
+    }
+
+    .stats-cards .card {
+        margin: 5px 0;
+    }
+
+    /* Quick Actions Grid */
+    .quick-actions-grid {
+        padding: 5px;
+        margin: 0;
+    }
+
+    .quick-action-item {
+        margin: 0;
+    }
+
+    /* Remove any extra spacing */
+    .row {
+        margin: 0;
+    }
+
+    [class*="col-"] {
+        padding: 0 5px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 8px;
+        margin: 0;
+    }
+
+    .quick-action-item {
+        padding: 10px 5px;
+        height: 70px;
+    }
+
+    .quick-action-item i {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    .quick-action-item span {
+        font-size: 0.75rem;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .dashboard-container {
+        height: auto;
+        min-height: calc(100vh - 56px);
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .stats-cards .col-md-3 {
+        width: 25%;
+        float: left;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Tablet devices */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats-cards .col-md-3 {
+        width: 50%;
+        float: left;
+        margin-bottom: 15px;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -219,23 +400,40 @@ body {
 
 .quick-actions-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .quick-action-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px;
-    border-radius: 8px;
+    justify-content: center;
+    padding: 12px 8px;
     background: #f8f9fa;
-    transition: all 0.3s;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #495057;
+    text-align: center;
+    height: 80px;
 }
 
-.quick-action-item:hover {
-    background: #e9ecef;
-    text-decoration: none;
+.quick-action-item i {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.quick-action-item span {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .activity-list, .announcement-list {
@@ -249,4 +447,110 @@ body {
 
 .activity-item:hover, .announcement-item:hover {
     background-color: #f8f9fa;
+}
+
+/* Add or update these styles */
+
+/* Base Container */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    width: 100%;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    padding: 1rem;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Charts Container */
+.charts-row {
+    margin: -0.5rem; /* Compensate for inner padding */
+}
+
+.chart-wrapper {
+    padding: 0.5rem;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    height: 100%;
+    min-height: 300px;
+}
+
+/* Responsive Grid System */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Card Styles */
+.card {
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+/* Chart Responsiveness */
+#performanceChart, 
+#assignmentPieChart, 
+#classDistributionChart {
+    width: 100% !important;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .main-content {
+        padding: 1.5rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+
+    .chart-container {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Adjust chart heights for mobile */
+    .chart-container {
+        min-height: 250px;
+    }
+
+    /* Stack charts vertically on mobile */
+    .col-12 {
+        width: 100%;
+    }
+
+    /* Adjust padding and margins */
+    .card-body {
+        padding: 1rem;
+    }
+
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+/* Fix ApexCharts Responsiveness */
+.apexcharts-canvas {
+    max-width: 100% !important;
+}
+
+.apexcharts-toolbar {
+    z-index: 2 !important;
 }

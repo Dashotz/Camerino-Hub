@@ -42,11 +42,12 @@ $subject = $stmt->get_result()->fetch_assoc();
 $teachers_query = "SELECT 
     ss.*,
     CONCAT(t.firstname, ' ', t.lastname) as teacher_name,
-    t.department,
+    d.department_name as department,
     CONCAT(s.grade_level, ' - ', s.section_name) as section_name,
     ay.school_year
     FROM section_subjects ss
     JOIN teacher t ON ss.teacher_id = t.teacher_id
+    JOIN departments d ON t.department_id = d.department_id
     JOIN sections s ON ss.section_id = s.section_id
     JOIN academic_years ay ON ss.academic_year_id = ay.id
     WHERE ss.subject_id = ?
@@ -69,7 +70,7 @@ $teachers_result = $teachers_stmt->get_result();
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <style>

@@ -9,18 +9,64 @@
     color: var(--primary-color);
 }
 
+/* Stats Cards */
+.stats-cards {
+    margin: 20px 0;
+}
+
 .stats-cards .card {
-    border-radius: 8px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
     border: 1px solid var(--border-color);
-    transition: box-shadow 0.3s;
 }
 
 .stats-cards .card:hover {
+    transform: translateY(-5px);
     box-shadow: 0 1px 3px 0 rgb(60 64 67 / 30%);
 }
 
-/* ... rest of your dashboard-specific styles ... */
+.stats-cards .card-body {
+    padding: 1.5rem;
+    text-align: center;
+}
 
+.stats-cards .card i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #007bff;
+}
+
+.stats-cards .card h5 {
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.stats-cards .card h3 {
+    color: #2c3e50;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.stats-cards .card small {
+    display: block;
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+/* Stats Cards Icons Colors */
+.stats-cards .card:nth-child(1) i { color: #4e73df; }
+.stats-cards .card:nth-child(2) i { color: #1cc88a; }
+.stats-cards .card:nth-child(3) i { color: #f6c23e; }
+.stats-cards .card:nth-child(4) i { color: #36b9cc; }
+
+/* Activity Items */
 .activity-item {
     display: flex;
     align-items: flex-start;
@@ -51,4 +97,427 @@
 .badge {
     padding: 5px 10px;
     font-weight: 500;
+}
+
+/* Search Bar Styles */
+.search-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Header Layout */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+/* Responsive styles for dashboard */
+@media (max-width: 768px) {
+    /* Welcome Section */
+    .welcome-section {
+        margin-bottom: 20px;
+        padding: 0 15px;
+    }
+
+    .welcome-section h1 {
+        font-size: 24px;
+    }
+
+    /* Stats Cards */
+    .stats-cards {
+        margin: 10px -10px;
+    }
+
+    .stats-cards .col-md-3 {
+        padding: 0 10px;
+        margin-bottom: 15px;
+    }
+
+    .stats-cards .card {
+        margin-bottom: 0;
+    }
+
+    .stats-cards .card-body {
+        padding: 15px;
+    }
+
+    .stats-cards .card i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-cards .card h5 {
+        font-size: 0.8rem;
+    }
+
+    .stats-cards .card h3 {
+        font-size: 1.5rem;
+    }
+
+    /* Recent Activities and Upcoming Tasks */
+    .activity-item {
+        padding: 10px;
+    }
+
+    .activity-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .activity-content h6 {
+        font-size: 0.9rem;
+    }
+
+    .activity-content p {
+        font-size: 0.8rem;
+    }
+
+    .activity-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+
+    /* Task List */
+    .task-list li {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .task-title {
+        font-size: 0.85rem;
+    }
+
+    .task-date {
+        font-size: 0.8rem;
+    }
+
+    /* Section Information Card */
+    .card-header {
+        padding: 15px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .info-group {
+        margin-bottom: 15px !important;
+    }
+
+    .info-group h5 {
+        font-size: 0.9rem;
+    }
+
+    /* Classmates Grid */
+    .col-md-6.col-lg-4 {
+        padding: 0 10px;
+    }
+
+    .classmate-card {
+        margin-bottom: 15px;
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+    }
+
+    .student-info h6 {
+        font-size: 0.85rem;
+    }
+
+    .student-info small {
+        font-size: 0.75rem;
+    }
+
+    /* Main Content Padding */
+    .main-content {
+        padding: 15px;
+        margin-left: 60px;
+        width: calc(100% - 60px);
+    }
+
+    /* Container Fluid */
+    .container-fluid {
+        padding: 0 10px;
+    }
+
+    /* Badge Adjustments */
+    .badge-soft-primary {
+        font-size: 0.75rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    /* Main Content */
+    .main-content {
+        margin-left: 50px;
+        width: calc(100% - 50px);
+        padding: 10px;
+    }
+
+    /* Section Info Layout */
+    .card-header h4 {
+        font-size: 1rem;
+    }
+
+    /* Classmates Grid - Single Column */
+    .col-md-6.col-lg-4 {
+        width: 100%;
+    }
+
+    /* Compact Cards */
+    .classmate-card {
+        margin-bottom: 10px;
+    }
+
+    .card-body {
+        padding: 12px;
+    }
+
+    /* Smaller Avatar */
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+    }
+
+    /* Adjust Text Sizes */
+    .student-info h6 {
+        font-size: 0.8rem;
+    }
+
+    .student-info small {
+        font-size: 0.7rem;
+    }
+
+    /* Stats Cards Grid */
+    .stats-cards .col-md-3 {
+        width: 50%;
+        float: left;
+    }
+
+    .stats-cards .card h3 {
+        font-size: 1.2rem;
+    }
+
+    .stats-cards .card small {
+        font-size: 0.7rem;
+    }
+
+    /* Activities and Tasks Layout */
+    .row.mt-4 {
+        margin: 0;
+    }
+
+    .col-md-8, .col-md-4 {
+        padding: 0 10px;
+    }
+
+    .card {
+        margin-bottom: 15px;
+    }
+
+    .card-header h5 {
+        font-size: 1rem;
+    }
+
+    /* Activity Items */
+    .activity-item {
+        flex-direction: column;
+    }
+
+    .activity-icon {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+
+    .activity-content {
+        width: 100%;
+    }
+
+    /* Hide some meta information on very small screens */
+    .activity-meta small:not(:first-child) {
+        display: none;
+    }
+}
+
+/* Landscape orientation fixes */
+@media (max-height: 480px) and (orientation: landscape) {
+    .dashboard-container {
+        padding-top: 0;
+    }
+
+    .stats-cards {
+        margin: 10px 0;
+    }
+
+    .stats-cards .col-md-3 {
+        width: 25%;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    .main-content {
+        padding-top: 10px;
+    }
+
+    .card {
+        margin-bottom: 10px;
+    }
+
+    /* Adjust grid for landscape */
+    .row {
+        margin: 0 -5px;
+    }
+
+    .col-md-6.col-lg-4 {
+        padding: 0 5px;
+        width: 50%;
+        float: left;
+    }
+}
+
+/* Alert styling */
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.alert ul {
+    list-style-type: none;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.alert ul li {
+    margin-bottom: 5px;
+    color: #856404;
+}
+
+.alert .btn-warning {
+    color: #856404;
+    background-color: #ffeeba;
+    border-color: #ffeeba;
+    margin-top: 10px;
+}
+
+.alert .btn-warning:hover {
+    background-color: #ffdf7e;
+    border-color: #ffdf7e;
+}
+
+.alert .close {
+    color: #856404;
+}
+
+/* Attendance reminder card styles */
+.card.bg-warning {
+    border: none;
+    border-radius: 10px;
+}
+
+.card.bg-warning .card-body {
+    padding: 1.5rem;
+}
+
+.card.bg-warning ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.card.bg-warning ul li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.card.bg-warning .btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.card.bg-warning .btn-dark:hover {
+    background-color: #23272b;
+    border-color: #1d2124;
+    transform: translateY(-1px);
+}
+
+.card.bg-warning .fas {
+    color: #856404;
+}
+
+/* Add these styles */
+.attendance-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.attendance-card h6 {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.attendance-card p {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.mark-attendance {
+    min-width: 140px;
+}
+
+.text-success {
+    color: #28a745;
 }

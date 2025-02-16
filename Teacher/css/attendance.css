@@ -131,3 +131,160 @@ select.status-badge option[value="excused"] {
         margin-bottom: 10px;
     }
 }
+
+/* Search Bar Styles */
+.search-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Header Layout */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+/* Base styles and responsive updates */
+.page-title {
+    margin-bottom: 1.5rem;
+}
+
+.card {
+    margin-bottom: 1.5rem;
+}
+
+/* Form controls */
+.form-control {
+    margin-bottom: 1rem;
+}
+
+/* Student list table responsiveness */
+.student-list {
+    overflow-x: auto;
+}
+
+.student-list table {
+    min-width: 100%;
+}
+
+/* Export section responsiveness */
+.export-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    /* Form layout */
+    .row {
+        margin: 0;
+    }
+
+    .col-md-4, .col-md-3, .col-md-2 {
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+
+    /* Button adjustments */
+    #loadStudents {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    /* Export section */
+    .input-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .input-group > * {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        border-radius: 4px !important;
+    }
+
+    .input-group-append {
+        width: 100%;
+    }
+
+    .input-group-append button {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    /* Date range inputs */
+    input[type="date"] {
+        width: 100%;
+    }
+
+    /* Export buttons */
+    .btn-block {
+        margin-bottom: 1rem;
+    }
+
+    /* Card padding adjustment */
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Table scrolling */
+    .student-list {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .card-header h5 {
+        font-size: 1.1rem;
+    }
+
+    /* Adjust form elements */
+    select.form-control,
+    input.form-control {
+        font-size: 0.9rem;
+    }
+
+    /* Button text size */
+    .btn {
+        font-size: 0.9rem;
+    }
+}

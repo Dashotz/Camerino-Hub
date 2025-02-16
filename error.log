@@ -106,3 +106,176 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\Teacher\create_activity.php on line 37
+[27-Nov-2024 16:07:20 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer" not found in /home/frncszxc.helioho.st/httpdocs/teacher/forgot_password.php:87
+Stack trace:
+#0 {main}
+  thrown in /home/frncszxc.helioho.st/httpdocs/teacher/forgot_password.php on line 87
+[27-Nov-2024 16:16:32 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'details' in 'field list' in /home/frncszxc.helioho.st/httpdocs/db/dbConnector.php:114
+Stack trace:
+#0 /home/frncszxc.helioho.st/httpdocs/db/dbConnector.php(114): mysqli_prepare()
+#1 /home/frncszxc.helioho.st/httpdocs/teacher/forgot_password.php(129): DbConnector->prepare()
+#2 {main}
+  thrown in /home/frncszxc.helioho.st/httpdocs/db/dbConnector.php on line 114
+[28-Nov-2024 03:52:09 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'details' in 'field list' in /home/frncszxc.helioho.st/httpdocs/db/dbConnector.php:114
+Stack trace:
+#0 /home/frncszxc.helioho.st/httpdocs/db/dbConnector.php(114): mysqli_prepare()
+#1 /home/frncszxc.helioho.st/httpdocs/teacher/forgot_password.php(129): DbConnector->prepare()
+#2 {main}
+  thrown in /home/frncszxc.helioho.st/httpdocs/db/dbConnector.php on line 114
+[28-Nov-2024 03:59:36 UTC] Password Recovery Error: No active account found with this email
+[28-Nov-2024 04:00:22 UTC] Password Recovery Error: No active account found with this email
+[29-Nov-2024 17:47:37 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'details' in 'field list' in C:\xampp\htdocs\learning-design\Camerino-Hub\db\dbConnector.php:114
+Stack trace:
+#0 C:\xampp\htdocs\learning-design\Camerino-Hub\db\dbConnector.php(114): mysqli_prepare(Object(mysqli), 'INSERT INTO tea...')
+#1 C:\xampp\htdocs\learning-design\Camerino-Hub\teacher\forgot_password.php(129): DbConnector->prepare('INSERT INTO tea...')
+#2 {main}
+  thrown in C:\xampp\htdocs\learning-design\Camerino-Hub\db\dbConnector.php on line 114
+[02-Dec-2024 10:46:35 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'details' in 'INSERT INTO' in /home/u804969888/domains/camerinohub.site/public_html/db/dbConnector.php:114
+Stack trace:
+#0 /home/u804969888/domains/camerinohub.site/public_html/db/dbConnector.php(114): mysqli_prepare()
+#1 /home/u804969888/domains/camerinohub.site/public_html/teacher/forgot_password.php(129): DbConnector->prepare()
+#2 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/db/dbConnector.php on line 114
+[10-Dec-2024 13:54:50 Europe/Berlin] Debug - Email: kingpacifico0021@gmail.com, Type: student, ID: 36, Temp Pass: SGvDsREL, Hashed: 5867cb97ab96b3a88e34014d02321ea6
+[10-Dec-2024 13:54:50 Europe/Berlin] Password update successful for student ID: 36
+[10-Dec-2024 13:58:56 Europe/Berlin] Debug - Email: kingpacifico0021@gmail.com, Type: student, ID: 36, Temp Pass: K8IvXwzF, Hashed: 76a0fa9119e693e2cb3559d8cbd55996
+[10-Dec-2024 13:58:56 Europe/Berlin] User found: {"type":"student","id":36,"firstname":"Juan"}
+[10-Dec-2024 13:58:56 Europe/Berlin] Attempting to update password for student with ID: 36
+[10-Dec-2024 13:58:56 Europe/Berlin] Temporary password: K8IvXwzF
+[10-Dec-2024 13:58:56 Europe/Berlin] Hashed password: 76a0fa9119e693e2cb3559d8cbd55996
+[10-Dec-2024 13:58:56 Europe/Berlin] Student update query prepared
+[10-Dec-2024 13:58:56 Europe/Berlin] Password update successful. Affected rows: 1
+[10-Dec-2024 14:04:41 Europe/Berlin] Debug - Email: kingpacifico0021@gmail.com, Type: student, ID: 36, Temp Pass: ouNmSUxH, Hashed: 36b303536095c51d0b0f99ef392fef0b
+[10-Dec-2024 14:04:41 Europe/Berlin] User found: {"type":"student","id":36,"firstname":"Juan"}
+[10-Dec-2024 14:04:41 Europe/Berlin] Attempting to update password for student with ID: 36
+[10-Dec-2024 14:04:41 Europe/Berlin] Temporary password: ouNmSUxH
+[10-Dec-2024 14:04:41 Europe/Berlin] Hashed password: 36b303536095c51d0b0f99ef392fef0b
+[10-Dec-2024 14:04:41 Europe/Berlin] Student update query prepared
+[10-Dec-2024 14:04:41 Europe/Berlin] Password update successful. Affected rows: 1
+[10-Dec-2024 14:11:39 Europe/Berlin] Temporary password: 4Jnei1hB
+[10-Dec-2024 14:11:39 Europe/Berlin] Hashed password: 735a63465414cc45a4bb0d4ac147a540
+[10-Dec-2024 14:13:50 Europe/Berlin] Temporary password: egk93njc
+[10-Dec-2024 14:13:50 Europe/Berlin] Hashed password: $2y$10$gmHWr2i0yOwQHfoQ4SRvd.dxIGF.d.i2tltC4lzZAwcivvgu9OAie
+[10-Dec-2024 14:14:55 Europe/Berlin] Temporary password: AuCrGsde
+[10-Dec-2024 14:14:55 Europe/Berlin] Hashed password: 407a3238d76a6431020886ecbe8795a4
+[10-Dec-2024 14:14:55 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:59
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 59
+[10-Dec-2024 14:16:10 Europe/Berlin] Starting password recovery process for email: kingpacifico0021@gmail.com
+[10-Dec-2024 14:16:10 Europe/Berlin] Temporary password: OumVi1js
+[10-Dec-2024 14:16:10 Europe/Berlin] Hashed password: 8e0fc854143560c48e64c25ab1618491
+[10-Dec-2024 14:16:11 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
+[10-Dec-2024 14:22:08 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
+[10-Dec-2024 14:22:08 Europe/Berlin] Temporary password: bVgXfTO5
+[10-Dec-2024 14:22:08 Europe/Berlin] Hashed password: a9c3f74edcd76622274e473e9ccd1f5b
+[10-Dec-2024 14:22:08 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
+[10-Dec-2024 14:22:20 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
+[10-Dec-2024 14:22:20 Europe/Berlin] Temporary password: E4QIOBGx
+[10-Dec-2024 14:22:20 Europe/Berlin] Hashed password: cf72da3160f45555098899c770e99893
+[10-Dec-2024 14:22:20 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
+[10-Dec-2024 14:22:39 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
+[10-Dec-2024 14:22:39 Europe/Berlin] Temporary password: Jd3r24lw
+[10-Dec-2024 14:22:39 Europe/Berlin] Hashed password: 3fdbdb03fbbd5d70d9fbadeaa1350fb8
+[10-Dec-2024 14:22:39 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
+[10-Dec-2024 14:22:42 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
+[10-Dec-2024 14:22:42 Europe/Berlin] Temporary password: vtLWioUs
+[10-Dec-2024 14:22:42 Europe/Berlin] Hashed password: 977e849b0ae5f9a045e4262d83ddd8bf
+[10-Dec-2024 14:22:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
+[10-Dec-2024 14:22:54 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
+[10-Dec-2024 14:22:54 Europe/Berlin] Temporary password: b9KtRwaX
+[10-Dec-2024 14:22:54 Europe/Berlin] Hashed password: ba62543942514f997467fe3f355ca4de
+[10-Dec-2024 14:22:54 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
+Stack trace:
+#0 {main}
+  thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
+[10-Dec-2024 14:52:04 Europe/Berlin] Password Recovery Error: Failed to send email: SMTP Error: Could not authenticate.
+[11-Dec-2024 01:42:59 UTC] Password Recovery Error: No active account found with this email
+[12-Dec-2024 06:59:41 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:96
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 96
+[12-Dec-2024 08:36:05 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 08:36:09 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 10:12:46 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:96
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 96
+[12-Dec-2024 10:13:41 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:96
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 96
+[12-Dec-2024 11:58:41 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 12:01:29 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 14:01:42 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 15:41:34 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 15:41:38 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\PHPMailer" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:96
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 96
+[12-Dec-2024 15:42:04 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 16:00:41 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 16:01:16 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 16:02:32 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 16:06:41 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 16:07:07 UTC] PHP Fatal error:  Uncaught Error: Class "PHPMailer\PHPMailer\Exception" not found in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php:61
+Stack trace:
+#0 {main}
+  thrown in /home/u804969888/domains/camerinohub.site/public_html/forgot_password_action.php on line 61
+[12-Dec-2024 16:12:48 UTC] Password Recovery Error: No active account found with this email
+[14-Dec-2024 01:32:02 UTC] Password Recovery Error: No active account found with this email
+[14-Dec-2024 01:32:12 UTC] Password Recovery Error: No active account found with this email
+[14-Dec-2024 01:32:19 UTC] Password Recovery Error: No active account found with this email
+[16-Dec-2024 23:53:34 UTC] Password Recovery Error: No active account found with this email
+[16-Dec-2024 23:53:38 UTC] Password Recovery Error: No active account found with this email
+[16-Dec-2024 23:53:40 UTC] Password Recovery Error: No active account found with this email
+[16-Dec-2024 23:56:26 UTC] Password Recovery Error: No active account found with this email
+[05-Jan-2025 14:00:41 Europe/Berlin] Password Recovery Error: No active account found with this email

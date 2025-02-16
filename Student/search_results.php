@@ -2,73 +2,81 @@
 session_start();
 require_once('../db/dbConnector.php');
 
-// Initialize search results array
-$searchResults = [];
+// Initialize login status
+$isLoggedIn = isset($_SESSION['id']);
 
-if (isset($_GET['query']) && !empty($_GET['query'])) {
+// Get user data if logged in
+$userData = null;
+if ($isLoggedIn) {
     $db = new DbConnector();
-    $query = $db->real_escape_string($_GET['query']);
+    $student_id = $_SESSION['id'];
+    $query = "SELECT * FROM student WHERE student_id = '$student_id'";
+    $result = $db->query($query);
     
-    // Search in News
-    $newsQuery = "SELECT 
-        'news' as type,
-        title,
-        content,
-        created_at,
-        'news.php' as link 
-    FROM news 
-    WHERE (title LIKE '%$query%' OR content LIKE '%$query%')
-    AND status = 'active'";
+    if ($result && mysqli_num_rows($result) > 0) {
+        $userData = mysqli_fetch_array($result);
+    }
+}
+
+// Get search query
+$searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
+$results = [];
+
+if (!empty($searchQuery)) {
+    $db = new DbConnector();
+    $searchQuery = $db->real_escape_string($searchQuery);
     
-    // Search in About Us
-    $aboutUsQuery = "SELECT 
-        'about' as type,
-        title,
-        content,
-        created_at,
-        'aboutus.php' as link 
-    FROM about_us_content 
-    WHERE (title LIKE '%$query%' OR content LIKE '%$query%')
-    AND status = 'active'";
+    // Basic search for non-logged in users
+    $sql = "SELECT 'news' as type, id, title, excerpt as description, date, category 
+            FROM news 
+            WHERE status = 'active' 
+            AND (title LIKE '%$searchQuery%' OR excerpt LIKE '%$searchQuery%')";
     
-    // Search in Contact Us
-    $contactQuery = "SELECT 
-        'contact' as type,
-        title,
-        content,
-        created_at,
-        'contactus.php' as link 
-    FROM contact_information 
-    WHERE (title LIKE '%$query%' OR content LIKE '%$query%')
-    AND status = 'active'";
+    // Additional search areas for logged-in users
+    if ($isLoggedIn) {
+        $sql .= " UNION 
+                SELECT 'about' as type, id, title, content as description, created_at as date, type as category 
+                FROM about_us_content 
+                WHERE status = 'active' 
+                AND (title LIKE '%$searchQuery%' OR content LIKE '%$searchQuery%')";
+    }
     
-    // Search in Site Map
-    $siteMapQuery = "SELECT 
-        'sitemap' as type,
-        'Site Map' as title,
-        description as content,
-        created_at,
-        'site-map.php' as link 
-    FROM site_map_content 
-    WHERE description LIKE '%$query%'
-    AND status = 'active'";
+    // Include site map related searches for all users
+    $sql .= " UNION 
+            SELECT 
+            'location' as type,
+            name as title, 
+            description,
+            'facility' as category 
+            FROM facilities 
+            WHERE status = 'active' 
+            AND (name LIKE '%$searchQuery%' OR description LIKE '%$searchQuery%')
+            
+            UNION
+            
+            SELECT 
+            'department' as type,
+            department_name as title,
+            description,
+            'academic' as category
+            FROM departments
+            WHERE status = 'active'
+            AND (department_name LIKE '%$searchQuery%' OR description LIKE '%$searchQuery%')";
     
-    // Combine all searches
-    $unionQuery = "$newsQuery 
-                  UNION 
-                  $aboutUsQuery 
-                  UNION 
-                  $contactQuery 
-                  UNION 
-                  $siteMapQuery 
-                  ORDER BY created_at DESC";
-                  
-    $result = $db->query($unionQuery);
+    // Add other search types if user is logged in
+    if ($isLoggedIn) {
+        $sql .= " UNION 
+                SELECT 'news' as type, title, excerpt as description, category 
+                FROM news 
+                WHERE status = 'active' 
+                AND (title LIKE '%$searchQuery%' OR excerpt LIKE '%$searchQuery%')";
+    }
     
-    if ($result) {
-        while ($row = $db->fetchAssoc($result)) {
-            $searchResults[] = $row;
-        }
+    $sql .= " ORDER BY date DESC";
+    
+    $result = $db->query($sql);
+    while ($row = $db->fetchAssoc($result)) {
+        $results[] = $row;
     }
 }
 ?>
@@ -81,67 +89,58 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
     <title>Search Results - Gov D.M. Camerino</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-    <link href="css/search.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/search.css">
+	<link rel="icon" href="../images/light-logo.png">
 </head>
 <body>
-    <div class="container mt-4">
-        <div class="mb-3">
-            <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
+    <!-- Include your navigation here -->
+    
+    <div class="container mt-5">
+        <h2>Search Results for "<?php echo htmlspecialchars($searchQuery); ?>"</h2>
+        
+        <!-- Search form -->
+        <div class="search-container mb-4">
+            <form action="search_results.php" method="GET" class="search-form">
+                <div class="input-group">
+                    <input type="text" 
+                           name="query" 
+                           class="form-control"
+                           value="<?php echo htmlspecialchars($searchQuery); ?>"
+                           placeholder="<?php echo $isLoggedIn ? 'Search something...' : 'Search news, updates, and information...'; ?>"
+                           <?php echo !$isLoggedIn ? 'readonly' : ''; ?>>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit" <?php echo !$isLoggedIn ? 'disabled' : ''; ?>>
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
 
-        <div class="search-header">
-            <h2><i class="fas fa-search"></i> Search Results</h2>
-            <p>Showing results for: "<span class="search-term"><?php echo htmlspecialchars($_GET['query'] ?? ''); ?></span>"</p>
-        </div>
-        
-        <?php if (empty($searchResults)): ?>
+        <!-- Results -->
+        <?php if (empty($results)): ?>
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> No results found. Try different keywords or browse our pages:
-                <div class="mt-3">
-                    <a href="news.php" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-newspaper"></i> News
-                    </a>
-                    <a href="aboutus.php" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-info-circle"></i> About Us
-                    </a>
-                    <a href="contactus.php" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-envelope"></i> Contact Us
-                    </a>
-                    <a href="site-map.php" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-sitemap"></i> Site Map
-                    </a>
-                </div>
+                <i class="fas fa-info-circle"></i>
+                No results found for "<?php echo htmlspecialchars($searchQuery); ?>"
             </div>
         <?php else: ?>
             <div class="search-results">
-                <?php foreach ($searchResults as $result): ?>
+                <?php foreach ($results as $result): ?>
                     <div class="result-card">
-                        <div class="result-type <?php echo $result['type']; ?>">
-                            <?php 
-                            $icon = '';
-                            switch($result['type']) {
-                                case 'news': $icon = 'newspaper'; break;
-                                case 'about': $icon = 'info-circle'; break;
-                                case 'contact': $icon = 'envelope'; break;
-                                case 'sitemap': $icon = 'sitemap'; break;
-                            }
-                            ?>
-                            <i class="fas fa-<?php echo $icon; ?>"></i>
-                            <?php echo ucfirst($result['type']); ?>
+                        <div class="result-type">
+                            <span class="badge badge-<?php echo $result['type'] === 'news' ? 'primary' : 'secondary'; ?>">
+                                <?php echo ucfirst($result['type']); ?>
+                            </span>
                         </div>
                         <h3>
-                            <a href="<?php echo htmlspecialchars($result['link']); ?>">
+                            <a href="<?php echo $result['type']; ?>-detail.php?id=<?php echo $result['id']; ?>">
                                 <?php echo htmlspecialchars($result['title']); ?>
                             </a>
                         </h3>
-                        <p><?php echo substr(htmlspecialchars($result['content']), 0, 200) . '...'; ?></p>
+                        <p><?php echo htmlspecialchars(substr($result['description'], 0, 200)) . '...'; ?></p>
                         <div class="result-meta">
-                            <span class="result-date">
-                                <i class="far fa-clock"></i>
-                                <?php echo date('M d, Y', strtotime($result['created_at'])); ?>
-                            </span>
+                            <span><i class="far fa-calendar-alt"></i> <?php echo date('M d, Y', strtotime($result['date'])); ?></span>
+                            <span><i class="fas fa-tag"></i> <?php echo ucfirst($result['category']); ?></span>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -149,14 +148,9 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
         <?php endif; ?>
     </div>
 
-    <div class="floating-back-button">
-        <a href="javascript:history.back()" class="btn btn-primary rounded-circle">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include your footer here -->
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

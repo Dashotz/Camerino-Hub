@@ -591,3 +591,243 @@ footer a:hover {
     width: 100%;
     box-sizing: border-box;
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    /* Hero section adjustments */
+    .hero {
+        padding: 20px 0;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .hero-text {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+
+    /* Hide hero image on mobile */
+    .hero-image {
+        display: none;  /* This will hide the hero image */
+    }
+
+    /* Adjust hero text to take full width */
+    .hero-text {
+        flex: 1;
+        padding-right: 0;
+        width: 100%;
+    }
+
+    /* Make CTA buttons more compact */
+    .cta-buttons {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .cta-buttons .btn {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+
+    .hero p.lead {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    /* Quick links adjustments */
+    .links {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .link-item {
+        flex-basis: 100%;
+        padding: 10px;
+    }
+
+    /* Timeline adjustments */
+    .timeline::before {
+        left: 20px;
+    }
+
+    .timeline-item {
+        flex-direction: row !important;
+        margin-bottom: 30px;
+    }
+
+    .year {
+        position: absolute;
+        left: 0;
+        margin: 0;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+
+    .content {
+        width: calc(100% - 50px);
+        margin-left: 50px;
+        padding: 15px;
+    }
+
+    .content h4 {
+        font-size: 1.1rem;
+    }
+
+    .content p {
+        font-size: 0.9rem;
+    }
+
+    /* Vision Mission cards */
+    .vision-card, .mission-card {
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    /* Achievement cards */
+    .achievement-card {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .achievement-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .achievement-icon i {
+        font-size: 30px;
+    }
+
+    /* Faculty cards */
+    .faculty-card {
+        max-width: 280px;
+        margin: 0 auto 20px;
+    }
+
+    .faculty-image {
+        height: 200px;
+    }
+
+    .faculty-card h4 {
+        font-size: 1rem;
+        margin: 10px 10px 5px;
+    }
+
+    .faculty-card .position,
+    .faculty-card .credentials {
+        font-size: 0.9rem;
+        margin: 0 10px 10px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .links {
+        grid-template-columns: 1fr;
+    }
+
+    .year {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+
+    .content {
+        width: calc(100% - 40px);
+        margin-left: 40px;
+    }
+
+    .faculty-card {
+        max-width: 100%;
+    }
+
+    .faculty-image {
+        height: 180px;
+    }
+}
+
+/* Quick Links Section */
+.quick-links {
+    margin-top: 20px;
+}
+
+.quick-links p {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.links {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.link-item {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .links {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Creates 2x2 grid */
+        gap: 10px;
+        padding: 0 10px;
+    }
+
+    .link-item {
+        padding: 10px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .link-item i {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .link-item span {
+        font-size: 0.9rem;
+    }
+}
+
+/* Even smaller screens */
+@media (max-width: 360px) {
+    .links {
+        gap: 8px;
+    }
+
+    .link-item {
+        padding: 8px;
+    }
+
+    .link-item i {
+        font-size: 1rem;
+    }
+
+    .link-item span {
+        font-size: 0.8rem;
+    }
+}

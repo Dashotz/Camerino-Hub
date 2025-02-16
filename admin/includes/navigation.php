@@ -11,11 +11,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Search bar -->
-            <form class="form-inline mx-auto d-none d-md-flex position-relative">
-                <input class="form-control search-input" type="search" placeholder="Search...">
-                <i class="fas fa-search search-icon"></i>
-            </form>
+     
 
             <!-- Right-aligned items -->
             <ul class="navbar-nav ml-auto align-items-center">
@@ -73,8 +69,7 @@
                             echo "<div class='dropdown-item'>No notifications</div>";
                         }
                         ?>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-center" href="notifications.php">View All</a>
+                        
                     </div>
                 </li>
 
@@ -88,7 +83,7 @@
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="admin_profile.php">
+                        <a class="dropdown-item" href="settings.php">
                             <i class="fas fa-user mr-2"></i>My Profile
                         </a>
                         <a class="dropdown-item" href="settings.php">

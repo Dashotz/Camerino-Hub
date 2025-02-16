@@ -1,0 +1,1 @@
+// Remove this file or empty it since we've moved all quiz functionality to edit_quiz_content.php 

@@ -14,6 +14,7 @@
     min-height: 100vh;
     background-color: #f8f9fa;
     padding-top: 64px;
+    position: relative;
 }
 
 /* Sidebar Styles */
@@ -22,11 +23,12 @@
     background: #fff;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     position: fixed;
-    height: calc(100vh - 64px);
-    top: 64px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1020;
+    transition: all 0.3s ease;
+    padding-top: 64px;
 }
 
 .sidebar-header {
@@ -48,7 +50,7 @@
 }
 
 .sidebar-content {
-    flex: 1;
+    height: 100%;
     overflow-y: auto;
     padding: 15px 0;
 }
@@ -79,8 +81,10 @@
 }
 
 .sidebar-footer {
+    margin-top: auto;
     padding: 20px;
     border-top: 1px solid #e0e0e0;
+    background: white;
 }
 
 .help-card {
@@ -88,23 +92,30 @@
     padding: 15px;
     border-radius: 8px;
     text-align: center;
+    margin-bottom: 0;
 }
 
 .help-card i {
     font-size: 24px;
-    color: #1a73e8;
+    color: var(--primary-color);
     margin-bottom: 10px;
 }
 
 .help-card h6 {
-    margin-bottom: 5px;
-    color: #202124;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
 .help-card p {
-    font-size: 12px;
+    font-size: 13px;
     color: #5f6368;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.help-card .btn {
+    width: 100%;
+    padding: 8px 16px;
 }
 
 /* Main Content */
@@ -112,15 +123,15 @@
     flex: 1;
     margin-left: 260px;
     padding: 20px;
-    min-height: calc(100vh - 64px);
+    transition: margin-left 0.3s ease;
+    width: calc(100% - 260px);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
-        width: 0;
-        transform: translateX(-100%);
-        transition: all 0.3s ease;
+        width: 60px;
+        transform: translateX(0);
     }
 
     .sidebar.show {
@@ -129,8 +140,8 @@
     }
 
     .main-content {
-        margin-left: 0;
-        width: 100%;
+        margin-left: 60px !important;
+        width: calc(100% - 60px);
     }
 }
 
@@ -445,4 +456,933 @@
 .btn-primary:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(66, 153, 225, 0.25);
+}
+
+.menu-item .badge {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    background-color: #dc3545;
+    color: white;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.menu-item span:not(.badge) {
+    flex-grow: 1;
+}
+
+/* Sidebar Responsive Styles */
+@media (max-width: 768px) {
+    /* Collapsed sidebar */
+    .sidebar {
+        width: 60px;
+        transition: all 0.3s ease;
+    }
+
+    /* Hide text, only show icons */
+    .sidebar .nav-link span {
+        display: none;
+    }
+
+    /* Center icons */
+    .sidebar .nav-link {
+        padding: 12px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .sidebar .nav-link i {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    /* Hide footer card */
+    .sidebar-footer {
+        display: none;
+    }
+
+    /* Adjust main content margin */
+    .main-content {
+        margin-left: 60px !important;
+        width: calc(100% - 60px);
+    }
+
+    /* Show tooltips for icons */
+    .sidebar .nav-link {
+        position: relative;
+    }
+
+    .sidebar .nav-link:hover::after {
+        content: attr(data-title);
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    /* Even smaller sidebar */
+    .sidebar {
+        width: 50px;
+    }
+
+    .sidebar .nav-link {
+        padding: 10px 5px;
+    }
+
+    .sidebar .nav-link i {
+        font-size: 1.1rem;
+    }
+
+    /* Adjust main content */
+    .main-content {
+        margin-left: 50px !important;
+        width: calc(100% - 50px);
+    }
+
+    /* Hide tooltips on very small screens */
+    .sidebar .nav-link:hover::after {
+        display: none;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .sidebar {
+        height: calc(100vh - 50px);
+        top: 50px;
+    }
+
+    .sidebar .nav-link {
+        padding: 8px;
+    }
+
+    .nav-item {
+        margin: 2px 0;
+    }
+}
+
+/* Add to PHP file */
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+    .sidebar {
+        height: -webkit-fill-available;
+    }
+}
+
+/* Mobile sidebar logo */
+@media (max-width: 768px) {
+    .sidebar-logo-link {
+        display: block;
+        position: absolute;
+        top: 15px;
+        left: 12px;
+        width: 35px;
+        height: 35px;
+        z-index: 1031;
+    }
+
+    .sidebar-mobile-logo {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* Adjust sidebar padding to accommodate logo */
+    .sidebar {
+        padding-top: 64px;
+    }
+
+    /* Hide navbar logo on mobile */
+    .navbar .navbar-brand {
+        visibility: hidden;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .sidebar-logo-link {
+        width: 30px;
+        height: 30px;
+        top: 12px;
+        left: 10px;
+    }
+}
+
+/* Sidebar and Navigation Layout */
+@media (min-width: 769px) {
+    /* Hide sidebar logo on wider screens */
+    .sidebar-logo-link {
+        display: none;
+    }
+
+    /* Show navbar and bring it front */
+    .navbar {
+        width: 100%;
+        margin-left: 0;
+        z-index: 1030; /* Higher than sidebar */
+    }
+
+    /* Show navbar brand */
+    .navbar .navbar-brand {
+        visibility: visible;
+        margin-left: 0;
+    }
+
+    /* Adjust sidebar */
+    .sidebar {
+        z-index: 1020; /* Lower than navbar */
+        padding-top: 64px;
+    }
+}
+
+/* Navbar collapse styles */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        position: fixed;
+        top: 56px; /* Height of navbar */
+        left: 60px; /* Width of sidebar */
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        z-index: 1029;
+    }
+
+    /* Navbar items */
+    .navbar-nav {
+        width: 100%;
+        padding: 0;
+    }
+
+    .navbar-nav .nav-item {
+        width: 100%;
+        padding: 8px 0;
+    }
+
+    /* Search bar */
+    .form-inline {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    /* Dropdown menus */
+    .dropdown-menu {
+        width: 100%;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+    .navbar-collapse {
+        left: 50px; /* Match smaller sidebar width */
+    }
+}
+
+/* Notification Dropdown Styles */
+@media (max-width: 768px) {
+    .notifications-dropdown {
+        position: fixed !important;
+        top: 56px !important; /* Height of navbar */
+        left: 60px !important; /* Width of sidebar */
+        right: 0 !important;
+        width: calc(100% - 60px) !important;
+        max-width: none !important;
+        max-height: calc(100vh - 56px) !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        transform: none !important;
+    }
+
+    .notification-item {
+        padding: 12px 15px;
+    }
+
+    .notification-content {
+        width: 100%;
+    }
+
+    .notification-content p {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .notifications-dropdown {
+        left: 50px !important; /* Match smaller sidebar width */
+        width: calc(100% - 50px) !important;
+    }
+
+    .notification-item {
+        padding: 10px 12px;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .notifications-dropdown {
+        max-height: calc(100vh - 50px) !important;
+    }
+}
+
+/* Add these responsive styles */
+@media (max-width: 768px) {
+    /* Subject Cards */
+    .col-md-4 {
+        padding: 0 10px;
+    }
+
+    .subject-card {
+        margin-bottom: 15px;
+    }
+
+    .subject-card .card-header {
+        padding: 12px 15px;
+    }
+
+    .subject-card .card-body {
+        padding: 15px;
+    }
+
+    /* Schedule Table */
+    .schedule-table td {
+        padding: 10px;
+    }
+
+    .schedule-table .time-slot {
+        width: 90px;
+        font-size: 0.9rem;
+    }
+
+    /* Content Header */
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 15px;
+        padding: 0 10px;
+    }
+
+    .content-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+
+    /* Progress and Info */
+    .progress {
+        height: 5px;
+    }
+
+    .teacher-info {
+        flex-wrap: wrap;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    /* Main Layout */
+    .main-content {
+        padding: 15px 10px;
+    }
+
+    /* Subject Cards */
+    .col-md-4 {
+        width: 100%;
+    }
+
+    .subject-card .card-header h5 {
+        font-size: 1rem;
+    }
+
+    /* Schedule View */
+    .schedule-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .schedule-table td {
+        min-width: 120px;
+        padding: 8px;
+    }
+
+    .schedule-table .time-slot {
+        width: 80px;
+        font-size: 0.85rem;
+    }
+
+    /* Teacher Info */
+    .teacher-info {
+        font-size: 0.9rem;
+    }
+
+    .schedule-info {
+        font-size: 0.85rem;
+    }
+
+    /* Buttons */
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    /* Modal Adjustments */
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .subject-card {
+        margin-bottom: 10px;
+    }
+
+    .schedule-table {
+        margin-bottom: 10px;
+    }
+
+    /* Adjust grid for landscape */
+    .col-md-4 {
+        width: 50%;
+        float: left;
+    }
+}
+
+/* Add these responsive styles */
+@media (max-width: 768px) {
+    /* Container */
+    .assignments-container {
+        padding: 0 15px;
+        margin: 10px auto;
+    }
+
+    /* Assignment Card */
+    .assignment-card {
+        margin-bottom: 15px;
+    }
+
+    .assignment-header {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .assignment-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .assignment-title {
+        width: calc(100% - 42px); /* icon width + gap */
+    }
+
+    .assignment-title h3 {
+        font-size: 1rem;
+    }
+
+    .assignment-meta {
+        font-size: 0.8rem;
+    }
+
+    .assignment-points {
+        width: 100%;
+        text-align: left;
+        margin-left: 42px;
+        font-size: 0.8rem;
+    }
+
+    /* Assignment Body */
+    .assignment-body {
+        padding: 0 15px 12px;
+    }
+
+    .assignment-description {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+
+    /* Files Section */
+    .assignment-files {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    .file-link {
+        font-size: 0.85rem;
+        padding: 3px 0;
+    }
+
+    /* Actions Section */
+    .assignment-actions {
+        padding: 8px 15px 12px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .status-badge {
+        width: 100%;
+        text-align: center;
+    }
+
+    .action-buttons {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btn-submit, .btn-info, .btn-warning {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Modal Adjustments */
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .custom-file-label {
+        font-size: 0.85rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .assignment-title h3 {
+        font-size: 0.95rem;
+    }
+
+    .assignment-meta {
+        font-size: 0.75rem;
+    }
+
+    .assignment-description {
+        font-size: 0.85rem;
+    }
+
+    .status-badge {
+        font-size: 0.7rem;
+        padding: 3px 10px;
+    }
+
+    .grade-badge {
+        font-size: 0.75rem;
+        padding: 3px 10px;
+    }
+
+    /* Compact buttons */
+    .btn-submit, .btn-info, .btn-warning {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .assignments-container {
+        margin: 5px auto;
+    }
+
+    .assignment-card {
+        margin-bottom: 10px;
+    }
+
+    .assignment-actions {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .status-badge {
+        width: auto;
+    }
+
+    .action-buttons {
+        width: auto;
+        justify-content: flex-end;
+    }
+
+    .btn-submit, .btn-info, .btn-warning {
+        width: auto;
+    }
+}
+
+/* Add these responsive styles */
+@media (max-width: 768px) {
+    /* Container */
+    .activity-container {
+        max-width: 100%;
+        margin: 10px;
+        padding: 0 10px;
+    }
+
+    /* Activity Header */
+    .activity-header {
+        padding: 16px;
+    }
+
+    .activity-title {
+        font-size: 1.25rem;
+        padding-right: 60px;
+    }
+
+    .activity-type-badge {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        top: 16px;
+        right: 16px;
+    }
+
+    .activity-meta {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    /* Activity Details */
+    .activity-details {
+        padding: 16px;
+    }
+
+    .activity-description {
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+
+    /* Attachments */
+    .attachments {
+        padding: 12px;
+        margin-top: 16px;
+    }
+
+    .attachment-item {
+        padding: 6px 8px;
+    }
+
+    .attachment-item a {
+        font-size: 0.8rem;
+    }
+
+    /* Submission Section */
+    .submission-section {
+        padding: 16px;
+    }
+
+    .submission-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .submission-status {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* File Upload */
+    .file-upload-area {
+        padding: 20px 15px;
+    }
+
+    .file-upload-area i {
+        font-size: 24px;
+    }
+
+    .file-upload-area p {
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+    }
+
+    .file-upload-area small {
+        font-size: 0.8rem;
+    }
+
+    /* Selected File */
+    .selected-file {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    /* Buttons */
+    .btn-submit-work {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .btn-warning {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    /* Grade Display */
+    .grade-display {
+        padding: 12px;
+    }
+
+    .grade-value {
+        font-size: 1.2rem;
+    }
+
+    /* Back Button */
+    .btn-outline-primary {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .activity-title {
+        font-size: 1.1rem;
+    }
+
+    .activity-meta {
+        font-size: 0.8rem;
+    }
+
+    .submission-status {
+        font-size: 0.8rem;
+        padding: 4px 10px;
+    }
+
+    .file-upload-area {
+        padding: 15px 10px;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .activity-container {
+        margin: 5px;
+    }
+
+    .activity-header {
+        padding: 12px;
+    }
+
+    .activity-meta {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .submission-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .submission-status {
+        width: auto;
+    }
+
+    .btn-outline-primary {
+        width: auto;
+    }
+
+    /* Improve scrolling */
+    .main-content {
+        height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+}
+
+/* Add these responsive styles */
+@media (max-width: 768px) {
+    /* Container and Header */
+    .content-header {
+        padding: 15px;
+    }
+
+    .content-header h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Filter Tabs */
+    .nav-pills {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+
+    .nav-pills .nav-item {
+        display: inline-block;
+    }
+
+    .nav-pills .nav-link {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    /* Quiz Cards */
+    .quiz-container {
+        padding: 0 10px;
+    }
+
+    .quiz-card {
+        margin-bottom: 15px;
+    }
+
+    .quiz-header {
+        padding: 15px;
+    }
+
+    .quiz-header h5 {
+        font-size: 1rem;
+        margin-right: 60px;
+    }
+
+    .subject-tag {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+
+    .status-indicator {
+        font-size: 0.75rem;
+        top: 15px;
+        right: 15px;
+    }
+
+    .teacher-info {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .teacher-avatar {
+        width: 25px;
+        height: 25px;
+    }
+
+    .due-date {
+        font-size: 0.8rem;
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    /* Quiz Body and Footer */
+    .quiz-body {
+        padding: 15px;
+    }
+
+    .quiz-body p {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .points-badge {
+        font-size: 0.8rem;
+        padding: 3px 6px;
+    }
+
+    .quiz-footer {
+        padding: 12px 15px;
+    }
+
+    .quiz-footer .btn {
+        width: 100%;
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    /* Sweet Alert Customization */
+    .swal2-popup {
+        font-size: 0.9rem;
+        padding: 15px;
+    }
+
+    .swal2-popup ul {
+        padding-left: 20px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .content-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .content-header p {
+        font-size: 0.85rem;
+    }
+
+    .quiz-header h5 {
+        font-size: 0.95rem;
+    }
+
+    .teacher-info {
+        font-size: 0.85rem;
+    }
+
+    /* Search Bar */
+    .search-container {
+        max-width: 100%;
+    }
+
+    .search-input {
+        font-size: 0.9rem;
+    }
+}
+
+/* Landscape mode */
+@media (max-height: 480px) and (orientation: landscape) {
+    .quiz-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .quiz-card {
+        margin-bottom: 0;
+    }
+
+    .quiz-footer .btn {
+        padding: 6px 12px;
+    }
+
+    /* Improve scrolling */
+    .main-content {
+        height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+
+    /* Filter tabs in landscape */
+    .nav-pills {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
 }

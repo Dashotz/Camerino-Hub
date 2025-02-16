@@ -129,10 +129,10 @@ body {
 }
 
 .quick-links {
+    margin-bottom: 0;
+    padding: 20px;
     background-color: #f0f4f8;
     border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .quick-links p {
@@ -570,15 +570,23 @@ footer a:hover {
 
 /* Add this to create a gap between sections */
 .section-gap {
-    margin-bottom: 200px; /* Adjust this value to increase or decrease the gap */
+    margin-bottom: 40px; /* Reduced from 200px to 40px */
 }
 
-/* Optionally, you can add a top margin to the first section after the navbar */
+/* Adjust spacing for hero section */
 .hero.section-gap {
     margin-top: 0;
+    margin-bottom: 20px; /* Even smaller gap after hero */
 }
 
-/* Remove margin from the last section before the footer */
+/* Adjust spacing for other sections */
+.photos.section-gap,
+.officials-section.section-gap,
+.statistics-section.section-gap {
+    margin-bottom: 40px;
+}
+
+/* Remove margin from the last section before footer */
 section.section-gap:last-of-type {
     margin-bottom: 0;
 }
@@ -1063,6 +1071,8 @@ section.section-gap:last-of-type {
 
 /* Features Section */
 .features-section {
+    padding-top: 30px;
+    margin-top: 0;
     padding: 80px 0;
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 }
@@ -1143,4 +1153,348 @@ section.section-gap:last-of-type {
 
 .program-card ul li:last-child {
     border-bottom: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    /* Hero Section */
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-text {
+        padding-right: 0;
+        margin-bottom: 30px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p.lead {
+        font-size: 1rem;
+    }
+
+    .cta-buttons {
+        justify-content: center;
+    }
+
+    /* Quick Links */
+    .links {
+        gap: 10px;
+    }
+
+    .link-item {
+        flex-basis: calc(33.33% - 10px);  /* 3 items per row on tablets */
+    }
+
+    /* Features Section */
+    .features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    /* Programs Section */
+    .programs-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    /* Statistics Section */
+    .statistics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .stat-content .stat-number {
+        font-size: 2.5rem;
+    }
+
+    /* Photo Carousel */
+    .custom-carousel {
+        height: 400px;  /* Reduced height for mobile */
+    }
+
+    .carousel-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}
+
+/* Additional mobile optimization */
+@media (max-width: 480px) {
+    /* Hero Section */
+    .hero {
+        padding: 40px 0;
+    }
+
+    .hero h1 {
+        font-size: 1.75rem;
+    }
+
+    /* Quick Links */
+    .link-item {
+        flex-basis: calc(50% - 10px);  /* 2 items per row on mobile */
+    }
+
+    .link-item i {
+        font-size: 20px;
+    }
+
+    .link-item span {
+        font-size: 12px;
+    }
+
+    /* Features and Programs */
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .feature-card, .program-card {
+        padding: 20px;
+    }
+
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .feature-icon i {
+        font-size: 24px;
+    }
+
+    /* Statistics */
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-content .stat-number {
+        font-size: 2rem;
+    }
+
+    /* Photo Carousel */
+    .custom-carousel {
+        height: 300px;  /* Further reduced height for small mobile */
+    }
+
+    .carousel-button {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+
+    /* Officials Section */
+    .official-card {
+        margin: 10px;
+    }
+
+    .social-links a {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+}
+
+/* Fix for very small screens */
+@media (max-width: 360px) {
+    .link-item {
+        flex-basis: 100%;  /* Stack links vertically on very small screens */
+    }
+
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .cta-buttons .btn {
+        width: 100%;
+    }
+}
+
+/* Add responsive styles */
+@media (max-width: 768px) {
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-image {
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .hero-image img {
+        width: 100%;
+        max-width: 500px; /* Increased from default */
+        height: auto;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-image img {
+        width: 100%;
+        max-width: 100%; /* Full width on very small screens */
+        margin: 0 auto;
+    }
+}
+
+/* Add to your responsive styles */
+@media (max-width: 768px) {
+    .hero-image {
+        display: none; /* Hide the image on small screens */
+    }
+
+    .hero-text {
+        padding-right: 0;
+        text-align: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-gap {
+        margin-bottom: 30px; /* Even smaller on mobile */
+    }
+}
+
+/* Quick Links Section */
+.quick-links {
+    margin-bottom: 0; /* Remove bottom margin */
+    padding: 20px;
+    background-color: #f0f4f8;
+    border-radius: 10px;
+}
+
+/* Features Section (Why Choose Gov D.M. Camerino) */
+.features-section {
+    padding-top: 30px; /* Reduced top padding */
+    margin-top: 0; /* Remove top margin */
+}
+
+/* Hero Section */
+.hero.section-gap {
+    padding-bottom: 30px; /* Reduced bottom padding */
+}
+
+/* Remove any extra gaps */
+section {
+    margin: 0; /* Remove default margins */
+    padding: 30px 0; /* Consistent padding for all sections */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero.section-gap {
+        padding-bottom: 20px;
+    }
+    
+    .features-section {
+        padding-top: 20px;
+    }
+    
+    section {
+        padding: 20px 0;
+    }
+}
+
+/* Profile Section Responsive Styles */
+@media (max-width: 768px) {
+    .profile-section {
+        padding: 20px 0;
+    }
+
+    /* Profile Card */
+    .profile-card {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* Profile Header */
+    .profile-header {
+        margin-bottom: 20px;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+    }
+
+    /* Form Layout */
+    .row {
+        margin: 0;
+    }
+
+    .col-md-4, .col-md-6 {
+        padding: 0 10px;
+        margin-bottom: 15px;
+    }
+
+    /* Form Controls */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    /* Navigation Pills */
+    .nav-pills {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        margin-bottom: 20px;
+        padding-bottom: 5px;
+    }
+
+    .nav-pills .nav-link {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+
+    /* Buttons */
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+}
+
+/* Even smaller screens */
+@media (max-width: 480px) {
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-header h4 {
+        font-size: 1.2rem;
+    }
+
+    /* Stack form fields vertically */
+    .col-md-4, .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    /* Adjust tab navigation */
+    .nav-pills .nav-link {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Make alerts more compact */
+    .alert {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
 }

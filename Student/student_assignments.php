@@ -69,6 +69,7 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="css/dashboard-shared.css" rel="stylesheet">
     
+	<link rel="icon" href="../images/light-logo.png">
     <style>
         .assignments-container {
             max-width: 800px;
@@ -91,12 +92,31 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
         .assignment-header {
             padding: 16px 24px;
-            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .assignment-icon {
+            width: 40px;
+            height: 40px;
+            background: #1967d2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
         }
 
         .assignment-title {
+            flex: 1;
+        }
+
+        .assignment-title h3 {
             margin: 0;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
+            font-weight: 500;
             color: #1967d2;
         }
 
@@ -106,43 +126,25 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             margin-top: 4px;
         }
 
+        .assignment-points {
+            color: #5f6368;
+            font-size: 0.875rem;
+        }
+
         .assignment-body {
-            padding: 16px 24px;
+            padding: 0 24px 16px;
+            color: #3c4043;
         }
 
         .assignment-description {
-            color: #3c4043;
             margin-bottom: 16px;
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .status-submitted {
-            background: #e8f5e9;
-            color: #1b5e20;
-        }
-
-        .status-late {
-            background: #fbe9e7;
-            color: #c41c00;
-        }
-
-        .status-assigned {
-            background: #e3f2fd;
-            color: #0d47a1;
-        }
-
         .assignment-files {
-            margin-top: 16px;
-            padding: 12px;
             background: #f8f9fa;
             border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 16px;
         }
 
         .file-link {
@@ -157,34 +159,156 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
         .assignment-actions {
-            margin-top: 16px;
+            padding: 8px 24px 16px;
             display: flex;
-            justify-content: flex-end;
-            gap: 12px;
+            justify-content: space-between;
             align-items: center;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-assigned {
+            background: #e8f0fe;
+            color: #1967d2;
+        }
+
+        .status-submitted {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        .status-late {
+            background: #fce8e6;
+            color: #c5221f;
         }
 
         .btn-submit {
             background: #1967d2;
             color: white;
-            padding: 8px 24px;
             border-radius: 4px;
+            padding: 8px 24px;
             border: none;
-            cursor: pointer;
+            font-weight: 500;
             transition: background 0.2s;
+            text-decoration: none;
         }
 
         .btn-submit:hover {
             background: #1557b0;
+            color: white;
+            text-decoration: none;
         }
 
         .grade-badge {
-            background: #e8f5e9;
-            color: #1b5e20;
+            background: #e8f0fe;
+            color: #1967d2;
             padding: 4px 12px;
             border-radius: 16px;
+            font-size: 0.875rem;
             font-weight: 500;
         }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-info {
+            background: #1967d2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-info:hover {
+            background: #1557b0;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-warning {
+            background: #ffd600;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-warning:hover {
+            background: #ffea00;
+            color: #000;
+        }
+
+        .mr-1 {
+            margin-right: 0.25rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        .ml-2 {
+            margin-left: 0.5rem;
+        }
+
+        /* Search Bar Styles */
+.search-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+/* Header Layout */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
     </style>
 </head>
 <body>
@@ -207,10 +331,18 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <?php foreach ($assignments as $assignment): ?>
                         <div class="assignment-card">
                             <div class="assignment-header">
-                                <h3 class="assignment-title"><?php echo htmlspecialchars($assignment['title']); ?></h3>
-                                <div class="assignment-meta">
-                                    <?php echo htmlspecialchars($assignment['subject_name']); ?> • 
-                                    Due <?php echo date('M j, Y g:i A', strtotime($assignment['due_date'])); ?>
+                                <div class="assignment-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="assignment-title">
+                                    <h3><?php echo htmlspecialchars($assignment['title']); ?></h3>
+                                    <div class="assignment-meta">
+                                        <?php echo htmlspecialchars($assignment['subject_name']); ?> • 
+                                        Due <?php echo date('M j, Y g:i A', strtotime($assignment['due_date'])); ?>
+                                    </div>
+                                </div>
+                                <div class="assignment-points">
+                                    <?php echo $assignment['points']; ?> points
                                 </div>
                             </div>
                             
@@ -225,11 +357,14 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                                         <?php 
                                         $paths = explode(',', $assignment['file_paths']);
                                         $names = explode(',', $assignment['file_names']);
-                                        foreach ($paths as $index => $path): ?>
-                                            <a href="<?php echo htmlspecialchars($path); ?>" 
-                                               class="file-link" target="_blank">
-                                                <i class="fas fa-paperclip"></i>
-                                                <?php echo htmlspecialchars($names[$index]); ?>
+                                        foreach ($paths as $index => $path): 
+                                            $clean_path = trim($path);
+                                            $name = isset($names[$index]) ? trim($names[$index]) : basename($clean_path);
+                                        ?>
+                                            <a href="handlers/download_file.php?file=<?php echo urlencode($clean_path); ?>&name=<?php echo urlencode($name); ?>" 
+                                               class="file-link">
+                                                <i class="fas fa-paperclip mr-2"></i>
+                                                <?php echo htmlspecialchars($name); ?>
                                             </a>
                                         <?php endforeach; ?>
                                     </div>
@@ -240,17 +375,30 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                                         <?php echo ucfirst($assignment['status']); ?>
                                     </span>
                                     
-                                    <?php if ($assignment['status'] !== 'submitted'): ?>
+                                    <?php if ($assignment['status'] === 'submitted'): ?>
+                                        <div class="action-buttons">
+                                            <a href="view_assignment.php?id=<?php echo $assignment['activity_id']; ?>" 
+                                               class="btn btn-info mr-2">
+                                                <i class="fas fa-eye mr-1"></i>View Assignment
+                                            </a>
+                                            <?php if (!isset($assignment['grade']) && strtotime($assignment['due_date']) > time()): ?>
+                                                <button type="button" 
+                                                        class="btn btn-warning"
+                                                        onclick="unsubmitActivity(<?php echo $assignment['activity_id']; ?>)">
+                                                    <i class="fas fa-undo mr-1"></i>Unsubmit
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if (isset($assignment['grade'])): ?>
+                                                <span class="grade-badge ml-2">
+                                                    Score: <?php echo $assignment['grade']; ?>/<?php echo $assignment['points']; ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php else: ?>
                                         <a href="view_assignment.php?id=<?php echo $assignment['activity_id']; ?>" 
                                            class="btn btn-submit">
-                                            View Assignment
+                                            <?php echo strtotime($assignment['due_date']) < time() ? 'Submit Late' : 'Submit'; ?>
                                         </a>
-                                    <?php else: ?>
-                                        <?php if (isset($assignment['grade'])): ?>
-                                            <span class="grade-badge">
-                                                Score: <?php echo $assignment['grade']; ?>/<?php echo $assignment['points']; ?>
-                                            </span>
-                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -343,6 +491,70 @@ $assignments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             console.error('Error submitting assignment:', error);
             submitButton.disabled = false;
             submitButton.innerHTML = 'Submit';
+        });
+    }
+    </script>
+
+    <!-- Add this before closing body tag -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function unsubmitActivity(activityId) {
+        console.log('Unsubmit clicked for activity:', activityId);
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be able to submit a new file for this activity",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unsubmit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log('Confirmation accepted');
+                
+                // Show loading state
+                Swal.fire({
+                    title: 'Processing...',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                });
+
+                // Send unsubmit request
+                $.ajax({
+                    url: 'handlers/unsubmit_activity.php',
+                    type: 'POST',
+                    data: { activity_id: activityId },
+                    success: function(response) {
+                        console.log('Response received:', response);
+                        try {
+                            const result = typeof response === 'string' ? JSON.parse(response) : response;
+                            
+                            if (result.success) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Activity has been unsubmitted. You can now submit a new file.',
+                                    icon: 'success'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                throw new Error(result.message || 'Failed to unsubmit activity');
+                            }
+                        } catch (error) {
+                            console.error('Unsubmit error:', error);
+                            Swal.fire('Error!', error.message, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Ajax error:', {xhr, status, error});
+                        Swal.fire('Error!', 'Failed to unsubmit activity', 'error');
+                    }
+                });
+            }
         });
     }
     </script>

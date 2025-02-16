@@ -31,7 +31,7 @@ body {
 /* Hero Section */
 .hero {
     background-color: #2AA7FF;
-    padding: 80px 0;
+    padding: 40px 0;
     position: relative;
 }
 
@@ -142,7 +142,7 @@ body {
     font-weight: 600;
 }
 
-.quick-links {
+.quick-links {	
     background-color: #f0f4f8;
     border-radius: 10px;
     padding: 20px;
@@ -168,7 +168,8 @@ body {
 .links {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: wrap;	
+	
 }
 
 .link-item {
@@ -255,12 +256,17 @@ footer a:hover {
         margin-top: 20px;
     }
 }
+.news-categories .container{
+margin-top: -2%;
+}
+
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding-left: 15px;
-    padding-right: 15px;
+    padding-right: 15px;	
+		
 }
 
 /* News Update Section */
@@ -595,7 +601,7 @@ input:disabled {
 
 /* Spacing utilities */
 .section-gap {
-    padding: 10rem 0;
+    padding: 4rem 0;
 }
 
 /* Adjust news detail container spacing */
@@ -873,5 +879,70 @@ input:disabled {
     .btn-filter {
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
+    }
+}
+
+/* Quick Links Styles */
+.quick-links {
+    margin-top: 2rem;
+    text-align: center;
+	
+}
+
+.quick-links p {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.quick-links .links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+	
+}
+
+.quick-links .link-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.quick-links .link-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.quick-links .link-item.active {
+    background: #007bff;
+    color: white;
+}
+
+.quick-links .link-item i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.quick-links .link-item span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .quick-links .links {
+        gap: 1rem;
+    }
+    
+    .quick-links .link-item {
+        min-width: 80px;
+        padding: 0.75rem;
     }
 }

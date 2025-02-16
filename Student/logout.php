@@ -4,28 +4,26 @@ require_once('../db/dbConnector.php');
 
 if (isset($_SESSION['id'])) {
     $db = new DbConnector();
+    $student_id = $_SESSION['id'];
     
-    // Update user_online status to 0
-    $update_offline_status = "UPDATE student SET user_online = 0 WHERE student_id = ?";
-    $stmt = $db->prepare($update_offline_status);
-    $stmt->bind_param("i", $_SESSION['id']);
+    // Update student's online status
+    $update_query = "UPDATE student SET 
+        user_online = 0, 
+        session_id = NULL, 
+        last_activity = NULL 
+        WHERE student_id = ?";
+    $stmt = $db->prepare($update_query);
+    $stmt->bind_param("i", $student_id);
     $stmt->execute();
-    
-    // Remove remember me token if exists
-    if (isset($_COOKIE['remember_token'])) {
-        $token = $db->escapeString($_COOKIE['remember_token']);
-        $query = "DELETE FROM remember_tokens WHERE student_id = {$_SESSION['id']} AND token = '$token'";
-        $db->query($query);
-        setcookie('remember_token', '', time() - 3600, '/'); // Delete cookie
-    }
-    
-    // Clear all session variables
-    $_SESSION = array();
-    
-    // Destroy the session
-    session_destroy();
 }
 
-header("Location: Student-Login.php");
+// Clear all session variables
+$_SESSION = array();
+
+// Destroy the session
+session_destroy();
+
+// Redirect to login page
+header("Location: ../login.php");
 exit();
 ?>

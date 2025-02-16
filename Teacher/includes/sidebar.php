@@ -24,9 +24,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                    href="manage_activities.php">
                     <i class="fas fa-tasks"></i>
                     <span>Activities and Quizzes</span>
-                    <?php if (isset($assignment_count) && $assignment_count > 0): ?>
-                        <span class="badge badge-primary"><?php echo $assignment_count; ?></span>
-                    <?php endif; ?>
                 </a>
             </li>
             <li class="nav-item">
@@ -36,13 +33,24 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <span>Students</span>
                 </a>
             </li>
+                        <!-- Add Grade Management Link -->
+                        <li class="nav-item">
+                <a class="nav-link <?php echo $current_page == 'grade_management.php' ? 'active' : ''; ?>" 
+                   href="grade_management.php">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Grade Management</span>
+                </a>
+            </li>
+
+           <!-- Hide Grade Submissions link for now
             <li class="nav-item">
                 <a class="nav-link <?php echo $current_page == 'grade_submission.php' ? 'active' : ''; ?>" 
                    href="grade_submissions.php">
                     <i class="fas fa-star"></i>
                     <span>Grade Submissions</span>
                 </a>
-            </li>
+            </li> 
+            -->
             <li class="nav-item">
                 <a class="nav-link <?php echo $current_page == 'attendance.php' ? 'active' : ''; ?>" 
                    href="attendance.php">
@@ -72,14 +80,5 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
         </ul>
-
-        <div class="sidebar-footer">
-            <div class="help-card">
-                <i class="fas fa-question-circle"></i>
-                <h6>Need Support?</h6>
-                <p>Access teaching resources and technical support</p>
-                <a href="teacher_support.php" class="btn btn-sm btn-outline-primary">Get Support</a>
-            </div>
-        </div>
     </div>
 </div>

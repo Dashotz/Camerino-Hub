@@ -28,8 +28,10 @@ body {
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     position: relative;
+    min-height: 100vh;
+    overflow-y: auto;
     animation: slideInLeft 0.5s ease-in; /* Animation for left section */
 }
 
@@ -264,6 +266,29 @@ body {
     .signin-btn {
         width: 100%; /* Full width for the button */
     }
+
+    .container {
+        flex-direction: column;
+    }
+
+    .left-section {
+        min-height: auto;
+        max-height: 80vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .right-section {
+        min-height: 20vh;
+    }
+}
+
+/* Additional mobile optimization */
+@media (max-width: 480px) {
+    .left-section {
+        max-height: 70vh;
+        padding: 1rem;
+    }
 }
 
 /* Add this CSS for the message box */
@@ -295,10 +320,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px;
-    margin-top: 20px;
+    padding: 30px;    
     margin-bottom: 40px;
     margin-left: 20px;
+    top: 10%;
+    text-align: left;
+    width: 100%;
 }
 
 .logo-text {
@@ -308,7 +335,7 @@ body {
     margin: 0;
     letter-spacing: 2px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    text-align: left;
+    text-align: left;   
 }
 
 .logo-subtext {

@@ -18,7 +18,8 @@ html, body {
 
 .container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     transition: all 0.3s ease; /* Smooth transition */
 }
 
@@ -312,7 +313,7 @@ html, body {
 .logo-text {
     font-size: 1.5rem; /* Adjust font size */
     color: #1B3C74; /* Dark blue color */
-    font-weight: bold; /* Make the text bold */
+    font-weight: bold; /* Make the text bold */    
 }
 
 .navbar-brand {
@@ -414,6 +415,10 @@ html, body {
 .additional-links {
     margin-top: 2rem;
     text-align: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
 }
 
 .btn-explore {
@@ -427,6 +432,7 @@ html, body {
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
+    white-space: nowrap; /* Prevents text from wrapping inside button */
 }
 
 .btn-explore:hover {
@@ -437,4 +443,118 @@ html, body {
 
 .btn-explore i {
     margin-right: 10px;
+}
+
+/* Updated responsive design section */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left-section, .right-section {
+        width: 100%;
+        min-height: auto;
+        padding: 1rem;
+    }
+
+    .logo {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .logo h2.logo-text {
+        font-size: 1.8rem;
+    }
+
+    .logo .logo-subtext {
+        font-size: 1rem;
+    }
+
+    .intro-text {
+        padding: 10px;
+    }
+
+    .intro-text h1 {
+        font-size: 1.6rem;
+    }
+
+    .intro-text p {
+        font-size: 0.9rem;
+    }
+
+    .illustration {
+        margin: 20px 0;
+    }
+
+    .illustration-img {
+        max-width: 80%;
+    }
+
+    .login-options {
+        flex-direction: row;
+        gap: 10px;
+        padding: 0 10px;
+    }
+
+    .login-option {
+        width: 45%;
+        padding: 8px;
+        margin: 5px;
+    }
+
+    .login-option img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .welcome-container {
+        width: 95%;
+        margin: 15px auto;
+        padding: 15px;
+    }
+
+    .welcome-container h1 {
+        font-size: 1.2rem;
+    }
+
+    .welcome-quote {
+        font-size: 0.9rem;
+        margin: 15px 0;
+    }
+
+    .btn-explore {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Add styles for even smaller screens */
+@media (max-width: 480px) {
+    .login-options {
+        flex-direction: column;
+    }
+
+    .login-option {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .welcome-container {
+        padding: 10px;
+    }
+
+    .logo h2.logo-text {
+        font-size: 1.5rem;
+    }
+
+    .additional-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-explore {
+        width: 100%;
+        justify-content: center;
+        margin: 5px 0;
+    }
 }

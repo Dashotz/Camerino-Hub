@@ -2,7 +2,7 @@
 session_start();
 // Redirect if already logged in
 if (isset($_SESSION['id'])) {
-    header("Location: ../teacher/home.php");
+    header("Location: ../teacher/teacher_dashboard.php");
     exit();
 }
 ?>
@@ -17,6 +17,7 @@ if (isset($_SESSION['id'])) {
     <!-- Add SweetAlert2 CSS and JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<link rel="icon" href="../images/light-logo.png">
     <style>
     body {
         overflow-x: hidden;
@@ -69,14 +70,17 @@ if (isset($_SESSION['id'])) {
     .swal2-shown .container {
         padding-right: 0 !important;
     }
+		.container a{ 
+		text-decoration: none; 
+	}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="left-section">
             <div class="logo">
-                <h2 class="logo-text">Camerino Hub</h2>
-                <span class="logo-subtext">Gov. D M Camerino</span>
+               <a href="../teacher/teacher_dashboard.php"><h2 class="logo-text">GDMC</h2></a>
+               <a href="../teacher/teacher_dashboard.php"> <span class="logo-subtext">Gov. D M Camerino</span></a>
             </div>
             <div class="content">
                 <h1 class="sign-in-as">Sign in as</h1>
@@ -103,45 +107,73 @@ if (isset($_SESSION['id'])) {
                         document.addEventListener('DOMContentLoaded', function() {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Error',
-                                text: '";
+                                title: '";
                     
+                    // Set appropriate titles
                     switch($_SESSION['error_type']) {
+                        case 'archived_account':
+                            echo "Account Archived";
+                            break;
+                        case 'inactive_account':
+                            echo "Account Inactive";
+                            break;
                         case 'student_account':
-                            echo "This is a student account. Please use the student login page.";
+                            echo "Wrong Login Portal";
                             break;
                         case 'wrong_username':
-                            echo "Username not found!";
+                            echo "Invalid Credentials";
                             break;
                         case 'wrong_password':
-                            echo "Incorrect password!";
+                            echo "Login Failed";
                             break;
                         case 'max_attempts':
-                            echo "Account locked due to too many failed attempts!";
+                            echo "Account Locked";
                             break;
                         default:
-                            echo "An unknown error occurred!";
+                            echo "Error";
                     }
                     
                     echo "',
-                                confirmButtonColor: '#3085d6'
+                                text: '";
+                    
+                    // Use custom message if set, otherwise use default messages
+                    if (isset($_SESSION['error_message'])) {
+                        echo $_SESSION['error_message'];
+                    } else {
+                        switch($_SESSION['error_type']) {
+                            case 'student_account':
+                                echo "This is a student account. Please use the student login page.";
+                                break;
+                            case 'wrong_username':
+                                echo "The username you entered is incorrect. Please check your credentials and try again.";
+                                break;
+                            case 'wrong_password':
+                                echo "The password you entered is incorrect. Please try again.";
+                                break;
+                            case 'max_attempts':
+                                echo "Your account has been temporarily locked due to multiple failed login attempts. Please try again in 2 minutes.";
+                                break;
+                            default:
+                                echo "An unexpected error occurred. Please try again later.";
+                        }
+                    }
+                    
+                    echo "',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    popup: 'error-popup',
+                                    title: 'error-title',
+                                    confirmButton: 'error-button'
+                                }
                             });
                         });
                     </script>";
                     unset($_SESSION['error_type']);
+                    unset($_SESSION['error_message']);
                 }
                 ?>
                 
-                <div class="social-login">
-                    <button class="google-btn">
-                        <img src="../images/google.png" alt="Google">
-                        Sign in with Google
-                    </button>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
                 <form action="teacher_login_action.php" method="POST">
                     <div class="input-group">
                         <label for="username">Username</label>
@@ -150,12 +182,13 @@ if (isset($_SESSION['id'])) {
                     <div class="input-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" placeholder="Password" required>
-                        <a href="#" class="forgot-password">Forgot Password?</a>
+                        <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
                     </div>
                     <button type="submit" name="login" class="signin-btn">Sign in</button>
                 </form>
             </div>
         </div>
     </div>
+
 </body>
 </html>

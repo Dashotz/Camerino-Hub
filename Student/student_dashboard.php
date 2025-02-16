@@ -1,11 +1,54 @@
 <?php
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['id'])) {
-    header("Location: Student-Login.php");
+// Check if user is logged in and is a student
+if (!isset($_SESSION['id']) || !isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'student') {
+    error_log("Session check failed: " . json_encode($_SESSION));
+    header("Location: ../login.php");
     exit();
 }
+
+// Check for active session and device status
+require_once('../db/dbConnector.php');
+$db = new DbConnector();
+$student_id = $_SESSION['id'];
+
+// Generate or get session ID
+if (!isset($_SESSION['session_id'])) {
+    $_SESSION['session_id'] = session_id();
+}
+
+// Check if this is a different session
+$check_session = "SELECT session_id FROM student WHERE student_id = ?";
+$stmt = $db->prepare($check_session);
+$stmt->bind_param("i", $student_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$current_session = $result->fetch_assoc();
+
+if ($current_session && $current_session['session_id'] !== $_SESSION['session_id']) {
+    error_log("Session mismatch: Current=" . $current_session['session_id'] . " vs Session=" . $_SESSION['session_id']);
+    // Force logout
+    session_destroy();
+    header("Location: ../login.php?error=multiple_login");
+    exit();
+}
+
+// Verify session data is complete
+if (!isset($_SESSION['firstname']) || !isset($_SESSION['lastname'])) {
+    session_destroy();
+    header("Location: ../login.php?error=incomplete_session");
+    exit();
+}
+
+// Update user status and session
+$update_status = "UPDATE student SET 
+    user_online = 1, 
+    session_id = ? 
+    WHERE student_id = ?";
+$stmt = $db->prepare($update_status);
+$stmt->bind_param("si", $_SESSION['session_id'], $student_id);
+$stmt->execute();
 
 // Get user data
 require_once('../db/dbConnector.php');
@@ -145,22 +188,56 @@ $student_info['course_count'] = $stats_result['course_count'] ?? 0;
 $student_info['pending_count'] = $stats_result['pending_count'] ?? 0;
 
 // Calculate average grade
-$grades_query = "SELECT 
-    AVG(sas.points) as average_grade
-FROM student_sections ss
-JOIN sections sec ON ss.section_id = sec.section_id
-JOIN section_schedules sched ON sec.section_id = sched.section_id
-JOIN activities a ON sched.teacher_id = a.teacher_id
-JOIN student_activity_submissions sas ON a.activity_id = sas.activity_id
-WHERE ss.student_id = ?
-    AND ss.status = 'active'
-    AND sched.status = 'active'";
+$grades_query = "
+    SELECT 
+        ROUND(
+            AVG(
+                CASE 
+                    -- Weight quiz scores (30%)
+                    WHEN a.type = 'quiz' THEN (sas.points / a.points * 100) * 0.30
+                    -- Weight activities (30%)
+                    WHEN a.type = 'activity' THEN (sas.points / a.points * 100) * 0.30
+                    -- Weight assignments (40%)
+                    WHEN a.type = 'assignment' THEN (sas.points / a.points * 100) * 0.40
+                END
+            ), 1
+        ) as average_grade,
+        COUNT(DISTINCT CASE WHEN a.type = 'quiz' THEN sas.submission_id END) as quiz_count,
+        COUNT(DISTINCT CASE WHEN a.type = 'activity' THEN sas.submission_id END) as activity_count,
+        COUNT(DISTINCT CASE WHEN a.type = 'assignment' THEN sas.submission_id END) as assignment_count
+    FROM student_sections ss
+    JOIN section_subjects ssub ON ss.section_id = ssub.section_id
+    JOIN activities a ON ssub.id = a.section_subject_id
+    JOIN student_activity_submissions sas ON a.activity_id = sas.activity_id 
+        AND sas.student_id = ss.student_id
+    WHERE ss.student_id = ?
+        AND ss.status = 'active'
+        AND ssub.status = 'active'
+        AND ss.academic_year_id = (
+            SELECT id FROM academic_years 
+            WHERE status = 'active' 
+            LIMIT 1
+        )
+        AND sas.points IS NOT NULL
+    GROUP BY ss.student_id";
 
 $stmt = $db->prepare($grades_query);
 $stmt->bind_param("i", $student_id);
 $stmt->execute();
 $grades_result = $stmt->get_result()->fetch_assoc();
-$average_grade = number_format($grades_result['average_grade'] ?? 0, 1);
+
+// Calculate the weighted average only if there are submissions
+if ($grades_result && 
+    ($grades_result['quiz_count'] > 0 || 
+     $grades_result['activity_count'] > 0 || 
+     $grades_result['assignment_count'] > 0)) {
+    $average_grade = $grades_result['average_grade'];
+} else {
+    $average_grade = 0;
+}
+
+// Format the average grade
+$average_grade = number_format($average_grade, 1);
 
 function timeAgo($datetime) {
     $timestamp = strtotime($datetime);
@@ -236,7 +313,7 @@ function getStatusBadgeClass($status) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link rel="icon" href="../images/light-logo.png">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard-shared.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -255,14 +332,74 @@ function getStatusBadgeClass($status) {
                 <p>Here's your learning overview</p>
             </div>
 
+            <!-- Attendance Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-clock mr-2"></i>Mark Attendance</h5>
+                        </div>
+                        <div class="card-body">
+                            <?php
+                            // Get all active subjects for the student
+                            $subjects_query = "SELECT 
+                                ss.id as section_subject_id,
+                                s.subject_name
+                            FROM student_sections sts
+                            JOIN section_subjects ss ON sts.section_id = ss.section_id
+                            JOIN subjects s ON ss.subject_id = s.id
+                            WHERE sts.student_id = ?
+                            AND ss.status = 'active'";
+                            
+                            $stmt = $db->prepare($subjects_query);
+                            $stmt->bind_param("i", $student_id);
+                            $stmt->execute();
+                            $subjects = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+                            
+                            if (!empty($subjects)) {
+                                foreach ($subjects as $subject) {
+                                    // Check if attendance already marked
+                                    $check_attendance = "SELECT id FROM attendance 
+                                        WHERE student_id = ? 
+                                        AND section_subject_id = ? 
+                                        AND date = CURRENT_DATE()";
+                                    $stmt = $db->prepare($check_attendance);
+                                    $stmt->bind_param("ii", $student_id, $subject['section_subject_id']);
+                                    $stmt->execute();
+                                    $existing_attendance = $stmt->get_result()->fetch_assoc();
+                                    
+                                    if (!$existing_attendance) {
+                                        echo '<div class="attendance-card mb-3">';
+                                        echo '<h6>' . htmlspecialchars($subject['subject_name']) . '</h6>';
+                                        echo '<button class="btn btn-primary mark-attendance" 
+                                                data-section-subject="' . $subject['section_subject_id'] . '">
+                                                <i class="fas fa-check-circle mr-2"></i>Mark Attendance
+                                              </button>';
+                                        echo '</div>';
+                                    } else {
+                                        echo '<div class="attendance-card mb-3">';
+                                        echo '<h6>' . htmlspecialchars($subject['subject_name']) . '</h6>';
+                                        echo '<p class="text-success"><i class="fas fa-check-circle mr-2"></i>Attendance already marked for today</p>';
+                                        echo '</div>';
+                                    }
+                                }
+                            } else {
+                                echo '<p class="text-muted text-center"><i class="fas fa-info-circle mr-2"></i>No subjects available.</p>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Stats Cards -->
             <div class="row stats-cards">
                 <div class="col-md-3">
                     <div class="card">
                         <div class="card-body">
-                            <i class="fas fa-book-open"></i>
-                            <h5>Current Courses</h5>
-                            <h3><?php echo $student_info['course_count'] ?? 0; ?></h3>
+                            <i class="fas fa-book"></i>
+                            <h5>Current Subjects</h5>
+                            <h3><?php echo $student_info['course_count']; ?></h3>
                         </div>
                     </div>
                 </div>
@@ -271,7 +408,7 @@ function getStatusBadgeClass($status) {
                         <div class="card-body">
                             <i class="fas fa-tasks"></i>
                             <h5>Pending Tasks</h5>
-                            <h3><?php echo $student_info['pending_count'] ?? 0; ?></h3>
+                            <h3><?php echo $student_info['pending_count']; ?></h3>
                         </div>
                     </div>
                 </div>
@@ -281,6 +418,11 @@ function getStatusBadgeClass($status) {
                             <i class="fas fa-chart-line"></i>
                             <h5>Average Grade</h5>
                             <h3><?php echo $average_grade; ?>%</h3>
+                            <small class="text-muted">
+                                (<?php echo $grades_result['quiz_count'] ?? 0; ?> Quizzes, 
+                                 <?php echo $grades_result['activity_count'] ?? 0; ?> Activities, 
+                                 <?php echo $grades_result['assignment_count'] ?? 0; ?> Assignments)
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -294,6 +436,7 @@ function getStatusBadgeClass($status) {
                     </div>
                 </div>
             </div>
+         
 
             <!-- Recent Activities and Upcoming Tasks -->
             <div class="row mt-4">
@@ -374,8 +517,75 @@ function getStatusBadgeClass($status) {
     </div>
 
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    function checkSession() {
+        fetch('check_session.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'student_id': <?php echo $student_id; ?>,
+                'session_id': '<?php echo $_SESSION['session_id']; ?>'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                window.location.href = 'Student-Login.php?error=session_expired';
+            }
+        })
+        .catch(error => {
+            console.error('Error checking session:', error);
+            alert('An error occurred while checking session.');
+            window.location.href = 'Student-Login.php?error=session_expired';
+        });
+    }
+    checkSession();
+    </script>
+
+    <!-- Add this before the closing </body> tag -->
+    <script>
+    $(document).ready(function() {
+        $('.mark-attendance').click(function() {
+            const sectionSubjectId = $(this).data('section-subject');
+            const button = $(this);
+            const card = button.closest('.attendance-card');
+            
+            $.ajax({
+                url: 'handlers/mark_attendance.php',
+                method: 'POST',
+                data: {
+                    section_subject_id: sectionSubjectId
+                },
+                success: function(response) {
+                    try {
+                        const data = JSON.parse(response);
+                        if (data.success) {
+                            card.html(`
+                                <h6>${card.find('h6').text()}</h6>
+                                <p class="text-success">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    Attendance marked successfully at ${data.time}
+                                </p>
+                            `);
+                        } else {
+                            alert(data.message || 'Error marking attendance');
+                        }
+                    } catch (e) {
+                        alert('Error processing response');
+                    }
+                },
+                error: function() {
+                    alert('Error connecting to server');
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html> 
