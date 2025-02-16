@@ -311,11 +311,24 @@ if ($isLoggedIn) {
     <section class="comment-suggestion section-gap">
         <div class="container">
             <div class="logo-bar">
-                <img src="../images/deped.png" alt="DepEd Logo">
-                <img src="../images/bagongpilipinas.png" alt="Bagong Pilipinas Logo">
-                <img src="../images/light-logo.png" alt="School Logo">
-                <img src="../images/imus-logo.png" alt="Imus Logo">
-                <img src="../images/cavite-logo.png" alt="Cavite Logo">
+                <?php 
+                // Define logo array for cleaner code
+                $logos = [
+                    ['src' => '../images/deped.png', 'alt' => 'DepEd Logo'],
+                    ['src' => '../images/bagongpilipinas.png', 'alt' => 'Bagong Pilipinas Logo'],
+                    ['src' => '../images/light-logo.png', 'alt' => 'School Logo'],
+                    ['src' => '../images/imus-logo.png', 'alt' => 'Imus Logo'],
+                    ['src' => '../images/cavite-logo.png', 'alt' => 'Cavite Logo']
+                ];
+                
+                // Loop through logos array to generate img tags
+                foreach ($logos as $logo) {
+                    echo sprintf('<img src="%s" alt="%s">', 
+                        htmlspecialchars($logo['src']), 
+                        htmlspecialchars($logo['alt'])
+                    );
+                }
+                ?>
             </div>
             <h2>Leave a <span class="text-primary">Comment</span> and <span class="text-primary">Suggestion</span></h2>
             <div class="row">
