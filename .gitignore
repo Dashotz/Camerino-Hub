@@ -4,3 +4,7 @@ Teacher/uploads/1021_File_Dedication.docx
 *.jpg
 *.pdf
 Teacher/uploads/letra-n-md.png
+.htaccess
+backups
+logs
+.logs
