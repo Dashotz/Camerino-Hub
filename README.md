@@ -387,11 +387,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ### 🏫 Gov D.M. Camerino High School
 
 **📍 Address:** Medicion 2, Imus City, Cavite 4103, Philippines
-
-**📧 Email:** profcamerino@yahoo.com
-
-**📞 Phone:** +(64) 456-5874, +(64) 456-5875
-
 </div>
 
 ---
