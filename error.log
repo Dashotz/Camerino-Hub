@@ -16,12 +16,12 @@
         (
             [name] => Array
                 (
-                    [0] => Christian PacificoLab#1.docx
+                    [0] => [REDACTED].docx
                 )
 
             [full_path] => Array
                 (
-                    [0] => Christian PacificoLab#1.docx
+                    [0] => [REDACTED].docx
                 )
 
             [type] => Array
@@ -70,12 +70,12 @@ Stack trace:
         (
             [name] => Array
                 (
-                    [0] => Christian PacificoLab#1.docx
+                    [0] => [REDACTED].docx
                 )
 
             [full_path] => Array
                 (
-                    [0] => Christian PacificoLab#1.docx
+                    [0] => [REDACTED].docx
                 )
 
             [type] => Array
@@ -136,70 +136,32 @@ Stack trace:
 #1 /home/u804969888/domains/camerinohub.site/public_html/teacher/forgot_password.php(129): DbConnector->prepare()
 #2 {main}
   thrown in /home/u804969888/domains/camerinohub.site/public_html/db/dbConnector.php on line 114
-[10-Dec-2024 13:54:50 Europe/Berlin] Debug - Email: kingpacifico0021@gmail.com, Type: student, ID: 36, Temp Pass: SGvDsREL, Hashed: 5867cb97ab96b3a88e34014d02321ea6
-[10-Dec-2024 13:54:50 Europe/Berlin] Password update successful for student ID: 36
-[10-Dec-2024 13:58:56 Europe/Berlin] Debug - Email: kingpacifico0021@gmail.com, Type: student, ID: 36, Temp Pass: K8IvXwzF, Hashed: 76a0fa9119e693e2cb3559d8cbd55996
-[10-Dec-2024 13:58:56 Europe/Berlin] User found: {"type":"student","id":36,"firstname":"Juan"}
-[10-Dec-2024 13:58:56 Europe/Berlin] Attempting to update password for student with ID: 36
-[10-Dec-2024 13:58:56 Europe/Berlin] Temporary password: K8IvXwzF
-[10-Dec-2024 13:58:56 Europe/Berlin] Hashed password: 76a0fa9119e693e2cb3559d8cbd55996
-[10-Dec-2024 13:58:56 Europe/Berlin] Student update query prepared
-[10-Dec-2024 13:58:56 Europe/Berlin] Password update successful. Affected rows: 1
-[10-Dec-2024 14:04:41 Europe/Berlin] Debug - Email: kingpacifico0021@gmail.com, Type: student, ID: 36, Temp Pass: ouNmSUxH, Hashed: 36b303536095c51d0b0f99ef392fef0b
-[10-Dec-2024 14:04:41 Europe/Berlin] User found: {"type":"student","id":36,"firstname":"Juan"}
-[10-Dec-2024 14:04:41 Europe/Berlin] Attempting to update password for student with ID: 36
-[10-Dec-2024 14:04:41 Europe/Berlin] Temporary password: ouNmSUxH
-[10-Dec-2024 14:04:41 Europe/Berlin] Hashed password: 36b303536095c51d0b0f99ef392fef0b
-[10-Dec-2024 14:04:41 Europe/Berlin] Student update query prepared
-[10-Dec-2024 14:04:41 Europe/Berlin] Password update successful. Affected rows: 1
-[10-Dec-2024 14:11:39 Europe/Berlin] Temporary password: 4Jnei1hB
-[10-Dec-2024 14:11:39 Europe/Berlin] Hashed password: 735a63465414cc45a4bb0d4ac147a540
-[10-Dec-2024 14:13:50 Europe/Berlin] Temporary password: egk93njc
-[10-Dec-2024 14:13:50 Europe/Berlin] Hashed password: $2y$10$gmHWr2i0yOwQHfoQ4SRvd.dxIGF.d.i2tltC4lzZAwcivvgu9OAie
-[10-Dec-2024 14:14:55 Europe/Berlin] Temporary password: AuCrGsde
-[10-Dec-2024 14:14:55 Europe/Berlin] Hashed password: 407a3238d76a6431020886ecbe8795a4
+[10-Dec-2024 14:11:39 Europe/Berlin] Temporary password generated for password recovery
+[10-Dec-2024 14:13:50 Europe/Berlin] Temporary password generated for password recovery
 [10-Dec-2024 14:14:55 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:59
 Stack trace:
 #0 {main}
   thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 59
-[10-Dec-2024 14:16:10 Europe/Berlin] Starting password recovery process for email: kingpacifico0021@gmail.com
-[10-Dec-2024 14:16:10 Europe/Berlin] Temporary password: OumVi1js
-[10-Dec-2024 14:16:10 Europe/Berlin] Hashed password: 8e0fc854143560c48e64c25ab1618491
 [10-Dec-2024 14:16:11 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
 Stack trace:
 #0 {main}
   thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
-[10-Dec-2024 14:22:08 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
-[10-Dec-2024 14:22:08 Europe/Berlin] Temporary password: bVgXfTO5
-[10-Dec-2024 14:22:08 Europe/Berlin] Hashed password: a9c3f74edcd76622274e473e9ccd1f5b
 [10-Dec-2024 14:22:08 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
 Stack trace:
 #0 {main}
   thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
-[10-Dec-2024 14:22:20 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
-[10-Dec-2024 14:22:20 Europe/Berlin] Temporary password: E4QIOBGx
-[10-Dec-2024 14:22:20 Europe/Berlin] Hashed password: cf72da3160f45555098899c770e99893
 [10-Dec-2024 14:22:20 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
 Stack trace:
 #0 {main}
   thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
-[10-Dec-2024 14:22:39 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
-[10-Dec-2024 14:22:39 Europe/Berlin] Temporary password: Jd3r24lw
-[10-Dec-2024 14:22:39 Europe/Berlin] Hashed password: 3fdbdb03fbbd5d70d9fbadeaa1350fb8
 [10-Dec-2024 14:22:39 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
 Stack trace:
 #0 {main}
   thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
-[10-Dec-2024 14:22:42 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
-[10-Dec-2024 14:22:42 Europe/Berlin] Temporary password: vtLWioUs
-[10-Dec-2024 14:22:42 Europe/Berlin] Hashed password: 977e849b0ae5f9a045e4262d83ddd8bf
 [10-Dec-2024 14:22:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
 Stack trace:
 #0 {main}
   thrown in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php on line 62
-[10-Dec-2024 14:22:54 Europe/Berlin] Starting password recovery process for email: dashotz14@gmail.com
-[10-Dec-2024 14:22:54 Europe/Berlin] Temporary password: b9KtRwaX
-[10-Dec-2024 14:22:54 Europe/Berlin] Hashed password: ba62543942514f997467fe3f355ca4de
 [10-Dec-2024 14:22:54 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "PHPMailer" not found in E:\XAMPP\xampp\htdocs\Camerino-Hub\forgot_password_action.php:62
 Stack trace:
 #0 {main}

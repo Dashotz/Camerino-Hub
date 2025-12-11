@@ -1,4 +1,17 @@
 <?php
+/**
+ * EXAMPLE DATABASE CONNECTOR
+ * 
+ * SECURITY WARNING: This is a template file.
+ * Copy this to dbConnector.php and update with your actual credentials.
+ * NEVER commit dbConnector.php with real credentials to version control.
+ * 
+ * For production, use environment variables:
+ * - DB_HOST
+ * - DB_USERNAME
+ * - DB_PASSWORD
+ * - DB_NAME
+ */
 
 error_reporting(0);
 ini_set('display_errors', 0);
@@ -12,13 +25,12 @@ private $isConnClosed = false;
 private $isMsgConnClosed = false;
 private $conn;
 
-// Add these as class properties
-// SECURITY: Replace with your actual database credentials
-// For production, use environment variables: getenv('DB_HOST'), getenv('DB_NAME'), etc.
+// SECURITY: Use environment variables in production
+// Example: $host = getenv('DB_HOST') ?: 'localhost';
 private $host = 'localhost';
-private $username = 'your_username';
-private $password = 'your_password';
-private $database = 'your_database_name';
+private $username = 'your_username_here';
+private $password = 'your_password_here';
+private $database = 'your_database_name_here';
 
 function __construct($useMessageDb = false) {
         // Use the class properties instead of local variables
@@ -241,3 +253,4 @@ function __construct($useMessageDb = false) {
 }
 
 ?>
+

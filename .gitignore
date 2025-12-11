@@ -1,10 +1,53 @@
+# Sensitive files with credentials
+account.txt
+*.txt
+!README.txt
 
+# Database backups (contain student data)
+backups/
+*.sql
+
+# Log files (may contain student information)
+logs/
+*.log
+.logs
+error.log
+login_errors.log
+
+# Configuration files with sensitive data
+config/config.local.php
+.env
+.env.local
+
+# Temporary upload files (may contain student data)
+uploads/temp/*.csv
+admin/uploads/*.csv
+uploads/temp/
+
+# Teacher uploads
 Teacher/uploads/1021_File_Dedication.docx
+Teacher/uploads/letra-n-md.png
+
+# Media files
 *.docx
 *.jpg
 *.pdf
-Teacher/uploads/letra-n-md.png
-.htaccess
-backups
-logs
-.logs
+
+# IDE and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Vendor (Composer)
+/vendor/
+
+# Node modules (if any)
+node_modules/
+
+# Note: .htaccess is included in repo for security rules
+# If you have server-specific .htaccess rules, use .htaccess.local
+.htaccess.local
