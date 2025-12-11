@@ -19,6 +19,7 @@ private $host = 'localhost';
 private $username = 'your_username';
 private $password = 'your_password';
 private $database = 'your_database_name';
+private $messageDatabase = 'your_message_database_name'; // Optional: separate database for messages
 
 function __construct($useMessageDb = false) {
         // Use the class properties instead of local variables
@@ -32,7 +33,7 @@ function __construct($useMessageDb = false) {
 
         // If message database is needed, create that connection
         if ($useMessageDb) {
-            $this->messageLink = new mysqli($this->host, $this->username, $this->password, $messageDb);
+            $this->messageLink = new mysqli($this->host, $this->username, $this->password, $this->messageDatabase);
             if ($this->messageLink->connect_error) {
                 throw new Exception('Connection failed: ' . $this->messageLink->connect_error);
             }
